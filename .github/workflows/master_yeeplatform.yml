@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'yeeplatform'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_91031A0FCDE04F21B9EFDB804EF3FF10 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0A4D3DC7C96B49FA9A1CB57EE72EA022 }}
           package: .
