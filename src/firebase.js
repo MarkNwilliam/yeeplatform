@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 import {
   getAuth,
   onAuthStateChanged,
@@ -23,7 +23,14 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+let analytics;
+isSupported().then((isSupported) => {
+  if (isSupported) {
+    analytics = getAnalytics(app);
+  } else {
+    console.log("Firebase analytics is not supported in this environment");
+  }
+});
 
 // Add console.log statement to check Firebase connection
 console.log("Firebase connected successfully");
