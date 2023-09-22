@@ -38,7 +38,7 @@ export default function Pricingtable() {
           </span>{' '}
           pricing. Pay as you grow.
         </h2>
-        <p class="text-base text-gray-700 md:text-lg">
+        <p className="text-base text-gray-700 md:text-lg">
   Discover a world of African content tailored to your preferences and budget. Our flexible subscription plans let you access a diverse range of ebooks and audiobooks while supporting your favorite creators.
 </p>
       </div>
@@ -129,4 +129,4 @@ export default function Pricingtable() {
     </div>
     </>
     );
-  };
+  }

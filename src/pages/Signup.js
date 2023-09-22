@@ -4,7 +4,6 @@ import Swal from 'sweetalert2';
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 import { AuthContext } from '../contexts/AuthContext';
 import { get, ref, set } from "firebase/database";
-import { useHistory } from 'react-router-dom';
 import { FaGoogle } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
@@ -54,22 +53,34 @@ function Signup() {
 
         const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
-  
-
+        // Send email verification
+        await user.sendEmailVerification();
+        
+        Swal.fire({
+            icon: 'info',
+            title: 'Verify Your Email',
+            text: 'A verification email has been sent. Please check your inbox and verify your email address.',
+        });
+    
         const userData = {
-          uid: user.uid,
           name,
           email,
           phoneNumber: phone,
-          photoURL: "", // Set an empty string as a placeholder; users can update it later
+          photoURL: "",
           isAuthor: false,
           subscription: {
-            type: "free", // Set the default subscription type
+            type: "free",
             status: "active",
             startDate: new Date().toISOString().split("T")[0],
-            endDate: "", // Calculate the end date based on the subscription type and duration
+            endDate: "",
           },
         };
+    
+        // Save userData temporarily in local storage
+        localStorage.setItem('tempUserData', JSON.stringify(userData));
+    
+        navigate('/verify-email');
+    
 
         await set(ref(database, `users/${user.uid}`), userData);
 
@@ -246,6 +257,6 @@ const signUpWithGoogle = async () => {
       </div>
     </div>
   );
-};
+}
 
 export default Signup;

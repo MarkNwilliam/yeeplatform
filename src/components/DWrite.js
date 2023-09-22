@@ -28,11 +28,8 @@ import {
 } from "firebase/database";
 import {
   collection,
-  addDoc,
-  doc,
-  getDoc
+  addDoc
 } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
 
 const DWrite = () => {
   const [chapterData, setChapterData] = useState({

@@ -1,14 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { ref, set, onValue, off, update } from 'firebase/database';
+import { ref, onValue, off, update } from 'firebase/database';
 import { storage, database } from '../firebase';
 import { getDownloadURL, ref as storageRef, uploadBytesResumable } from 'firebase/storage';
 import Swal from 'sweetalert2';
 import 'tailwindcss/tailwind.css';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Avatar from '@mui/material/Avatar';
 import { Box } from '@mui/system';
 import IconButton from '@mui/material/IconButton';

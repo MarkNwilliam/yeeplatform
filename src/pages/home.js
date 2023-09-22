@@ -3,35 +3,14 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import AppBar from '@mui/material/AppBar';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Swal from 'sweetalert2';
 import PropTypes from 'prop-types'
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import Scontent from "../components/Scontent";
-import Icon from '@mui/material/Icon';
-import HomeIcon from '@mui/icons-material/Home';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import { purple } from '@mui/material/colors';
-import Avatar from '@mui/material/Avatar';
-import { blue, yellow, red } from '@mui/material/colors';
 import SearchIcon from '@mui/icons-material/Search';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
@@ -54,13 +33,10 @@ import { AuthContext } from '../contexts/AuthContext';
 
 
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
-  Link,
-  useParams,
-  useRouteMatch
+  Link
 } from "react-router-dom";
 const theme = createTheme({
   palette: {

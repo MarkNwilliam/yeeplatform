@@ -7,7 +7,7 @@ import {
   Box,
   Chip,
 } from "@mui/material";
-import { getDatabase, ref as dbRef, set, update , get} from "firebase/database";
+import { getDatabase, ref as dbRef, update , get} from "firebase/database";
 import Swal from "sweetalert2";
 import { getDownloadURL } from "firebase/storage";
 import { styled } from "@mui/system";
@@ -16,7 +16,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useAuth } from "../contexts/AuthContext";
 import { collection, addDoc } from "firebase/firestore";
-import { storage, firestore, database } from "../firebase";
+import { storage, firestore } from "../firebase";
 import { ref, uploadBytes } from "firebase/storage";
 
 const FileInput = styled("input")({

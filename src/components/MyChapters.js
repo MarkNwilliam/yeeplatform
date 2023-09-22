@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Grid,
   Typography,
   Table,
   TableBody,
@@ -17,7 +16,7 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import { auth, firestore, realtimeDb } from '../firebase';
+import { auth, firestore } from '../firebase';
 import {
   doc,
   getDocs,
@@ -27,7 +26,7 @@ import {
   updateDoc,
   deleteDoc,
 } from 'firebase/firestore';
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, get } from 'firebase/database';
 
 const MyChapters = () => {
   const [chapters, setChapters] = useState([]);

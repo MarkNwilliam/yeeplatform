@@ -2,42 +2,14 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
-import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import PropTypes from 'prop-types'
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
-import IconButton from '@mui/material/IconButton';
-import Icon from '@mui/material/Icon';
-import Link from 'next/link';
-import HomeIcon from '@mui/icons-material/Home';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import { purple } from '@mui/material/colors';
-import Avatar from '@mui/material/Avatar';
-import { blue, yellow, red } from '@mui/material/colors';
-import SearchIcon from '@mui/icons-material/Search';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import Stack from '@mui/material/Stack';
 import Head from 'next/head';
-import Button from '@mui/material/Button';
-import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 import MList from "../subcomponents/MList.js"
 import Mbar from "../subcomponents/Mbar.js"
-import Barlist from "../subcomponents/Barlist.js"
 import {
-  useWindowSize,
   useWindowWidth,
-  useWindowHeight,
 } from '@react-hook/window-size'
 
 const theme = createTheme({
@@ -137,7 +109,7 @@ const drawerWidth = 240;
         <title>Search</title>
         <link rel="icon" href="/Y.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"/>
       </Head>
 

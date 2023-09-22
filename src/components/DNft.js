@@ -5,9 +5,6 @@ import {
   Typography,
   Grid,
   Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
   Chip
 } from "@mui/material";
 import { styled } from "@mui/system";

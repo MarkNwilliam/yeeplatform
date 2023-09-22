@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc,updateDoc, doc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { auth, firestore, storage } from "../firebase";
-import { getDatabase, ref as dbRef, set,get ,update} from "firebase/database";
+import { getDatabase, ref as dbRef,get ,update} from "firebase/database";
 
 
 import {
@@ -22,7 +22,6 @@ import { styled } from "@mui/system";
 import { useForm, Controller } from "react-hook-form";
 import ImageIcon from "@mui/icons-material/Image";
 import Autocomplete from "@mui/material/Autocomplete";
-import { database } from "../firebase";
 
 const FileInput = styled("input")({
   display: "none",

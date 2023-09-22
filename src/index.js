@@ -6,7 +6,6 @@ import reportWebVitals from './reportWebVitals';
 
 import { AuthProvider } from './contexts/AuthContext';
 
-import { render } from 'react-dom'
 
 
 

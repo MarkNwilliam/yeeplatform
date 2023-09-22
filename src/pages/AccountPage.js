@@ -21,9 +21,8 @@ import {
 import { ArrowBack } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { collection, addDoc } from "firebase/firestore";
 import "tailwindcss/tailwind.css";
-import { auth, database, firestore } from "../firebase";
+import { auth, database } from "../firebase";
 
 
 const AccountPage = () => {

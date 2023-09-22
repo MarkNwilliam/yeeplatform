@@ -5,7 +5,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { BrowserRouter as Router, Switch, Route, Link, useParams, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import HomeIcon from '@mui/icons-material/Home';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import Avatar from '@mui/material/Avatar';

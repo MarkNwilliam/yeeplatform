@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
-import { Typography, Container, Grid, Paper, Button, Box } from '@mui/material';
+import { Typography, Grid, Paper, Button, Box } from '@mui/material';
 
 function EbookDetails() {
   const { id } = useParams();
