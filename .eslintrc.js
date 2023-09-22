@@ -29,6 +29,8 @@ module.exports = {
         "unused-imports"
     ],
     "rules": {
-        "unused-imports/no-unused-imports": "warn"
+        "react/prop-types": "off",
+"no-unused-vars": "off",
+"unused-imports/no-unused-imports": "warn"
     }
 }
