@@ -30,6 +30,7 @@ module.exports = {
     ],
     "rules": {
         "react/prop-types": "off",
+        "react/no-unknown-property": "off",
 "no-unused-vars": "off",
 "unused-imports/no-unused-imports": "warn"
     }
