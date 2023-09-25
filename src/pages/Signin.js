@@ -140,7 +140,8 @@ function SignIn() {
         </form>
         <div className="mt-6 text-center">
           <span className="text-gray-700">
-            Don't have an account?{" "}
+          <span>Don&apos;t have an account?</span>
+
             <span
               className="text-blue-500 cursor-pointer"
               onClick={() => navigate("/signup")}

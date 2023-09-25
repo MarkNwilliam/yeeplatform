@@ -16,6 +16,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
+  const [isConsentGiven, setIsConsentGiven] = useState(false);
 
   const { loginWithGoogle } = useContext(AuthContext);
   // ... (handleSignUp and signUpWithGoogle functions)
@@ -30,6 +31,15 @@ function Signup() {
             text: 'Please fill in all fields',
         });
         return;
+    }
+
+    if (!isConsentGiven) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'You must agree to receive emails to register.',
+      });
+      return;
     }
 
     if (password !== confirmPassword) {
@@ -253,6 +263,20 @@ const signUpWithGoogle = async () => {
           >
             Sign Up
           </button>
+
+          <label className="inline-flex items-center mb-3">
+  <input
+    type="checkbox"
+    className="form-checkbox"
+    checked={isConsentGiven}
+    onChange={(e) => setIsConsentGiven(e.target.checked)}
+  />
+  <span className="ml-2">
+    I agree to receive marketing emails, newsletters, promotions, and updates.
+  </span>
+</label>
+
+
         </form>
       </div>
     </div>
