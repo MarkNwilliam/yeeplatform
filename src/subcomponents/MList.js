@@ -25,7 +25,7 @@ export default function MList() {
   return (
     <div>
       <Avatar
-        src="Y.png"
+        src="Y.webp"
         sx={{
           width: 50,
           height: 50,
@@ -55,7 +55,6 @@ export default function MList() {
             value: "3",
             icon: <PlaylistAddCheckIcon />
           },
-
           {
             name: 'Audiobooks',
             path: 'audiobooks',
@@ -83,17 +82,17 @@ export default function MList() {
           },
         ].map((text, index) => (
           <ListItem key={text.name} disablePadding>
-            <Link to={text.path}>
-              <ListItemButton>
-                <ListItemIcon sx={{ minWidth: 35 }}>
-                  {text.icon}
-                </ListItemIcon>
-                <ListItemText primary={text.name} />
-              </ListItemButton>
-            </Link>
-          </ListItem>
-        ))}
-      </List>
+          <Link to={text.path} style={{ color: '#000000', textDecoration: 'none', width: '100%' }}>
+            <ListItemButton sx={{ width: '100%', '&:hover': { backgroundColor: 'lightyellow' } }}>
+              <ListItemIcon sx={{ minWidth: 35, color: '#000000' }}>
+                {text.icon}
+              </ListItemIcon>
+              <ListItemText primary={text.name} />
+            </ListItemButton>
+          </Link>
+        </ListItem>
+      ))}
+    </List>
 
       <Divider />
       <List>
@@ -110,15 +109,15 @@ export default function MList() {
           },
         ].map((text, index) => (
           <ListItem key={text.name} disablePadding>
-            <ListItemButton>
-              <ListItemIcon sx={{ minWidth: 35 }}>
-                {text.icon}
-              </ListItemIcon>
-              <ListItemText primary={text.name} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+          <ListItemButton sx={{ width: '100%', '&:hover': { backgroundColor: 'lightyellow' } }}>
+            <ListItemIcon sx={{ minWidth: 35, color: '#000000' }}>
+              {text.icon}
+            </ListItemIcon>
+            <ListItemText primary={text.name} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
 
       <Divider />
       <List>
@@ -129,15 +128,15 @@ export default function MList() {
           { name: 'LinkedIn', icon: <LinkedInIcon /> },
         ].map((item, index) => (
           <ListItem key={item.name} disablePadding>
-            <ListItemButton>
-              <ListItemIcon sx={{ minWidth: 35 }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.name} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
+          <ListItemButton sx={{ width: '100%', '&:hover': { backgroundColor: 'lightyellow' } }}>
+            <ListItemIcon sx={{ minWidth: 35, color: '#000000' }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText primary={item.name} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
+  </div>
+);
 }

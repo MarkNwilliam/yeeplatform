@@ -46,11 +46,14 @@ export default function Mbar(props) {
       
       spacing={2} 
       direction="row">
-          <Button  
-          variant="outlined"  
-          color="outline" 
-          class="animate-bounce" 
-          sx={{  color: '#fff', fontSize: 12 }}>Sign up</Button>
+        <Button 
+      href="/Signup" 
+      variant="outlined"  
+      color="outline" 
+      sx={{ color: '#fff', fontSize: 12 }}
+    >
+      Sign up
+    </Button>
 
           <Button  variant="outlined"  color="outline" sx={{ color: '#fff', fontSize: 12 }}>Log in</Button>
           </Stack>

@@ -112,8 +112,7 @@ const drawerWidth = 240;
   const width = useWindowWidth();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  
 
   
   const handleDrawerToggle = () => {
@@ -270,9 +269,17 @@ const drawerWidth = 240;
           spacing={2} 
           direction="row">
 
-            <Link to = "/Signup">
-              <Button  variant="outlined"  color="outline" class="animate-bounce" sx={{  color: '#fff', fontSize: 12 }}>Sign up</Button>
-              </Link>
+<Link to="/Signup">
+    <Button 
+        variant="outlined"  
+        color="outline" 
+        className="transition-all duration-300 transform hover:shadow-lg hover:-translate-y-1"
+        sx={{ color: '#fff', fontSize: 12 }}
+    >
+        Sign up
+    </Button>
+</Link>
+
               <Link to = "/Signin">
               <Button  variant="outlined"  color="outline" sx={{ color: '#fff', fontSize: 12 }}>Log in</Button>
               </Link>

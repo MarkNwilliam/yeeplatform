@@ -40,3 +40,13 @@
     transform: rotate(360deg);
   }
 }
+
+/* in your tailwind.css or global CSS file */
+@keyframes flashBorder {
+  0%, 50%, 100% {
+    border-color: transparent;
+  }
+  25%, 75% {
+    border-color: #fff;
+  }
+}

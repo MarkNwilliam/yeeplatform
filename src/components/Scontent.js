@@ -12,38 +12,13 @@ import {
 } from "mdb-react-ui-kit";
 import { Link } from 'react-router-dom';
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
-import { collection, getDocs } from "firebase/firestore";
-import { firestore } from "../firebase";
+
 
 export default function Scontent() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const booksSnapshot = await getDocs(collection(firestore, "books"));
-      const chaptersSnapshot = await getDocs(collection(firestore, "chapters"));
-      const audiosSnapshot = await getDocs(collection(firestore, "audios"));
 
-      const booksData = booksSnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-        type: "book",
-      }));
-      const chaptersData = chaptersSnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-        type: "chapter",
-      }));
-      const audiosData = audiosSnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-        type: "audio",
-      }));
-
-      setItems([...booksData, ...chaptersData, ...audiosData]);
-    };
-
-    fetchData();
   }, []);
 
   return (

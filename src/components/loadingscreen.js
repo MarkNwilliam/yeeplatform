@@ -1,12 +1,14 @@
-import React from "react"
-
+import React from "react";
 
 const LoadingScreen = () => {
   return (
-    <div className = " flex justify-center align-middle " >
-   <img src ="/Y.png" className = "w-1/6 mt-40 align-middle animate-bounce hover:animate-spin sm: mt-70"/>
-  
-   </div>
+    <div className="flex justify-center items-center h-screen">
+      <img 
+        src="Y.webp" 
+        alt="loading" 
+        className="w-1/4 animate-pulse md:w-1/6"
+      />
+    </div>
   );
 };
 

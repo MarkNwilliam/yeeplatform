@@ -34,20 +34,13 @@ const theme = createTheme({
   },
 });
 
-const drawerWidth = 240;
+
 
 export default function Bbar() {
 
     const Swidth = useWindowWidth();
    
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [auth, setAuth] = React.useState(true);
-    const [anchorEl, setAnchorEl] = React.useState(null);
-  
-    
-    const handleDrawerToggle = () => {
-      setMobileOpen(!mobileOpen);
-    };
+
   
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
@@ -99,7 +92,7 @@ export default function Bbar() {
    <Link to = "/">
 <Avatar
  href = "/"
-  src="Y.png"
+  src="Y.webp"
   sx={{ width: 30, height: 30 }}
 />
 
@@ -114,7 +107,15 @@ class="ml-8"
       sx={{ mx: 10 }}
               spacing={3} 
       direction="row">
-          <Button href="/Signup" variant="outlined"  color="outline" class="animate-bounce " sx={{  color: '#fff', fontSize: 12 }}>Sign up</Button>
+         <Button 
+      href="/Signup" 
+      variant="outlined"  
+      color="outline" 
+      sx={{ color: '#fff', fontSize: 12 }}
+    >
+      Sign up
+    </Button>
+
 
           <Button href="/Signin"  variant="outlined"  color="outline"  sx={{ color: '#fff', fontSize: 12 }}>Log in</Button>
           </Stack>

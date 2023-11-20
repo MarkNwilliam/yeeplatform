@@ -6,247 +6,190 @@ import {
     Typography,
     InputLabel,
     FormControl,
+    Dialog,
+    DialogTitle,
+    DialogContent,
   } from "@mui/material";
 import { AddCircle } from "@mui/icons-material";
 import Swal from "sweetalert2";
-import {
-  storage,
-  firestore
-} from "../firebase";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload"; 
+import Lottie from 'lottie-react';
+import congs1Animation from '../animations/congs.json';
 import { getAuth } from "firebase/auth";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "firebase/storage";
-import {
-  getDatabase,
-  ref as dbRef,
-  set,
-  update,
-  get
-} from "firebase/database";
-import {
-  collection,
-  addDoc
-} from "firebase/firestore";
+
+
 
 const DWrite = () => {
-  const [chapterData, setChapterData] = useState({
-    bookTitle: "",
-    chapterNumber: "",
-    chapterName: "",
-    description: "",
-    content: "",
-  });
-  const [coverImage, setCoverImage] = useState(null);
-  const [selectedFileName, setSelectedFileName] = useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [content, setContent] = useState("");
+    const [coverImage, setCoverImage] = useState(null);
+    const [selectedCoverFileName, setSelectedCoverFileName] = useState("");
+    const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    setCoverImage(file);
-    setSelectedFileName(file.name);
-  };
+    const resetForm = () => {
+        setTitle('');
+        setDescription('');
+        setContent('');
+        setCoverImage(null);
+        setSelectedCoverFileName('');
+    };
 
-  const validateContent = (content) => {
-    const minLength = 20;
-    const maxLength = 5000; // Set an appropriate maximum length
-    return content.length >= minLength && content.length <= maxLength;
-  };
+    const auth = getAuth();
+      const firebaseId = auth.currentUser?.uid;
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setChapterData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-
+    const handleSubmit = async (e) => {
+      e.preventDefault();
   
-  
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-  
-    Swal.fire({
-      title: "Submitting...",
-      html: "Please wait while your chapter is being submitted.",
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      allowOutsideClick: () => !Swal.isLoading(),
+      // Show loading progress dialog
+      Swal.fire({
+        title: 'Uploading...',
+        text: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        onBeforeOpen: () => {
+            Swal.showLoading();
+        }
     });
+    
   
-    try {
-      const user = getAuth().currentUser;
-      const userId = user.uid;
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("content", content);
+      formData.append("type", "Text");
+      formData.append("author_platform_id", firebaseId);
+    
+      if (coverImage) formData.append("coverimage", coverImage);
   
-      let downloadURL = null;
+      
   
-      // Upload cover image to Firebase Storage (if selected)
-      if (coverImage) {
-        const storageRef = ref(storage, `cover_images/${coverImage.name}`);
-        const snapshot = await uploadBytes(storageRef, coverImage);
+      try {
+          const response = await fetch(`http://localhost:3000/uploadchapter/${firebaseId}`, {
+              method: "POST",
+              body: formData
+          });
+          
+          Swal.close();
+
+
+          if (!response.ok) throw new Error("Error uploading chapter");
+          
+          const data = await response.json();
   
-        // Get download URL for cover image
-        downloadURL = await getDownloadURL(snapshot.ref);
-        console.log("this is url" + downloadURL);
-        console.log(firestore);
+         
+      
+          setDialogOpen(true);
+
+              
+          resetForm();
+
+      } catch (error) {
+          // Close the progress dialog and show the error message
+          Swal.close();
+          Swal.fire("Error!", error.message, "error");
       }
-  
-      // Add chapter data and cover image URL to Firestore
-      const docRef = await addDoc(collection(firestore, "chapters"), {
-        bookTitle: chapterData.bookTitle,
-        chapterNumber: chapterData.chapterNumber,
-        chapterName: chapterData.chapterName,
-        description: chapterData.description,
-        content: chapterData.content,
-        coverImageURL: downloadURL,
-        authorId: userId,
-      });
-  
-      // Add chapter ID to user's data in Realtime Database
-      const chapterId = docRef.id;
-  
-      // Update the user's data in the Realtime Database
-      const database = getDatabase();
-      const userRef = dbRef(database, `users/${user.uid}`);
-  
-      // Retrieve the current list of book IDs
-      const userSnapshot = await get(userRef);
-  
-      let myChapters = [];
-      if (userSnapshot.exists() && userSnapshot.val().myChapters) {
-        myChapters = userSnapshot.val().myChapters;
-      } else {
-        await set(userRef, { myChapters: [] });
-      }
-  
-      myChapters.push(chapterId);
-      await update(userRef, { myChapters });
-  
-      console.log("chapter successfully submitted");
-      console.log("Document written with ID: ", docRef.id);
-  
-      Swal.close();
-      Swal.fire({
-        icon: "success",
-        title: "Chapter Submitted",
-        text: "Your chapter has been successfully submitted.",
-      });
-    } catch (error) {
-      console.error(error);
-      Swal.close();
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again later.",
-      });
-    }
   };
   
 
-  
+    return (
+        <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow-md">
+            <Typography variant="h4" className="text-center mb-6">
+                Upload a Chapter
+            </Typography>
 
-  return (
-    <form onSubmit={handleFormSubmit}>
-      <Box mb={2}>
-        <TextField
-          label="Book Title"
-          name="bookTitle"
-          value={chapterData.bookTitle}
-          onChange={handleInputChange}
-          required
-          fullWidth
+            <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                        Title
+                    </label>
+                    <input
+                        type="text"
+                        id="title"
+                        className="w-full p-2 border rounded"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+                        Description
+                    </label>
+                    <textarea
+                        id="description"
+                        rows="3"
+                        className="w-full p-2 border rounded"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                    ></textarea>
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">
+                        Content
+                    </label>
+                    <textarea
+                        id="content"
+                        rows="10"
+                        className="w-full p-2 border rounded"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        required
+                    ></textarea>
+                </div>
+
+                <div className="mb-4">
+                  
+
+<label className="block text-gray-700 text-sm font-bold mb-2">Upload Cover Image:</label>
+          <label className={`w-full flex items-center px-4 py-2 rounded-lg shadow-lg tracking-wide uppercase border cursor-pointer hover:bg-blue-500 hover:text-white ${selectedCoverFileName ? "bg-blue-500 text-white" : "bg-white text-blue-500 border-blue-500"}`}>
+            <CloudUploadIcon className="mr-2" />
+            {selectedCoverFileName || "Choose Cover Image"}
+            <input
+              type="file"
+              onChange={(e) => {
+                setCoverImage(e.target.files[0]);
+                setSelectedCoverFileName(e.target.files[0]?.name || "");
+              }}
+              className="hidden"
+              accept=".jpg, .jpeg, .png"
+              required
+            />
+          </label>
+                </div>
+
+                <div className="flex justify-center">
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                        Upload
+                    </button>
+
+                    
+                </div>
+            </form>
+
+
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+    <DialogTitle className="text-center">Success!</DialogTitle>
+    <DialogContent className="flex flex-col items-center justify-center space-y-4">
+        <Lottie 
+            animationData={congs1Animation} 
+            style={{ width: 'auto', maxWidth: '100%', height: 200 }} 
         />
-      </Box>
-      <Box mb={2}>
-        <TextField
-          label="Chapter Number"
-          name="chapterNumber"
-          value={chapterData.chapterNumber}
-          onChange={handleInputChange}
-          required
-          fullWidth
-        />
-      </Box>
-      <Box mb={2}>
-        <TextField
-          label="Chapter Name"
-          name="chapterName"
-          value={chapterData.chapterName}
-          onChange={handleInputChange}
-          required
-          fullWidth
-        />
-      </Box>
-      <Box mb={2}>
-        <TextField
-          label="Description"
-          name="description"
-          value={chapterData.description}
-          onChange={handleInputChange}
-          required
-          multiline
-          rows={3}
-          fullWidth
-        />
-      </Box>
-      <Box mb={2}>
-        <TextField
-          label="Content"
-          name="content"
-          value={chapterData.content}
-          onChange={handleInputChange}
-          required
-          multiline
-          rows={10}
-          fullWidth
-          error={!validateContent(chapterData.content)}
-          helperText={
-            !validateContent(chapterData.content)
-              ? "Content must be between 20 and 5000 characters."
-              : ""
-          }
-        />
-      </Box>
-      <Box mb={2}>
-        <InputLabel htmlFor="cover-image">Cover Image</InputLabel>
-        <FormControl fullWidth>
-          <Button
-            variant="outlined"
-            component="label"
-            htmlFor="cover-image"
-            fullWidth
-          >
-            Choose File
-          </Button>
-          <input
-            type="file"
-            id="cover-image"
-            onChange={handleFileUpload}
-            accept="image/*"
-            style={{ display: "none" }}
-          />
-        </FormControl>
-        {selectedFileName && (
-          <Typography variant="body2" color="textSecondary">
-            {selectedFileName}
-          </Typography>
-        )}
-      </Box>
-      <Box mb={2}>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          startIcon={<AddCircle />}
-        >
-          Submit
-        </Button>
-      </Box>
-    </form>
-  );
+        <p>Well done! You&apos;re a real YeePlatform author.</p>
+        <div className="text-center animate-pulse">
+        <p className="text-yellow-500 font-bold text-xl">You&#39;ve got</p>
+<span className="text-4xl text-yellow-500">5 Points!</span>
+
+        </div>
+        <p>Your content will be available in the marketplace soon.</p>
+    </DialogContent>
+</Dialog>
+        </div>
+    );
 };
 
 export default DWrite;

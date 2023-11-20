@@ -18,12 +18,14 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import UploadIcon from '@mui/icons-material/Upload';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EditIcon from '@mui/icons-material/Edit';
+import SpatialAudioIcon from '@mui/icons-material/SpatialAudio';
+import VolumeMuteIcon from '@mui/icons-material/VolumeMute';
 
 export default function MList() {
     return (
         <div>
             <Avatar
-  src="/Y.png"
+  src="/Y.webp"
   sx={{ width: 50,
      height: 50 , 
     justifyContent: 'center',
@@ -35,7 +37,7 @@ export default function MList() {
       <List>
         {[
           {
-        name:'Upload',
+        name:'Upload Ebook',
         path:'/dashboard/Upload',
         
        icon: <UploadIcon  />
@@ -48,17 +50,26 @@ export default function MList() {
         },
         
         {
+          name:'Upload Audio Chapter',
+          path:'/dashboard/AudioChapter',
+          
+          icon: <SpatialAudioIcon  />
+          },
+
+        {
+          name:'Write Chapter',
+          path:'/dashboard/Write',
+          
+          icon: <EditIcon  />
+          }, 
+        
+        {
         name:'My Audios',
         path:'/dashboard/MyAudios',
         
-        icon: <AudiotrackIcon  />
+        icon: <VolumeMuteIcon  />
         },
-        {
-        name:'Write',
-        path:'/dashboard/Write',
-        
-        icon: <EditIcon  />
-        }, 
+       
         {
   name: 'My Books',
   path: '/dashboard/MyBooks',

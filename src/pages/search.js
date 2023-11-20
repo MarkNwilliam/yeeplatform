@@ -93,8 +93,7 @@ const drawerWidth = 240;
   const width = useWindowWidth();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+ 
 
   
   const handleDrawerToggle = () => {
@@ -149,7 +148,7 @@ const drawerWidth = 240;
 
 <Head>
         <title>Search</title>
-        <link rel="icon" href="/Y.png" />
+        <link rel="icon" href="/Y.webp" />
       </Head>
 
       <Box sx={{ display: 'flex' }}>

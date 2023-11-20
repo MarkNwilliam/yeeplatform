@@ -107,7 +107,7 @@ const drawerWidth = 240;
 
 <Head>
         <title>Search</title>
-        <link rel="icon" href="/Y.png" />
+        <link rel="icon" href="Y.webp" />
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"/>

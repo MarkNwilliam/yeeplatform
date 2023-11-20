@@ -17,9 +17,10 @@ import {
   TextField,
 } from '@mui/material';
 
-import { auth, firestore } from '../firebase';
+import { auth } from '../firebase';
+import Swal from 'sweetalert2'; 
 
-import { doc, getDocs, collection, query, where, updateDoc, deleteDoc } from 'firebase/firestore';
+
 
 const MyAudios = () => {
   const [audiobooks, setAudiobooks] = useState([]);
@@ -27,25 +28,28 @@ const MyAudios = () => {
   const [editedText, setEditedText] = useState('');
   const [selectedDocId, setSelectedDocId] = useState('');
 
-  useEffect(() => {
-    const fetchAudiobooks = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const q = query(
-          collection(firestore, 'audio'),
-          where('userId', '==', user.uid)
-        );
-        const querySnapshot = await getDocs(q);
-        const audiobooks = [];
-        querySnapshot.forEach((doc) => {
-          audiobooks.push({ id: doc.id, ...doc.data() });
-        });
-        setAudiobooks(audiobooks);
+  const fetchAudiobooks = async () => {
+    Swal.showLoading();
+    try {
+      const response = await fetch(`http://localhost:3000/getauthoraudios?userId=${auth.currentUser.uid}`);
+      if (response.ok) {
+        const data = await response.json();
+        setAudiobooks(data);
+      } else {
+        throw new Error(`Error fetching audiobooks: ${response.statusText}`);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching audiobooks:", err);
+    } finally{
+      Swal.close();
+    }
+  }
 
+  useEffect(() => {
     fetchAudiobooks();
   }, []);
+
+
 
   const handleClickOpen = (description, docId) => {
     setEditedText(description);
@@ -57,18 +61,67 @@ const MyAudios = () => {
     setOpen(false);
   };
 
+
   const handleSave = async () => {
-    const audiobookDoc = doc(firestore, 'audio', selectedDocId);
-    await updateDoc(audiobookDoc, { description: editedText });
-    setAudiobooks(audiobooks.map((audiobook) => (audiobook.id === selectedDocId ? { ...audiobook, description: editedText } : audiobook)));
-    setOpen(false);
+    try {
+      Swal.showLoading();
+      const response = await fetch(`http://localhost:3000/updateABD`, { 
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              bookId: selectedDocId,
+              description: editedText
+          })
+      });
+
+      if (response.ok) {
+        const updatedAudiobook = await response.json();
+        setAudiobooks(prevBooks => prevBooks.map(ab => ab._id === selectedDocId ? updatedAudiobook : ab));
+        setOpen(false);
+        fetchAudiobooks();
+      } else {
+        throw new Error(`Failed to update the description: ${response.statusText}`);
+      }
+    } catch(err) {
+      Swal.fire('Oops...', 'Something went wrong while updating the description!', 'error');
+    } finally {
+      Swal.close();
+        handleClose();
+    }
   };
 
   const handleDelete = async (docId) => {
-    const audiobookDoc = doc(firestore, 'audio', docId);
-    await deleteDoc(audiobookDoc);
-    setAudiobooks(audiobooks.filter((audiobook) => audiobook.id !== docId));
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This will permanently delete the audiobook.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          Swal.showLoading();
+          const response = await fetch(`http://localhost:3000/deleteAudiobook/${docId}`, { method: 'DELETE' });
+          if (response.ok) {
+            setAudiobooks(prevBooks => prevBooks.filter(book => book._id !== docId));
+            Swal.fire('Deleted!', 'The audiobook has been deleted.', 'success');
+            fetchAudiobooks(); 
+          } else {
+            throw new Error(`Failed to delete the book: ${response.statusText}`);
+          }
+        } catch(err) {
+          Swal.fire('Oops...', 'Something went wrong while deleting the book!', 'error');
+        } finally {
+          Swal.close();
+          
+          handleClose();
+        }
+      }
+    });
   };
+  
 
   return (
     <div>
@@ -80,7 +133,7 @@ const MyAudios = () => {
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
-              <TableCell>Author</TableCell>
+              <TableCell>Published On</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Duration</TableCell>
               <TableCell>Actions</TableCell>
@@ -88,19 +141,26 @@ const MyAudios = () => {
           </TableHead>
           <TableBody>
             {audiobooks.map((audiobook) => (
-              <TableRow key={audiobook.id}>
+              <TableRow key={audiobook._id}>
                 <TableCell>{audiobook.title}</TableCell>
-                <TableCell>{audiobook.author}</TableCell>
+                <TableCell>{audiobook.publishedDate}</TableCell>
                 <TableCell>{audiobook.description}</TableCell>
                 <TableCell>{audiobook.duration}</TableCell>
                 <TableCell>
-                  <Button onClick={() => handleClickOpen(audiobook.description, audiobook.id)}>Edit</Button>
-                  <Button onClick={() => handleDelete(audiobook.id)}>Delete</Button>
+                  <Button onClick={() => handleClickOpen(audiobook.description, audiobook._id)}>Edit</Button>
+                  <Button onClick={() => handleDelete(audiobook._id)}>Delete</Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+
+        {audiobooks.length === 0 && (
+          <Typography variant="h6" style={{ textAlign: 'center', padding: '20px', color: 'grey' }}>
+            No data available.
+          </Typography>
+        )}
+
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>

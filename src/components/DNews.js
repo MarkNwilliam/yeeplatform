@@ -29,7 +29,7 @@ function DNews() {
           <NewsImage
             component="img"
             alt="Logo"
-            image="/Y.png"
+            image="/Y.webp"
             title="Logo"
           />
           <CardContent>

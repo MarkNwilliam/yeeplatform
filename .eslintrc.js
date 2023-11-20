@@ -31,7 +31,12 @@ module.exports = {
     "rules": {
         "react/prop-types": "off",
         "react/no-unknown-property": "off",
-"no-unused-vars": "off",
-"unused-imports/no-unused-imports": "warn"
+        "unused-imports/no-unused-imports": "warn",
+        "no-unused-vars": "off"
+    },
+    "settings": {
+        "react": {
+            "version": "detect" // Automatically detect the version of React.
+        }
     }
 }

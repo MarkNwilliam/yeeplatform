@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
-import { auth, firestore, storage } from "../firebase";
-import { getDatabase, ref as dbRef,get ,update} from "firebase/database";
-
-
+import { auth } from "../firebase";
+import axios from 'axios';
 import {
   Button,
   TextField,
@@ -17,42 +13,20 @@ import {
   MenuItem,
   Select,
   Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { useForm, Controller } from "react-hook-form";
 import ImageIcon from "@mui/icons-material/Image";
 import Autocomplete from "@mui/material/Autocomplete";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload"; 
+import Lottie from 'lottie-react';
+import congs1Animation from '../animations/congs.json';
 
-const FileInput = styled("input")({
-  display: "none",
-});
-
-const Form = styled("form")(({ theme }) => ({
-  width: "100%",
-  marginTop: theme.spacing(1),
-}));
-
-const SubmitButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(3, 0, 2),
-}));
 
 function DAudio() {
-  const [coverImageUploaded, setCoverImageUploaded] = useState(false);
-  const [backImageUploaded, setBackImageUploaded] = useState(false);
-  const [audiobookMp3Uploaded, setAudiobookMp3Uploaded] = useState(false)
-  const { register, handleSubmit, reset, formState: { errors }, control } = useForm();
-  const [coverImageName, setCoverImageName] = useState("");
-  const [audiobookMp3Name, setAudiobookMp3Name] = useState("");
-  const [backImageName, setBackImageName] = useState("");
-
-
-  const handleClear = () => {
-    setCoverImageUploaded(false);
-    setBackImageUploaded(false);
-    setAudiobookMp3Uploaded(false);
-    reset();
-  };
-
   const africanLanguages = [
     { code: "eng", label: "English" },
     { code: "French", label: "French" },
@@ -68,7 +42,6 @@ function DAudio() {
     { code: "fulani", label: "Fulani" },
   ];
 
-  
   const categories = [
     "Fiction",
     "Nonfiction",
@@ -88,447 +61,286 @@ function DAudio() {
 
   const targetAudiences = ["Children", "Young Adult", "Adult", "Senior"];
 
- 
- 
+  const [audiobookFile, setAudiobookFile] = useState(null);
+  const [coverFile, setCoverFile] = useState(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [genres, setGenres] = useState([]);
+  const [language, setLanguage] = useState('');
+  const [isbn, setIsbn] = useState('');
+  const [publicationDate, setPublicationDate] = useState('');
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [selectedCoverFileName, setSelectedCoverFileName] = useState("");
+  const [selectedAudioFileName, setSelectedAudioFileName] = useState("");
+  const [Duration, setDuration] = useState("");
+  const [monetization, setMonetization] = useState('free');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const onSubmit = async (data) => {
-    const user = auth.currentUser;
-    if (!user) {
-      console.log("User not authenticated");
-      return;
-    }
-    console.log("Clicked submit ")
-    console.log("Data received from the form:");
-console.log(data);
-    console.log("data.coverImage:", data.coverImage);
-console.log("data.backImage:", data.backImage);
-console.log("data.audiobookMp3:", data.audiobookMp3);
+  const firebaseId = auth.currentUser.uid;
 
 
+  const resetForm = () => {
+    setAudiobookFile(null);
+    setCoverFile(null);
+    setTitle('');
+    setDescription('');
+    setGenres([]);
+    setLanguage('');
+    setIsbn('');
+    setPublicationDate('');
+    setSelectedCoverFileName("");
+    setSelectedAudioFileName("");
+    setMonetization('free');
+  };
+
+
+
+
+  const getAudioDuration = (audioFile) => {
+    const objectURL = URL.createObjectURL(audioFile);
+    let audio = new Audio(objectURL);
     
-    // Show progress bar
+    audio.onloadedmetadata = () => {
+      setDuration(Math.floor(audio.duration));
+      URL.revokeObjectURL(objectURL);
+    };
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Initial Swal progress bar
     Swal.fire({
-      title: "Uploading Audiobook",
-      html: "Please wait...",
-      allowOutsideClick: false,
+      title: 'Uploading...',
+      html: 'Progress ....',
       allowEscapeKey: false,
-      allowEnterKey: false,
-      didOpen: () => {
+      allowOutsideClick: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+      onBeforeOpen: () => {
         Swal.showLoading();
       },
-    });
-  
-    try {
-      // Upload cover image to Firebase Storage
-      const coverImageRef = ref(storage, `coverImages/${user.uid}/${data.title}/coverImage`);
-      await uploadBytes(coverImageRef, data.coverImage[0]);
-      const coverImageUrl = await getDownloadURL(coverImageRef);
-  console.log("This is my "+coverImageUrl)
-      // Upload back image to Firebase Storage
-      const backImageRef = ref(storage, `backImages/${user.uid}/${data.title}/backImage`);
-      await uploadBytes(backImageRef, data.backImage[0]);
-      const backImageUrl = await getDownloadURL(backImageRef);
-      console.log("This is my "+backImageUrl)
-      // Upload audiobook to Firebase Storage
-      const audiobookRef = ref(storage, `audiobooks/${user.uid}/${data.title}/audiobook`);
-      await uploadBytes(audiobookRef, data.audiobookMp3[0]);
-      const audiobookUrl = await getDownloadURL(audiobookRef);
-  
-      // Save the audiobook metadata to Firestore
-      const audiobookDoc = {
-        title: data.title,
-        author: data.author,
-        description: data.description,
-        categories: data.categories,
-        targetAudience: data.targetAudience,
-        voice: data.voice,
-        duration: data.duration,
-        language: data.language,
-        coverImage: coverImageUrl,
-        backImage: backImageUrl,
-        audiobookUrl: audiobookUrl,
-        userId: user.uid,
-      };
-      const database = getDatabase();
-      const docRef = await addDoc(collection(firestore, "audio"), audiobookDoc);
-
-      // Add the audiobook ID to the user's myAudiobooks array in the Realtime Database
-      const userRef =  dbRef(database, `users/${user.uid}`);
-      const userSnapshot = await get(userRef);
-      let myAudiobooks = [];
-  
-      if (userSnapshot.exists() && userSnapshot.val().myAudiobooks) {
-        myAudiobooks = userSnapshot.val().myAudiobooks;
+      onOpen: () => {
+        // Progress bar container
+        const container = Swal.getHtmlContainer();
+        const progress = document.createElement('div');
+        progress.setAttribute('class', 'sweetalert2-progress-steps');
+        container.appendChild(progress);
       }
-      myAudiobooks.push(docRef.id);
-      await update(userRef, { myAudiobooks: myAudiobooks });
-  
-      // Close progress bar and show success alert
-      Swal.close();
-      Swal.fire({
-        icon: "success",
-        title: "Audiobook Uploaded",
-        text: "Your audiobook has been successfully uploaded.",
-        confirmButtonText: "OK",
-      });
-  
-      console.log("Audiobook added with ID:", docRef.id);
+    });
 
-      reset();
-      setCoverImageUploaded(false);
-      setBackImageUploaded(false);
-      setAudiobookMp3Uploaded(false);
+    const handleProgressUpdate = (progress) => {
+      const content = Swal.getContent();
+      if (content) {
+        const b = content.querySelector('b');
+        if (b) {
+          b.textContent = progress;
+        }
+      }
+    };
+
+    try {
+      let audioUrl, coverUrl;
+  
+      if (audiobookFile) {
+        audioUrl = await uploadToAzure(audiobookFile, progress => {
+          const totalProgress = Math.floor(progress / 2); // Assuming 50% for the audio upload
+          handleProgressUpdate(totalProgress);
+        });
+      }
+  
+      if (coverFile) {
+        coverUrl = await uploadToAzure(coverFile, progress => {
+          const totalProgress = 50 + Math.floor(progress / 2); // The latter 50% for the cover upload
+          handleProgressUpdate(totalProgress);
+        });
+      }
+  
+      if (!audioUrl || !coverUrl) {
+        throw new Error('Please select both audio and cover files.');
+      }
+
+      const data = {
+        ebookUrl: audioUrl,
+        coverUrl: coverUrl,
+        title: title,
+        description: description,
+        genres: genres.join(", "),
+        language: language,
+        isbn: isbn,
+        publicationDate: publicationDate,
+        author_platform_id: firebaseId,
+        Duration: Duration,
+      };
+
+      const response = await axios.post(`http://localhost:3000/audiobookupload/${firebaseId}`, data);
+
+      Swal.close();
+
+      if (response.status === 200) {
+    resetForm()
+       //Swal.fire('Success!', 'Ebook uploaded successfully!', 'success');
+        setDialogOpen(true);
+      } else {
+        throw new Error('Error while sending data to the server.');
+      }
 
     } catch (error) {
-      // Close progress bar and show error alert
-    
-      Swal.close();
-console.error("Error:", error);
-
-Swal.fire({
-  icon: "error",
-  title: "Upload Failed",
-  text: "An error occurred while uploading your audiobook. Please try again.",
-  confirmButtonText: "OK",
-});
-    
-       
-    
-
+      Swal.fire('Error', 'Error uploading the audio. Please try again.', 'error');
+      console.error('Error uploading the audio:', error);
     }
   };
-  
+
+  async function uploadToAzure(file) {
+
+    if (!file) {
+      throw new Error('No file provided for upload.');
+    }
+    
+    const response = await fetch('http://localhost:3000/generateSasToken');
+    const data = await response.json();
+    const sasToken = data.sasToken;
+
+    const blobURL = `https://yeeplatform.blob.core.windows.net/yeeusers/${file.name}?${sasToken}`;
+
+    const requestOptions = {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'x-ms-blob-type': 'BlockBlob'
+      }
+    };
+
+    const uploadResponse = await fetch(blobURL, requestOptions);
+
+    if (uploadResponse.ok) {
+      return blobURL; // Return the blob URL of the uploaded file
+    } else {
+      throw new Error('Error uploading to Azure Blob Storage');
+    }
+  }
 
 
-  
+  const handleCloseSuccessDialog = () => {
+    setSuccessDialogOpen(false);
+  };
+
+
   return (
-    <>
-    <Typography component="h1" variant="h5">
-      Audiobook Submission
-    </Typography>
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Audiobook Title"
-              variant="outlined"
-              {...register("title", { required: "Please enter the audiobook title" })}
-              error={!!errors.title}
-              helperText={errors.title?.message}
+    <div className="p-8 bg-white shadow-md rounded-lg max-w-md mx-auto">
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Title:</label>
+          <TextField fullWidth variant="outlined" value={title} onChange={(e) => setTitle(e.target.value)} required />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
+          <TextField fullWidth multiline rows={4} variant="outlined" value={description} onChange={(e) => setDescription(e.target.value)} required />
+        </div>
+
+        <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">Upload Cover Image:</label>
+          <label className={`w-full flex items-center px-4 py-2 rounded-lg shadow-lg tracking-wide uppercase border cursor-pointer hover:bg-blue-500 hover:text-white ${selectedCoverFileName ? "bg-blue-500 text-white" : "bg-white text-blue-500 border-blue-500"}`}>
+            <CloudUploadIcon className="mr-2" />
+            {selectedCoverFileName || "Choose Cover Image"}
+            <input
+              type="file"
+              onChange={(e) => {
+                setCoverFile(e.target.files[0]);
+                setSelectedCoverFileName(e.target.files[0]?.name || "");
+              }}
+              className="hidden"
+              accept=".jpg, .jpeg, .png"
+              required
             />
-          </Grid>
+          </label>
+        </div>
 
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Author"
-              variant="outlined"
-              {...register("author", { required: "Please enter the author's name" })}
-              error={!!errors.author}
-              helperText={errors.author?.message}
-            />
-          </Grid>
-
-          {/* Add other fields as necessary */}
-
-     
-<Grid item xs={12}>
-  <Controller
-    name="categories"
-  control={control}
-  defaultValue={[]}
-    rules={{ required: "Please select at least one category" }}
-    render={({ field }) => (
-      <Autocomplete
-        multiple
-        options={categories}
-        {...field}
-        onChange={(_, data) => field.onChange(data)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Categories"
-            placeholder="Select categories"
-            variant="outlined"
-            error={!!errors.categories}
-            helperText={errors.categories?.message}
-          />
-        )}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip key={option} label={option} {...getTagProps({ index })} />
-          ))
-        }
-      />
-    )}
-  />
-</Grid>
-      
-<Grid item xs={12}>
-  <Controller
-    name="targetAudience"
-  control={control}
-  defaultValue={[]}
-    rules={{ required: "Please select at least one target audience" }}
-    render={({ field }) => (
-      <Autocomplete
-        multiple
-        options={targetAudiences}
-        {...field}
-        onChange={(_, data) => field.onChange(data)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Target Audience"
-            placeholder="Select target audience"
-            variant="outlined"
-            error={!!errors.targetAudience}
-            helperText={errors.targetAudience?.message}
-          />
-        )}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip key={option} label={option} {...getTagProps({ index })} />
-          ))
-        }
-      />
-    )}
-  />
-</Grid>
-
-          {/* Voice */}
-          <Grid item xs={12}>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel htmlFor="voice">Voice</InputLabel>
-              <Select
-                label="Voice"
-                {...register("voice", { required: "Please select a voice" })}
-                error={!!errors.voice}
-              >
-                <MenuItem value="male">Male</MenuItem>
-                <MenuItem value="female">Female</MenuItem>
-              </Select>
-            </FormControl>
-            {errors.voice && (
-              <Box mt={1}>
-                <Typography variant="caption" color="error">
-                  {errors.voice.message}
-                </Typography>
-              </Box>
-            )}
-          </Grid>
-
-          {/* Duration */}
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Duration (in minutes)"
-              type="number"
-              variant="outlined"
-              {...register("duration", {
-                required: "Please enter the audiobook duration",
-                min: { value: 1, message: "Duration must be at least 1 minute" },
-              })}
-              error={!!errors.duration}
-              helperText={errors.duration?.message}
-            />
-          </Grid>
-
-
-          <Grid item xs={12}>
-  <TextField
-    fullWidth
-    label="Description"
-    variant="outlined"
-    multiline
-    rows={4}
-    {...register("description", { required: "Please enter a description" })}
-    error={!!errors.description}
-    helperText={errors.description?.message}
-  />
-</Grid>
-
-
-<Grid item xs={12}>
-      <Controller
-        name="language"
-        control={control}
-        defaultValue={null}
-        rules={{ required: "Please select a language" }}
-        render={({ field }) => (
+        <div className="mb-4">
           <Autocomplete
-            {...field}
-            options={africanLanguages}
-            getOptionLabel={(option) => option.label}
-            value={field.value ? africanLanguages.find(lang => lang.code === field.value) : null}
-            onChange={(_, data) => field.onChange(data ? data.code : null)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Language"
-                variant="outlined"
-                error={!!errors.language}
-                helperText={errors.language?.message}
-              />
-            )}
+            multiple
+            options={categories}
+            value={genres}
+            onChange={(event, newValue) => setGenres(newValue)}
+            renderInput={(params) => <TextField {...params} variant="outlined" label="Genres" />}
           />
-        )}
-      />
-    </Grid>
+        </div>
 
+        <div className="mb-4">
+          <Autocomplete
+            options={africanLanguages.map((option) => option.label)}
+            value={language}
+            onChange={(event, newValue) => setLanguage(newValue)}
+            renderInput={(params) => <TextField {...params} variant="outlined" label="Language" />}
+          />
+        </div>
 
-     {/* Cover Image */}
-<Grid item xs={12}>
-  <Typography variant="h6" gutterBottom>
-    Upload Cover Image (JPG, PNG)
-  </Typography>
-  <FileInput
-    accept="image/jpeg, image/png"
-    id="cover-image"
-    name="coverImage"
-    type="file"
-    {...register("coverImage", {
-      required: "Please upload a cover image in JPG or PNG format",
-    })}
-    onChange={(e) => {
-      setCoverImageUploaded(e.target.files[0]?.name || false);
-    }}
-  />
-  <label htmlFor="cover-image">
-    <Button
-      component="span"
-      variant="outlined"
-      startIcon={<ImageIcon />}
-      style={coverImageUploaded ? { color: "green" } : {}}
-    >
-      {coverImageUploaded || "Upload Cover Image"}
-    </Button>
-  </label>
-  {errors.coverImage && (
-    <Box mt={1}>
-      <Typography variant="caption" color="error">
-        {errors.coverImage.message}
-      </Typography>
-    </Box>
-  )}
-</Grid>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">ISBN:</label>
+          <TextField fullWidth variant="outlined" value={isbn} onChange={(e) => setIsbn(e.target.value)}/>
+        </div>
 
-{/* Back Image */}
-<Grid item xs={12}>
-  <Typography variant="h6" gutterBottom>
-    Upload Back Image (JPG, PNG)
-  </Typography>
-  <FileInput
-    accept="image/jpeg, image/png"
-    id="back-image"
-    name="backImage"
-    type="file"
-    {...register("backImage", {
-      required: "Please upload a back image in JPG or PNG format",
-    })}
-    onChange={(e) => {
-      setBackImageUploaded(e.target.files[0]?.name || false);
-    }}
-  />
-  <label htmlFor="back-image">
-    <Button
-      component="span"
-      variant="outlined"
-      startIcon={<ImageIcon />}
-      style={backImageUploaded ? { color: "green" } : {}}
-    >
-      {backImageUploaded || "Upload Back Image"}
-    </Button>
-  </label>
-  {errors.backImage && (
-    <Box mt={1}>
-      <Typography variant="caption" color="error">
-        {errors.backImage.message}
-      </Typography>
-    </Box>
-  )}
-</Grid>
+        <div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2">Monetization:</label>
+  <select
+    value={monetization}
+    onChange={(e) => setMonetization(e.target.value)}
+    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+  >
+    <option value="free">Free</option>
+    <option value="notfree">Not Free</option>
+  </select>
+</div>
 
-{/* Audiobook Upload */}
-<Grid item xs={12}>
-  <Typography variant="h6" gutterBottom>
-    Upload Audiobook (MP3 format)
-  </Typography>
-  <FileInput
-    accept=".mp3"
-    id="audiobook-mp3"
-    name="audiobookMp3"
-    type="file"
-    {...register("audiobookMp3", {
-      required: "Please upload the audiobook in MP3 format",
-    })}
-    onChange={(e) => {
-      setAudiobookMp3Uploaded(e.target.files[0]?.name || false);
-    }}
-  />
-  <label htmlFor="audiobook-mp3">
-    <Button
-      component="span"
-      variant="outlined"
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Publication Date:</label>
+          <TextField type="date" fullWidth variant="outlined" value={publicationDate} onChange={(e) => setPublicationDate(e.target.value)} required />
+        </div>
 
-      startIcon={<ImageIcon />}
-      style={audiobookMp3Uploaded ? { color: "green" } : {}}
-    >
-      {audiobookMp3Uploaded || "Upload Audiobook MP3"}
-    </Button>
-  </label>
-  {errors.audiobookMp3 && (
-    <Box mt={1}>
-      <Typography variant="caption" color="error">
-        {errors.audiobookMp3.message}
-      </Typography>
-    </Box>
-  )}
-</Grid>
+        <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">Upload Audio File:</label>
+          <label className={`w-full flex items-center px-4 py-2 rounded-lg shadow-lg tracking-wide uppercase border cursor-pointer hover:bg-blue-500 hover:text-white ${selectedAudioFileName ? "bg-blue-500 text-white" : "bg-white text-blue-500 border-blue-500"}`}>
+            <CloudUploadIcon className="mr-2" />
+            {selectedAudioFileName || "Choose Audio File"}
+            <input
+              type="file"
+              onChange={(e) => {
+                setAudiobookFile(e.target.files[0]);
+                setSelectedAudioFileName(e.target.files[0]?.name || "");
+                getAudioDuration(e.target.files[0]);
+              }}
+              className="hidden"
+              accept=".mp3, .wav"
+              required
+            />
+          </label>
+        </div>
 
-{/* Submit Button */}
-<Grid item xs={12}>
-<Box display="flex" justifyContent="space-between">
-  
-<SubmitButton
-  type="submit"
-  fullWidth
-  variant="contained"
-  color="primary"
-  sx={{
-    borderRadius: "50px",
-    "@media (max-width:600px)": {
-      width: "100%",
-    },
-  }}
->
-  Submit
-</SubmitButton>
+        <div className="flex justify-end">
+          <Button type="submit" variant="contained" color="primary">Upload</Button>
+        </div>
+      </form>
 
-<Button
-  variant="outlined"
-  color="secondary"
-  onClick={handleClear}
-  sx={{
-    borderRadius: "50px",
-    "@media (max-width:600px)": {
-      width: "100%",
-    },
-  }}
->
-  Clear
-</Button>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+    <DialogTitle className="text-center">Success!</DialogTitle>
+    <DialogContent className="flex flex-col items-center justify-center space-y-4">
+        <Lottie 
+            animationData={congs1Animation} 
+            style={{ width: 'auto', maxWidth: '100%', height: 200 }} 
+        />
+        <p>Well done! You&apos;re a real YeePlatform author.</p>
+        <div className="text-center animate-pulse">
+        <p className="text-yellow-500 font-bold text-xl">You&#39;ve got</p>
+<span className="text-4xl text-yellow-500">100 Points!</span>
 
+        </div>
+        <p>Your content will be available in the marketplace soon.</p>
+    </DialogContent>
+</Dialog>
 
-  </Box>
-
-
-</Grid>
-</Grid>
-</Form>
-</>
-);
+    </div>
+  );
 }
 
 export default DAudio;

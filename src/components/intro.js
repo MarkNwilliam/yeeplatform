@@ -46,7 +46,7 @@ export default function intro() {
                         <MDBCard className="h-100 d-flex flex-column" style={{ cursor: 'pointer' }}>
                             <MDBCardImage
                                 src={data.pic}
-                                alt='Y.png'
+                                alt='Y.webp'
                                 position='top'
                                 style={{ height: '150px', objectFit: 'cover' }}
                             />

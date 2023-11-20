@@ -16,10 +16,10 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
+import Swal from 'sweetalert2'; 
+import { auth } from '../firebase';
 
-import { auth, firestore } from '../firebase';
 
-import { doc, getDocs, collection, query, where, updateDoc, deleteDoc } from 'firebase/firestore';
 
 const Mybooks = () => {
   const [books, setBooks] = useState([]);
@@ -27,25 +27,57 @@ const Mybooks = () => {
   const [editedText, setEditedText] = useState('');
   const [selectedDocId, setSelectedDocId] = useState('');
 
+  
+  const fetchBooks = async () => {
+    try {
+      Swal.showLoading();  // Show the loading indicator
+  
+      const authorId = auth.currentUser.uid;
+      console.log("here is the author id"+authorId)
+      const response = await fetch(`http://localhost:3000/getAllBooks/${authorId}`);
+      const data = await response.json();
+      setBooks(data);
+  
+      Swal.close();  // Close the loading indicator once data is fetched
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong while fetching books!',
+      });
+    }
+  };
+  
+
   useEffect(() => {
-    const fetchBooks = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const q = query(
-          collection(firestore, 'books'),
-          where('userId', '==', user.uid)
-        );
-        const querySnapshot = await getDocs(q);
-        const books = [];
-        querySnapshot.forEach((doc) => {
-          books.push({ id: doc.id, ...doc.data() });
-        });
-        setBooks(books);
-      }
-    };
+  
 
     fetchBooks();
-  }, []);
+}, []);
+
+
+const handleDeleteConfirmation = (book) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await handleDelete(book._id);
+      fetchBooks();
+      Swal.fire(
+        'Deleted!',
+        'Your book has been deleted.',
+        'success'
+      );
+    }
+  });
+};
+
 
   const handleClickOpen = (description, docId) => {
     setEditedText(description);
@@ -57,18 +89,66 @@ const Mybooks = () => {
     setOpen(false);
   };
 
-  const handleSave = async () => {
-    const bookDoc = doc(firestore, 'books', selectedDocId);
-    await updateDoc(bookDoc, { description: editedText });
-    setBooks(books.map((book) => (book.id === selectedDocId ? { ...book, description: editedText } : book)));
-    setOpen(false);
-  };
+
 
   const handleDelete = async (docId) => {
-    const bookDoc = doc(firestore, 'books', docId);
-    await deleteDoc(bookDoc);
-    setBooks(books.filter((book) => book.id !== docId));
+    try {
+      Swal.showLoading();  // Show the loading indicator
+  
+      const response = await fetch(`http://localhost:3000/deleteBook/${docId}`, { method: 'DELETE' });
+      if(response.status === 200) {
+          setBooks(prevBooks => prevBooks.filter(book => book.id !== docId));
+      } else {
+          throw new Error("Failed to delete the book.");  // Throw an error to be caught below
+      }
+      Swal.close();  // Close the loading indicator once deletion is complete
+  
+    } catch(err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong while deleting the book!',
+      });
+    }
   };
+  
+
+
+  const handleSave = async () => {
+    try {
+      Swal.showLoading();  // Show the loading indicator
+      console.log("Here is book id "+selectedDocId)
+      const response = await fetch(`http://localhost:3000/updateDescription`, { 
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              bookId: selectedDocId,
+              description: editedText
+          })
+
+         
+      });
+      if(response.status === 200) {
+          setBooks(prevBooks => prevBooks.map(book => book.id === selectedDocId ? {...book, description: editedText} : book));
+          setOpen(false);
+      } else {
+          throw new Error("Failed to update the description.");  // Throw an error to be caught below
+      }
+      Swal.close();  // Close the loading indicator once update is complete
+  
+    } catch(err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong while updating the description!',
+      });
+    }
+  };
+  
+
+
 
   return (
     <div>
@@ -88,19 +168,25 @@ const Mybooks = () => {
           </TableHead>
           <TableBody>
             {books.map((book) => (
-              <TableRow key={book.id}>
+              <TableRow key={book._id}>
                 <TableCell>{book.title}</TableCell>
                 <TableCell>{book.subtitle}</TableCell>
                 <TableCell>{book.description}</TableCell>
-                <TableCell>{book.publicationDate}</TableCell>
+                <TableCell>{book.publicatedDate}</TableCell>
                 <TableCell>
-                  <Button onClick={() => handleClickOpen(book.description, book.id)}>Edit</Button>
-                  <Button onClick={() => handleDelete(book.id)}>Delete</Button>
+                  <Button onClick={() => handleClickOpen(book.description, book._id)}>Edit</Button>
+                  <Button onClick={() => handleDeleteConfirmation(book)}>Delete</Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+
+        {books.length === 0 && (
+          <Typography variant="h6" style={{ textAlign: 'center', padding: '20px', color: 'grey' }}>
+            No data available.
+          </Typography>
+        )}
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>

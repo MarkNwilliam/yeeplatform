@@ -1,33 +1,42 @@
-import React,  {  useState, useEffect} from 'react';
+import React,  {  useState, useEffect, Suspense, lazy} from 'react';
 import './App.css';
-import Home from "./pages/home";
-import Chapters from "./pages/Chapters";
-import Audiobooks from "./pages/Audiobooks";
-import Ebooks from "./pages/Ebooks";
-import Dashboard from "./pages/Dashboard";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
+import OfflineStatus from './components/OfflineStatus';
 import LoadingScreen from "./components/loadingscreen";
-import Scontent from "./components/Scontent";
-import Intro from "./components/intro";
-import News from "./components/DNews";
-import DNft from "./components/DNft";
 import { Helmet } from 'react-helmet';
-import Upload from "./components/DUpload";
-import DStats from "./components/DStats";
-import DSupport from "./components/DSupport";
-import DWrite from "./components/DWrite";
-import DAudio from "./components/DAudio";
-import DProfile from "./components/DProfile";
-import Support from "./pages/Support";
-import Premium from "./pages/Premium";
-import AccountPage from './pages/AccountPage.js';
-import Mybooks from './components/Mybooks';
-import MyAudios from './components/MyAudios';
-import MyChapters from './components/MyChapters';
-import AudiobookDetail from './components/AudiobookDetail';
-import EbookDetails from './components/EbookDetails';
-import ChapterDetail from "./components/ChapterDetail";
+import ProtectedRouteWrapper from "./contexts/ProtectedRoute";
+
+// Lazy-load the components
+const Home = lazy(() => import('./pages/home'));
+const Chapters = lazy(() => import('./pages/Chapters'));
+const Audiobooks = lazy(() => import('./pages/Audiobooks'));
+const Ebooks = lazy(() => import('./pages/Ebooks'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Signin = lazy(() => import('./pages/Signin'));
+const Signup = lazy(() => import('./pages/Signup'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const Scontent = lazy(() => import('./components/Scontent'));
+const Intro = lazy(() => import('./components/intro'));
+const News = lazy(() => import('./components/DNews'));
+const DNft = lazy(() => import('./components/DNft'));
+const Upload = lazy(() => import('./components/DUpload'));
+const DStats = lazy(() => import('./components/DStats'));
+const DSupport = lazy(() => import('./components/DSupport'));
+const DWrite = lazy(() => import('./components/DWrite'));
+const DAudio = lazy(() => import('./components/DAudio'));
+const DProfile = lazy(() => import('./components/DProfile'));
+const Support = lazy(() => import('./pages/Support'));
+const Premium = lazy(() => import('./pages/Premium'));
+const AccountPage = lazy(() => import('./pages/AccountPage'));
+const Mybooks = lazy(() => import('./components/Mybooks'));
+const MyAudios = lazy(() => import('./components/MyAudios'));
+const MyChapters = lazy(() => import('./components/MyChapters'));
+const AudiobookDetail = lazy(() => import('./components/AudiobookDetail'));
+const DAudioChapter = lazy(() => import('./components/DAudioChapter'));
+const EbookDetails = lazy(() => import('./components/EbookDetails'));
+const ChapterDetail = lazy(() => import('./components/ChapterDetail'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const Welcome = lazy(() => import('./pages/Welcome'));
+
 
 import {
   BrowserRouter,
@@ -38,10 +47,27 @@ import {
 function App() {
 
   const [loading, setLoading] = useState(false);
+  const [onlineStatus, setOnlineStatus] = useState(navigator.onLine);
 
   useEffect(() => {
+    function updateOnlineStatus() {
+      setOnlineStatus(navigator.onLine);
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
     setTimeout(() => setLoading(true), 2000);
+
+    return () => {
+      window.removeEventListener('online', updateOnlineStatus);
+      window.removeEventListener('offline', updateOnlineStatus);
+    };
   }, []);
+
+  if (!onlineStatus) {
+    return <OfflineStatus />;
+  }
 
 
   return (
@@ -50,8 +76,10 @@ function App() {
     <div className="App">
 
 <Helmet>
-        <link rel="icon" type="image/png" href="Y.png" />
+        <link rel="icon"  href="Y.webp" />
       </Helmet>
+
+      <Suspense fallback={<LoadingScreen />}>
 
 {loading ? (
         <BrowserRouter>
@@ -69,31 +97,44 @@ function App() {
           <Route path="chapters" element={<Chapters />} />
         </Route>
         
+        <Route path="/verify-email" element={<VerifyEmail />}/>
         <Route path="/Signup" element={<Signup />}/>
         <Route path="/my-account" element={<AccountPage />} />
         <Route path="/Signin" element={<Signin />}/>
-        <Route path="/Dashboard" element={<Dashboard />}>
+
+
+        <Route path="/Dashboard/*" element={
+        <ProtectedRouteWrapper>
+        <Dashboard />
+        </ProtectedRouteWrapper>
+}>
+
         <Route path="Audio" element={<DAudio />}/>
         <Route path="MyBooks" index element={<Mybooks />} />
         <Route path="Nfts" element={<DNft />}/>
         <Route path="News" element={<News />}/>
         <Route path="Upload" element={<Upload />}/>
+        <Route path="AudioChapter" element={<DAudioChapter />}/>
         <Route path="Statistics" element={<DStats />}/>
         <Route path="Write" element={<DWrite />}/>
         <Route path="Profile" element={<DProfile />}/>
         <Route path="MyChapters" index element = {<MyChapters />} />
         <Route path="MyAudios" index element = {<MyAudios />} />
         <Route path="AuthorSupport" element={<DSupport />}/>
+
 </Route>
      
       <Route path="/Support" element={<Support />}/>
-
+      <Route path="/forgot-password" element={<ForgotPassword />}/>
+      <Route path="/Welcome" element={<Welcome />}/>
+      
       <Route path="/Premium" element={<Premium />}/>
     </Routes>
   </BrowserRouter>
 ): (
     <LoadingScreen />
   )}
+  </Suspense>
     </div>
   );
 }

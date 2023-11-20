@@ -53,7 +53,7 @@ const Item = ({ title, children }) => {
                 <Link to = "/">
               <Avatar
  href = "/"s
- src="Y.png"
+ src="Y.webp"
  sx={{ width: 50, height: 50 }}
 />
 </Link>

@@ -8,6 +8,8 @@ import Upload from "../components/DUpload";
 import DSupport from "../components/DSupport";
 import DStats from "../components/DStats";
 import DWrite from "../components/DWrite";
+import DAudioChapter from "../components/DAudioChapter";
+
 import DNft from "../components/DNft";
 import DProfile from "../components/DProfile";
 import DAudio from "../components/DAudio";
@@ -49,7 +51,7 @@ const theme = createTheme({
 
 const drawerWidth = 240;
 
- function Dashboard(props, {Component, pageProps}) {
+ function Dashboard(props) {
 
   
   
@@ -59,8 +61,7 @@ const drawerWidth = 240;
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+
 
   
   const handleDrawerToggle = () => {
@@ -174,6 +175,7 @@ anchorRef1={anchorRef}
         <Route path="Profile" element={<DProfile />} />
         <Route path="News" index element = {<DNews />} />
         <Route path="Audio" index element = {<DAudio />} />
+        <Route path="AudioChapter"  element = {<DAudioChapter />} />
         <Route path="Nfts" index element = {<DNft />} />
         <Route path="AuthorSupport" index element = {<DSupport />} />
         <Route path="Statistics" index element = {<DStats />} />
