@@ -172,7 +172,7 @@ const handleDeleteConfirmation = (book) => {
                 <TableCell>{book.title}</TableCell>
                 <TableCell>{book.subtitle}</TableCell>
                 <TableCell>{book.description}</TableCell>
-                <TableCell>{book.publicatedDate}</TableCell>
+                <TableCell>{book.publishedDate}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleClickOpen(book.description, book._id)}>Edit</Button>
                   <Button onClick={() => handleDeleteConfirmation(book)}>Delete</Button>

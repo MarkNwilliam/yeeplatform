@@ -1,30 +1,26 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import Swal from "sweetalert2";
 import { auth } from "../firebase";
 import axios from 'axios';
 import {
-  Button,
+
   TextField,
   Typography,
-  Grid,
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
+ 
 } from "@mui/material";
-import { styled } from "@mui/system";
-import { useForm, Controller } from "react-hook-form";
-import ImageIcon from "@mui/icons-material/Image";
-import Autocomplete from "@mui/material/Autocomplete";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload"; 
-import Lottie from 'lottie-react';
-import congs1Animation from '../animations/congs.json';
 
+import Autocomplete from "@mui/material/Autocomplete";
+import SuccessDialog from "../subcomponents/SuccessDialog";
+import SubmitButton from "../subcomponents/SubmitButton";
+import UploadButton from "../subcomponents/UploadButton";
+import uploadToAzure from '../functions/azureUpload';
+import { resizeImage, isFileSizeWithinRange, checkFileExtension } from '../functions/imageUtils';
+
+const maxDescriptionLength = 500; // Maximum length for description
+const maxAudiobookFileSizeMB = 300;
+const minTitleLength = 3; // Minimum length for title
+const maxTitleLength = 100; // Maximum length for title
+const minGenresRequired = 1;
 
 function DAudio() {
   const africanLanguages = [
@@ -74,9 +70,29 @@ function DAudio() {
   const [selectedAudioFileName, setSelectedAudioFileName] = useState("");
   const [Duration, setDuration] = useState("");
   const [monetization, setMonetization] = useState('free');
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const LottieAnimation = React.lazy(() => import('lottie-react'));
+
 
   const firebaseId = auth.currentUser.uid;
+
+  useEffect(() => {
+    const handlePageUnload = () => {
+      if (isSuccessDialogOpen) {
+        setIsSuccessDialogOpen(false);
+      }
+    };
+
+    // Register the event listener
+    window.addEventListener('beforeunload', handlePageUnload);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener('beforeunload', handlePageUnload);
+    };
+  }, [isSuccessDialogOpen]);
 
 
   const resetForm = () => {
@@ -87,13 +103,13 @@ function DAudio() {
     setGenres([]);
     setLanguage('');
     setIsbn('');
+    setDuration('')
     setPublicationDate('');
     setSelectedCoverFileName("");
     setSelectedAudioFileName("");
     setMonetization('free');
+    setImagePreviewUrl("")
   };
-
-
 
 
   const getAudioDuration = (audioFile) => {
@@ -108,6 +124,39 @@ function DAudio() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const isMonetized = monetization === 'notfree';
+    if (description.length > maxDescriptionLength) {
+      Swal.fire('Error', `Description should not exceed ${maxDescriptionLength} characters.`, 'error');
+      return;
+    }
+
+    if (audiobookFile && audiobookFile.size > maxAudiobookFileSizeMB * 1024 * 1024) {
+      Swal.fire('Error', `Audiobook file size should not exceed ${maxAudiobookFileSizeMB} MB.`, 'error');
+      return;
+    }
+
+    if (title.length < minTitleLength || title.length > maxTitleLength) {
+      Swal.fire('Error', `Title should be between ${minTitleLength} and ${maxTitleLength} characters.`, 'error');
+      return;
+    }
+    if (!language) {
+      Swal.fire('Error', 'Please select a language.', 'error');
+      return;
+    }
+    const today = new Date();
+    const selectedDate = new Date(publicationDate);
+    
+    if (selectedDate > today) {
+      Swal.fire('Error', 'Publication date cannot be in the future.', 'error');
+      return;
+    }
+            
+    if (genres.length < minGenresRequired) {
+      Swal.fire('Error', `Please select at least ${minGenresRequired} genre(s).`, 'error');
+      return;
+    }
+    
 
     // Initial Swal progress bar
     Swal.fire({
@@ -141,36 +190,51 @@ function DAudio() {
 
     try {
       let audioUrl, coverUrl;
+
+      let thumbnailUrl;
+
+      if (coverFile) {
+        const resizedImageBlob = await resizeImage(coverFile, 128); // Example size
+   
+        thumbnailUrl = await uploadToAzure(resizedImageBlob, true);
+        console.log("Here is my thumbnail url "+thumbnailUrl)
+      }
   
       if (audiobookFile) {
-        audioUrl = await uploadToAzure(audiobookFile, progress => {
-          const totalProgress = Math.floor(progress / 2); // Assuming 50% for the audio upload
-          handleProgressUpdate(totalProgress);
-        });
+        audioUrl = await uploadToAzure(audiobookFile)
       }
   
       if (coverFile) {
-        coverUrl = await uploadToAzure(coverFile, progress => {
-          const totalProgress = 50 + Math.floor(progress / 2); // The latter 50% for the cover upload
-          handleProgressUpdate(totalProgress);
-        });
+        console.log("Uploading coverFile: ", coverFile);
+        coverUrl = await uploadToAzure(coverFile)        
+      
+        console.log("This is my coverurl "+coverUrl)
       }
-  
+      if (description.length > maxDescriptionLength) {
+        Swal.fire('Error', `Description should not exceed ${maxDescriptionLength} characters.`, 'error');
+        return;
+      }
+      
       if (!audioUrl || !coverUrl) {
         throw new Error('Please select both audio and cover files.');
       }
 
-      const data = {
-        ebookUrl: audioUrl,
-        coverUrl: coverUrl,
+    
+  const data = {
+      
         title: title,
         description: description,
         genres: genres.join(", "),
+        categories: genres.join(", "),
         language: language,
         isbn: isbn,
+        ebookUrl: audioUrl,
+        coverUrl: coverUrl,
+        thumbnailUrl:  thumbnailUrl,
         publicationDate: publicationDate,
         author_platform_id: firebaseId,
         Duration: Duration,
+        monetization: isMonetized,
       };
 
       const response = await axios.post(`http://localhost:3000/audiobookupload/${firebaseId}`, data);
@@ -180,7 +244,7 @@ function DAudio() {
       if (response.status === 200) {
     resetForm()
        //Swal.fire('Success!', 'Ebook uploaded successfully!', 'success');
-        setDialogOpen(true);
+       setIsSuccessDialogOpen(true);
       } else {
         throw new Error('Error while sending data to the server.');
       }
@@ -191,43 +255,58 @@ function DAudio() {
     }
   };
 
-  async function uploadToAzure(file) {
-
-    if (!file) {
-      throw new Error('No file provided for upload.');
-    }
-    
-    const response = await fetch('http://localhost:3000/generateSasToken');
-    const data = await response.json();
-    const sasToken = data.sasToken;
-
-    const blobURL = `https://yeeplatform.blob.core.windows.net/yeeusers/${file.name}?${sasToken}`;
-
-    const requestOptions = {
-      method: 'PUT',
-      body: file,
-      headers: {
-        'x-ms-blob-type': 'BlockBlob'
-      }
-    };
-
-    const uploadResponse = await fetch(blobURL, requestOptions);
-
-    if (uploadResponse.ok) {
-      return blobURL; // Return the blob URL of the uploaded file
-    } else {
-      throw new Error('Error uploading to Azure Blob Storage');
-    }
-  }
-
 
   const handleCloseSuccessDialog = () => {
-    setSuccessDialogOpen(false);
+    console.log("Closing success dialog");
+    setIsSuccessDialogOpen(false);
   };
+  
+
+  const isFileSizeValid = (file) => {
+    const maxSizeInMB = 5; // 5MB limit
+    const sizeInMB = file.size / 1024 / 1024;
+    return sizeInMB <= maxSizeInMB;
+  };
+  
+  const isImageDimensionsValid = (file) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        resolve(img.width === 512 && img.height === 800);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
+  
+
+ 
+  const handleCoverChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!isFileSizeValid(file)) {
+        Swal.fire('Error', 'Image size should not exceed 5MB.', 'error');
+        return;
+      }
+  
+      const dimensionsValid = await isImageDimensionsValid(file);
+      if (!dimensionsValid) {
+        Swal.fire('Error', 'Image dimensions should be exactly 512x800 pixels.', 'error');
+        return;
+      }
+  
+      setCoverFile(file);
+      setSelectedCoverFileName(file.name);
+      setImagePreviewUrl(URL.createObjectURL(file));
+      
+    }
+  };
+  
+  
 
 
   return (
     <div className="p-8 bg-white shadow-md rounded-lg max-w-md mx-auto">
+      <Typography variant="h4" className="text-center mb-6">Upload your Audiobook</Typography>
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">Title:</label>
@@ -235,27 +314,36 @@ function DAudio() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-          <TextField fullWidth multiline rows={4} variant="outlined" value={description} onChange={(e) => setDescription(e.target.value)} required />
-        </div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
+  <TextField
+    fullWidth
+    multiline
+    rows={4}
+    variant="outlined"
+    value={description}
+    onChange={(e) => setDescription(e.target.value)}
+    required
+    helperText={`${description.length}/${maxDescriptionLength}`}
+  />
+</div>
+
 
         <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">Upload Cover Image:</label>
-          <label className={`w-full flex items-center px-4 py-2 rounded-lg shadow-lg tracking-wide uppercase border cursor-pointer hover:bg-blue-500 hover:text-white ${selectedCoverFileName ? "bg-blue-500 text-white" : "bg-white text-blue-500 border-blue-500"}`}>
-            <CloudUploadIcon className="mr-2" />
-            {selectedCoverFileName || "Choose Cover Image"}
-            <input
-              type="file"
-              onChange={(e) => {
-                setCoverFile(e.target.files[0]);
-                setSelectedCoverFileName(e.target.files[0]?.name || "");
-              }}
-              className="hidden"
-              accept=".jpg, .jpeg, .png"
-              required
-            />
-          </label>
-        </div>
+ <UploadButton
+  label="Upload Cover Image:"
+  onChange={handleCoverChange}
+  fileName={selectedCoverFileName}
+  accept=".jpg, .jpeg, .png"
+  required={true}
+/>
+{imagePreviewUrl && (
+  <div className="image-preview">
+    <img src={imagePreviewUrl} alt="Cover Preview" style={{ maxWidth: '200px', maxHeight: '200px' }} />
+  </div>
+)}
+
+</div>
+
 
         <div className="mb-4">
           <Autocomplete
@@ -299,46 +387,33 @@ function DAudio() {
         </div>
 
         <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">Upload Audio File:</label>
-          <label className={`w-full flex items-center px-4 py-2 rounded-lg shadow-lg tracking-wide uppercase border cursor-pointer hover:bg-blue-500 hover:text-white ${selectedAudioFileName ? "bg-blue-500 text-white" : "bg-white text-blue-500 border-blue-500"}`}>
-            <CloudUploadIcon className="mr-2" />
-            {selectedAudioFileName || "Choose Audio File"}
-            <input
-              type="file"
-              onChange={(e) => {
-                setAudiobookFile(e.target.files[0]);
-                setSelectedAudioFileName(e.target.files[0]?.name || "");
-                getAudioDuration(e.target.files[0]);
-              }}
-              className="hidden"
-              accept=".mp3, .wav"
-              required
-            />
-          </label>
+        <UploadButton
+  label="Upload Audio File:"
+  onChange={(e) => {
+    setAudiobookFile(e.target.files[0]);
+    setSelectedAudioFileName(e.target.files[0]?.name || "");
+    getAudioDuration(e.target.files[0]);
+  }}
+  fileName={selectedAudioFileName}
+  accept=".mp3, .wav"
+  required={true}
+/>
+
+           <div className="text-sm text-gray-600">
+    Maximum file size: {maxAudiobookFileSizeMB} MB
+  </div>
         </div>
 
-        <div className="flex justify-end">
-          <Button type="submit" variant="contained" color="primary">Upload</Button>
+        <div className="flex justify-center">
+        <SubmitButton buttonText="Upload" />
         </div>
       </form>
-
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-    <DialogTitle className="text-center">Success!</DialogTitle>
-    <DialogContent className="flex flex-col items-center justify-center space-y-4">
-        <Lottie 
-            animationData={congs1Animation} 
-            style={{ width: 'auto', maxWidth: '100%', height: 200 }} 
-        />
-        <p>Well done! You&apos;re a real YeePlatform author.</p>
-        <div className="text-center animate-pulse">
-        <p className="text-yellow-500 font-bold text-xl">You&#39;ve got</p>
-<span className="text-4xl text-yellow-500">100 Points!</span>
-
-        </div>
-        <p>Your content will be available in the marketplace soon.</p>
-    </DialogContent>
-</Dialog>
-
+      {isSuccessDialogOpen && (
+        <SuccessDialog isOpen={isSuccessDialogOpen}
+        onClose={handleCloseSuccessDialog}
+         points={100} 
+         message="Well done! You're a real YeePlatform author." />
+)}
     </div>
   );
 }

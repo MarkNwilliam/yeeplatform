@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
@@ -8,29 +8,22 @@ function Dbarlist() {
     <Stack
       spacing={5}
       direction="row"
+      className="hidden lg:flex" // Hide on smaller screens
       sx={{
         marginLeft: 'auto',
       }}
     >
-       <Link to="/">
-        <Typography variant="body2" color="white">
-          Home
-        </Typography>
+      <Link to="/" className="no-underline text-white hover:text-yellow-300">
+        <Typography variant="body2">Home</Typography>
       </Link>
-      <Link to="/Permium">
-        <Typography variant="body2" color="white">
-          Permium
-        </Typography>
+      <Link to="/Permium" className="no-underline text-white hover:text-yellow-300">
+        <Typography variant="body2">Permium</Typography>
       </Link>
-      <Link to="/Support">
-        <Typography variant="body2" color="white">
-          Support
-        </Typography>
+      <Link to="/Support" className="no-underline text-white hover:text-yellow-300">
+        <Typography variant="body2">Support</Typography>
       </Link>
-      <Link to="/Download">
-        <Typography variant="body2" color="white">
-          Download
-        </Typography>
+      <Link to="/Download" className="no-underline text-white hover:text-yellow-300">
+        <Typography variant="body2">Download</Typography>
       </Link>
     </Stack>
   );

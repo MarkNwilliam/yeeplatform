@@ -12,17 +12,17 @@ function Barlist() {
         marginLeft: 'auto',
       }}
     >
-      <Link to="/Premium">
+      <Link to="/Premium" style={{ textDecoration: 'none' }}>
         <Typography variant="body2" color="white">
         Premium
         </Typography>
       </Link>
-      <Link to="/Support">
+      <Link to="/Support" style={{ textDecoration: 'none' }}>
         <Typography variant="body2" color="white">
           Support
         </Typography>
       </Link>
-      <Link to="/Download">
+      <Link to="/Download" style={{ textDecoration: 'none' }}>
         <Typography variant="body2" color="white">
           Download
         </Typography>

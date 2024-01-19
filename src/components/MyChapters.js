@@ -91,10 +91,12 @@ const MyChapters = () => {
   }, []);
 
   const handleClickOpen = (chapter, docId) => {
+    console.log("Opening chapter for edit:", chapter);
     setEditedChapter(chapter);
     setSelectedDocId(docId);
     setOpen(true);
   };
+  
 
 
   
@@ -128,10 +130,12 @@ const MyChapters = () => {
   };
   
 
-
-  const handleInputChange = (e, field) => {
-    setEditedChapter({ ...editedChapter, [field]: e.target.value });
+  const handleInputChange = (e) => {
+    setEditedChapter({ ...editedChapter, description: e.target.value });
   };
+  
+
+  
 
   const handleAudioInputChange = (e, field) => {
     setEditedAudioChapter({ ...editedAudioChapter, [field]: e.target.value });
@@ -153,37 +157,37 @@ const handleAudioChapterSave = async () => {
   
 }
 
-  const handleTextChapterSave = async () => {
-    Swal.fire({
-      title: 'Saving chapter...',
-      onBeforeOpen: () => {
-        Swal.showLoading();
+const handleTextChapterSave = async () => {
+  Swal.fire({
+    title: 'Saving chapter...',
+    onBeforeOpen: () => {
+      Swal.showLoading();
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+  });
+
+  try {
+    const response = await fetch(`http://localhost:3000/updatechapter/${selectedDocId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      allowOutsideClick: () => !Swal.isLoading(),
+      body: JSON.stringify(editedChapter),
     });
-  
-    try {
-      const response = await fetch(`http://localhost:3000/updatechapter/${selectedDocId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(editedChapter),
-       
-      });
-      console.log('Saving chapter with data:', editedChapter);
-      if (response.ok) {
-        setChapters(chapters.map((chapter) => (chapter.id === selectedDocId ? { ...editedChapter } : chapter)));
-        setOpen(false);
-        Swal.fire('Success', 'Chapter updated successfully', 'success');
-      } else {
-        throw new Error('Failed to update the chapter.');
-      }
-    } catch (error) {
-      console.error('Error updating chapter:', error);
-      Swal.fire('Error', 'There was a problem saving the chapter', 'error');
+
+    if (response.ok) {
+      setOpen(false);
+      Swal.fire('Success', 'Chapter updated successfully', 'success');
+      refreshChapters(); // Reload chapters after successful update
+    } else {
+      throw new Error('Failed to update the chapter.');
     }
-  };
+  } catch (error) {
+    console.error('Error updating chapter:', error);
+    Swal.fire('Error', 'There was a problem saving the chapter', 'error');
+  }
+};
+
 
 const handleDelete = async (docId, isAudio = false) => {
   Swal.fire({
@@ -261,33 +265,15 @@ const handleAudioSave = async () => {
     });
 
     if (response.ok) {
-      // Assuming the response returns the updated chapter, you could update the local state:
-      const updatedChapter = await response.json();
-      setAudioChapters(audioChapters.map(chapter => chapter.id === selectedDocId ? updatedChapter : chapter));
-
-      // Close the dialog and stop loading
- 
       setOpenAudioEdit(false);
-
-      Swal.fire({
-        title: 'Success!',
-        text: 'Audio chapter updated successfully.',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      });
+      Swal.fire('Success!', 'Audio chapter updated successfully.', 'success');
+      refreshChapters(); // Reload chapters after successful update
     } else {
-      // If the server response was not OK, handle it as an error
       const errorData = await response.json();
       throw new Error(errorData.message || 'Failed to update the audio chapter.');
     }
   } catch (error) {
-    // Handle the error state, stop loading, alert the user, etc.
-    Swal.fire({
-      title: 'Error!',
-      text: `There was an issue saving your audio chapter: ${error.message}`,
-      icon: 'error',
-      confirmButtonText: 'OK'
-    });
+    Swal.fire('Error!', `There was an issue saving your audio chapter: ${error.message}`, 'error');
     console.error('Error updating audio chapter:', error);
   }
 };
@@ -304,8 +290,7 @@ const handleAudioSave = async () => {
           <TableHead>
             <TableRow>
               <TableCell>Book Title</TableCell>
-              <TableCell>Chapter Name</TableCell>
-              <TableCell>Chapter Number</TableCell>
+             
               <TableCell>Description</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -314,8 +299,7 @@ const handleAudioSave = async () => {
             {chapters.map((chapter) => (
               <TableRow key={chapter._id}>
                 <TableCell>{chapter.title}</TableCell>
-<TableCell>{chapter.chapterName}</TableCell>
-<TableCell>{chapter.chapterNumber}</TableCell>
+
 <TableCell>{chapter.description}</TableCell>
 <TableCell>
 <Button onClick={() => handleClickOpen(chapter, chapter._id)}>Edit</Button>
@@ -384,27 +368,17 @@ const handleAudioSave = async () => {
       <DialogContentText>
         Please edit the chapter information.
       </DialogContentText>
+    
       <TextField
-        margin="dense"
-        id="description"
-        label="Description"
-        multiline
-            rows={4}
-        type="text"
-        fullWidth
-        value={editedChapter?.description || ''}
-        onChange={(e) => handleInputChange(e, 'description')}
-      />
-      <TextField
-        margin="dense"
-        id="content"
-        label="Content"
-        type="text"
-        fullWidth
-        multiline
-            rows={10}
-        value={editedChapter?.content || ''}
-        onChange={(e) => handleInputChange(e, 'content')}
+       margin="dense"
+       id="description"
+       label="Description"
+       type="text"
+       fullWidth
+       multiline
+       rows={10}
+       value={editedChapter?.description || ''}
+       onChange={handleInputChange}
       />
     </DialogContent>
     <DialogActions>

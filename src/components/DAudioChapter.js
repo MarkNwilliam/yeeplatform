@@ -1,38 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2'; // Importing sweetalert2
 import { auth } from "../firebase";
-
+import Autocomplete from "@mui/material/Autocomplete";
 import {
   Button,
   TextField,
   Typography,
   Grid,
   Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
+
   Chip,
   Dialog,
   DialogTitle,
   DialogContent,
 } from "@mui/material";
-
+import SuccessDialog from '../subcomponents/SuccessDialog';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload"; 
 import Lottie from 'lottie-react';
 import congs1Animation from '../animations/congs.json';
-
+import uploadToAzure from '../functions/azureUpload';
+import { resizeImage, isFileSizeWithinRange, checkFileExtension } from '../functions/imageUtils';
+import UploadButton from '../subcomponents/UploadButton';
+import SubmitButton from '../subcomponents/SubmitButton';
 function DAudioChapter() {
+  const LottieAnimation = React.lazy(() => import('lottie-react'));
+
   const [file, setFile] = useState(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState("");
   const [monetization, setMonetization] = useState('free');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCoverFileName, setSelectedCoverFileName] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successDialogPoints, setSuccessDialogPoints] = useState(0);
+  const [successDialogMessage, setSuccessDialogMessage] = useState('');
   const [audioDetails, setAudioDetails] = useState({
     duration: 0, // initial state for audio duration
     url: "", // this will hold the audio file URL after uploading
   });
+  const [coverImage, setCoverImage] = useState(null); // State for the original cover image
+const [thumbnail, setThumbnail] = useState(null);
   const [chapterDetails, setChapterDetails] = useState({
     title: '',
     description: '',
@@ -61,10 +71,39 @@ function DAudioChapter() {
       genres: [],
       // Reset other fields if necessary
     });
+     setCoverPreviewUrl("");
   };
 
   const firebaseId = auth.currentUser.uid;
 
+  useEffect(() => {
+    const handlePageUnload = () => {
+      if (isSuccessDialogOpen) {
+        setShowSuccessDialog(false);
+      }
+    };
+
+    // Register the event listener
+    window.addEventListener('beforeunload', handlePageUnload);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener('beforeunload', handlePageUnload);
+    };
+  }, [isSuccessDialogOpen]);
+
+  const availableCategories = [
+    "Fiction", "Nonfiction", "Science Fiction", "Romance",
+    "Mystery/Thriller", "Fantasy", "Biography", "History",
+    "Business/Economics", "Self-help", "Health/Fitness",
+    "Cooking/Food", "Travel", "Technology"
+  ];
+
+  const maxDescriptionLength = 500;
+  const minTitleLength = 3; // Minimum length for title
+const maxTitleLength = 100; // Maximum length for title
+const maxAudioFileSizeMB = 150;
+const minCategoriesRequired = 1;
 
   const handleAudioFileChange = (event) => {
     const audioFile = event.target.files[0];
@@ -80,26 +119,77 @@ function DAudioChapter() {
     }
   };
 
-  const handleCoverImageChange = (event) => {
+  // Image size validation
+  const isFileSizeValid = (file) => {
+    const maxSizeInMB = 5; // 5MB limit
+    const sizeInMB = file.size / 1024 / 1024;
+    return sizeInMB <= maxSizeInMB;
+  };
+
+  // Image dimensions validation
+  const isImageDimensionsValid = (file) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        resolve(img.width === 512 && img.height === 800);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  // Modified handleCoverImageChange to include thumbnail creation
+  const handleCoverImageChange = async (event) => {
     const imageFile = event.target.files[0];
     if (imageFile) {
-      setChapterDetails({ ...chapterDetails, coverimage: imageFile });
-      setSelectedCoverFileName(imageFile.name); // Now this will correctly set the selected file name for the cover image
+      if (!isFileSizeValid(imageFile)) {
+        Swal.fire('Error', 'Image size should not exceed 5MB.', 'error');
+        return;
+      }
+
+      const dimensionsValid = await isImageDimensionsValid(imageFile);
+      if (!dimensionsValid) {
+        Swal.fire('Error', 'Image dimensions should be exactly 512x800 pixels.', 'error');
+        return;
+      }
+
+
+      setCoverImage(imageFile); // Set the original cover image in state
+
+      // Generate and set the thumbnail
+      const thumbnailBlob = await resizeImage(imageFile, 256);
+      setThumbnail(thumbnailBlob);
+      setSelectedCoverFileName(imageFile.name);
+      setCoverPreviewUrl(URL.createObjectURL(imageFile));
+  
+      // Update chapterDetails with the local URL of the image for preview
+      setChapterDetails({ ...chapterDetails, coverimage: URL.createObjectURL(imageFile) });
     }
   };
 
+ 
+  const isAudioFileSizeValid = (file) => {
+    return file && file.size <= maxAudioFileSizeMB * 1024 * 1024;
+  };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault()
     try {
-        // Check for audio file
-        if (!file) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'No audio file selected for upload.',
-            });
-            return;
-        }
+   
+
+     // Check if the files are selected
+  if (!file || !coverImage) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Missing Files',
+      text: 'Please ensure all required files are selected.',
+    });
+    return;
+  }
+
+
+        setShowSuccessDialog(true);
+        setSuccessDialogPoints(5); // Set points as per your logic
+        setSuccessDialogMessage('Well done! You\'re a real YeePlatform author.');
 
       // Check for cover image
 if (!chapterDetails.coverimage) {
@@ -111,6 +201,20 @@ if (!chapterDetails.coverimage) {
   return;
 }
 
+if (chapterDetails.title.length < minTitleLength || chapterDetails.title.length > maxTitleLength) {
+  Swal.fire('Error', `Title should be between ${minTitleLength} and ${maxTitleLength} characters.`, 'error');
+  return;
+}
+
+if (!isAudioFileSizeValid(file)) {
+  Swal.fire('Error', `Audio file size should not exceed ${maxAudioFileSizeMB}MB.`, 'error');
+  return;
+}
+
+if (chapterDetails.categories.length < minCategoriesRequired) {
+  Swal.fire('Error', `Please select at least ${minCategoriesRequired} category(ies).`, 'error');
+  return;
+}
 
         Swal.fire({
             title: 'Uploading...',
@@ -124,6 +228,14 @@ if (!chapterDetails.coverimage) {
 
         // 1. Upload the cover image to Azure Blob Storage
         const coverImageURL = await uploadToAzure(chapterDetails.coverimage);
+
+        const thumbnailURL = await uploadToAzure(chapterDetails.coverimage, true);
+
+        const updatedChapterDetails = {
+          ...chapterDetails,
+          coverimage: coverImageURL, // Set the cover image URL
+          thumbnailURL: thumbnailURL // If you're using a thumbnail
+        };
 
         // 2. Upload the audio file to Azure Blob Storage
         const blobURL = await uploadToAzure(file);
@@ -144,7 +256,8 @@ if (!chapterDetails.coverimage) {
             content: blobURL,
             duration: audioDetails.duration,
             author_platform_id: firebaseId,
-            coverimage: coverImageURL  // Assign the URL to coverImage field
+            coverimage: coverImageURL,  // Assign the URL to coverImage field
+            thumbnailUrl: thumbnailURL,
         });
 
            console.log('Attempting to close Swal and open dialog...');
@@ -154,9 +267,9 @@ if (!chapterDetails.coverimage) {
        
           resetForm();
           console.log('Form reset, attempting to open dialog...');
-          setDialogOpen(true);
+          setIsSuccessDialogOpen(true);
           console.log('Dialog should now be open:', dialogOpen);
-
+         
             // Reset the form, or navigate to a success page, or show a success message
         } else {
             Swal.fire({
@@ -174,52 +287,59 @@ if (!chapterDetails.coverimage) {
     }
 };
 
+const handleCategoryChange = (event) => {
+  const {
+    target: { value },
+  } = event;
+  setChapterDetails({
+    ...chapterDetails,
+    categories: typeof value === 'string' ? value.split(',') : value,
+  });
+};
 
+const handleCategoryDelete = (categoryToDelete) => () => {
+  setChapterDetails({
+    ...chapterDetails,
+    categories: chapterDetails.categories.filter((category) => category !== categoryToDelete),
+  });
+};
 
-  async function uploadToAzure(file) {
-    const response = await fetch('http://localhost:3000/generateSasToken');
-    const data = await response.json();
-    const sasToken = data.sasToken;
+const renderSelectedCategories = () => {
+  return chapterDetails.categories.map((category) => (
+    <Chip
+      key={category}
+      label={category}
+      onDelete={handleCategoryDelete(category)}
+      className="m-1"
+    />
+  ));
+};
 
-    const blobURL = `https://yeeplatform.blob.core.windows.net/yeeusers/${file.name}?${sasToken}`;
-
-    const requestOptions = {
-        method: 'PUT',
-        body: file,
-        headers: {
-            'x-ms-blob-type': 'BlockBlob'
-        }
-    };
-
-    const uploadResponse = await fetch(blobURL, requestOptions);
-
-    if (uploadResponse.ok) {
-        return blobURL; // Return the blob URL of the uploaded file
-    } else {
-        throw new Error('Error uploading to Azure Blob Storage');
-    }
-}
 
 
   return (
-    <div className="container mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-5">Upload Audio Chapter</h1>
+    <div className="p-8 bg-white shadow-md rounded-lg max-w-md mx-auto">
+    <Typography variant="h4" gutterBottom>Upload Audio Chapter</Typography>
 
 
-
+    <form onSubmit={handleSubmit}>
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">Upload Cover Image:</label>
-          <label className={`w-full flex items-center px-4 py-2 rounded-lg shadow-lg tracking-wide uppercase border cursor-pointer hover:bg-blue-500 hover:text-white ${selectedCoverFileName ? "bg-blue-500 text-white" : "bg-white text-blue-500 border-blue-500"}`}>
-            <CloudUploadIcon className="mr-2" />
-            {selectedCoverFileName || "Choose cover image"} {/* Updated to reflect cover image selection */}
-            <input
-              type="file"
-              onChange={handleCoverImageChange}
-              className="hidden"
-              accept="image/*"
-              required
-            />
-          </label>
+      <UploadButton
+        label="Upload Cover Image:"
+        onChange={handleCoverImageChange}
+        fileName={selectedCoverFileName}
+        accept="image/*"
+        required
+      />
+
+         {coverPreviewUrl && (
+              <Box
+                component="img"
+                src={coverPreviewUrl}
+                alt="Cover Preview"
+                sx={{ width: '100%', height: 'auto', maxWidth: '200px', marginTop: '10px' }} // Adjust image size
+              />
+            )}
       </div>
 
 
@@ -236,6 +356,33 @@ if (!chapterDetails.coverimage) {
           required />
         </div>
 
+     
+        <div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2">
+    Categories:
+  </label>
+  <Autocomplete
+    multiple
+    id="tags-outlined"
+    options={availableCategories}
+    getOptionLabel={(option) => option}
+    filterSelectedOptions
+    value={chapterDetails.categories}
+    onChange={(event, newValue) => {
+      setChapterDetails({ ...chapterDetails, categories: newValue });
+    }}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        variant="outlined"
+        label="Select Categories"
+        placeholder="Categories"
+      />
+    )}
+  />
+</div>
+
+
 <div className="mb-4">
   <label className="block text-gray-700 text-sm font-bold mb-2">Monetization:</label>
   <select
@@ -250,53 +397,49 @@ if (!chapterDetails.coverimage) {
 
   
     
-    <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-          <TextField fullWidth multiline rows={4} variant="outlined"
-           value={chapterDetails.description}
-           placeholder="Description"
-           onChange={(e) => setChapterDetails({ ...chapterDetails, description: e.target.value })}
-            required />
-        </div>
+<div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
+  <TextField
+    fullWidth
+    multiline
+    rows={4}
+    variant="outlined"
+    value={chapterDetails.description}
+    onChange={(e) => {
+      if (e.target.value.length <= maxDescriptionLength) {
+        setChapterDetails({ ...chapterDetails, description: e.target.value });
+      }
+    }}
+    helperText={`${chapterDetails.description.length}/${maxDescriptionLength}`}
+    required
+  />
+</div>
+
 
         <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">Upload Audio File:</label> {/* Corrected label text */}
-          <label className={`w-full flex items-center px-4 py-2 rounded-lg shadow-lg tracking-wide uppercase border cursor-pointer hover:bg-blue-500 hover:text-white ${selectedFileName ? "bg-blue-500 text-white" : "bg-white text-blue-500 border-blue-500"}`}>
-            <CloudUploadIcon className="mr-2" />
-            {selectedFileName || "Choose audio file"} {/* Corrected to reflect audio file selection */}
-            <input
-              type="file"
-              onChange={handleAudioFileChange}
-              className="hidden"
-              accept="audio/*"
-              required
-            />
-          </label>
+        <UploadButton
+        label="Upload Audio File:"
+        onChange={handleAudioFileChange}
+        fileName={selectedFileName}
+        accept="audio/*"
+        required
+      />
+
       </div>
 
 
 
+      {isSuccessDialogOpen && (
+ <SuccessDialog 
+ isOpen={showSuccessDialog}
+ onClose={() => setShowSuccessDialog(false)}
+ points={successDialogPoints}
+ message={successDialogMessage}
+/>
+)}
 
-<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-    <DialogTitle className="text-center">Success!</DialogTitle>
-    <DialogContent className="flex flex-col items-center justify-center space-y-4">
-        <Lottie 
-            animationData={congs1Animation} 
-            style={{ width: 'auto', maxWidth: '100%', height: 200 }} 
-        />
-        <p>Well done! You&apos;re a real YeePlatform author.</p>
-        <div className="text-center animate-pulse">
-        <p className="text-yellow-500 font-bold text-xl">You&#39;ve got</p>
-<span className="text-4xl text-yellow-500">5 Points!</span>
-
-        </div>
-        <p>Your content will be available in the marketplace soon.</p>
-    </DialogContent>
-</Dialog>
-
-      <button onClick={handleSubmit} className="bg-blue-500 text-white p-2 rounded">
-        Upload Chapter
-      </button>
+<SubmitButton buttonText="Upload Chapter" />
+</form>
     </div>
   );
 }

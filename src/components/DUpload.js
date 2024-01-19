@@ -1,47 +1,154 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { auth } from "../firebase";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Button from '@mui/material/Button';
-import Lottie from 'lottie-react';
-import congs1Animation from '../animations/congs.json';
-
+import { Typography } from "@mui/material";
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import uploadToAzure from '../functions/azureUpload';
+import SuccessDialog from '../subcomponents/SuccessDialog';
+import UploadButton from '../subcomponents/UploadButton';
+import SubmitButton from '../subcomponents/SubmitButton';
+import { resizeImage } from '../functions/imageUtils';
 
 function DUpload({ user }) {
   const [ebookFile, setEbookFile] = useState(null);
   const [coverFile, setCoverFile] = useState(null);
   const [ebookFileName, setEbookFileName] = useState("");
 const [coverFileName, setCoverFileName] = useState("");
-const [dialogOpen, setDialogOpen] = useState(false);
-
-
+const [successMessage, setSuccessMessage] = useState("Well done! You're a real YeePlatform author.");
+  const [pointsAwarded, setPointsAwarded] = useState(100);
+  const [previewFile, setPreviewFile] = useState(null);
+  const [previewFileName, setPreviewFileName] = useState("");
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [genres, setGenres] = useState('');
   const [isbn, setIsbn] = useState('');
   const [publicationDate, setPublicationDate] = useState(''  );
   const [subtitle, setSubtitle] = useState('');
-  const [monetization, setMonetization] = useState('free'); // defaulting to 'free'
-  
+  const [monetization, setMonetization] = useState(false); 
+  const [coverPreview, setCoverPreview] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [file, setFile] = useState(null);
 
-  const firebaseId = auth.currentUser.uid;
-  
+  useEffect(() => {
+    const handlePageUnload = () => {
+      if (isSuccessDialogOpen) {
+        setIsSuccessDialogOpen(false);
+      }
+    };
 
-  const resetForm = () => {
-    setEbookFile(null);
-    setCoverFile(null);
-    setEbookFileName("");
-    setCoverFileName("");
-    setTitle('');
-    setDescription('');
-    setGenres('');
-    setIsbn('');
-    setPublicationDate('');
-}
+    // Register the event listener
+    window.addEventListener('beforeunload', handlePageUnload);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener('beforeunload', handlePageUnload);
+    };
+  }, [isSuccessDialogOpen]);
+
+  const maxDescriptionLength = 500; // Set maximum length for description
+  const maxCoverImageSizeMB = 5; // Maximum cover image size in MB
+  const maxTitleLength = 100;
+const maxEbookFileSizeMB = 300; // Example limit for eBook file size in MB
+const maxSubtitleLength = 200;
+const maxPreviewFileSizeMB = 10;
+
+
+const availableCategories = [
+  "Fiction", "Nonfiction", "Science Fiction", "Romance",
+  "Mystery/Thriller", "Fantasy", "Biography", "History",
+  "Business/Economics", "Self-help", "Health/Fitness",
+  "Cooking/Food", "Travel", "Technology"
+];
+
+const firebaseId = auth.currentUser.uid;
+
+const handleCategoryChange = (event, value) => {
+  if (Array.isArray(value)) {
+    if (value.length > 3) {
+      Swal.fire('Error', 'You can select up to 3 categories only.', 'error');
+      return;
+    }
+    setSelectedCategories(value);
+  } else {
+    console.error('Expected an array for selected categories, received:', value);
+  }
+};
+
+const handleCoverChange = async (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    if (!isFileSizeWithinRange(file, 0.001, maxCoverImageSizeMB)) {
+      Swal.fire('Error', `Cover image size should not exceed ${maxCoverImageSizeMB} MB.`, 'error');
+      return;
+    }
+
+    const isDimensionsValid = await isImageDimensionsValid(file, 512, 800);
+    if (!isDimensionsValid) {
+      Swal.fire('Error', 'Invalid image dimensions.', 'error');
+      return;
+    }
+
+    try {
+      const resizedImageBlob = await resizeImage(file, 256);
+      const resizedFile = new File([resizedImageBlob], file.name, { type: 'image/jpeg' });
+      setCoverFile(resizedFile);
+      setCoverFileName(resizedFile.name);
+      setCoverPreview(URL.createObjectURL(resizedImageBlob));
+    } catch (error) {
+      console.error('Error resizing image:', error);
+      Swal.fire('Error', 'Failed to resize the image.', 'error');
+    }
+  }
+};
+
+const handlePreviewChange = async (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    if (!isFileSizeWithinRange(file, 0.1, maxPreviewFileSizeMB)) {
+      Swal.fire('Error', `Preview file size should not exceed ${maxPreviewFileSizeMB} MB.`, 'error');
+      return;
+    }
+
+    setPreviewFile(file);
+    setPreviewFileName(file.name);
+  }
+};
+
+const handleEbookChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    if (!isFileSizeWithinRange(file, 0.1, maxEbookFileSizeMB)) {
+      Swal.fire('Error', `eBook file size should not exceed ${maxEbookFileSizeMB} MB.`, 'error');
+      return;
+    }
+
+    setEbookFile(file);
+    setEbookFileName(file.name);
+  }
+};
+
+const resetForm = () => {
+  setEbookFile(null);
+  setCoverFile(null);
+  setEbookFileName("");
+  setCoverFileName("");
+  setTitle('');
+  setDescription('');
+  setSubtitle('');
+  setGenres('');
+  setIsbn('');
+  setPublicationDate('');
+  setCoverPreview('');
+  setDescription('');
+  setSelectedCategories([]);
+  setPreviewFile(null);
+  setPreviewFileName('');
+};
 
   const checkFileExtension = (file, validExtensions) => {
     const extension = file.name.split('.').pop();
@@ -76,6 +183,29 @@ const isImageDimensionsValid = async (file, width, height) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Check for title length
+  if (title.length > maxTitleLength) {
+    Swal.fire('Error', 'Title is too long.', 'error');
+    return;
+  }
+
+  // Check for description length
+  if (description.length > maxDescriptionLength) {
+    Swal.fire('Error', 'Description is too long.', 'error');
+    return;
+  }
+
+  if (subtitle.length > maxSubtitleLength) {
+    Swal.fire('Error', 'Subtitle is too long.', 'error');
+    return;
+  }
+
+  // Check for eBook file size
+  if (ebookFile && (ebookFile.size / 1024 / 1024) > maxEbookFileSizeMB) {
+    Swal.fire('Error', 'eBook file size is too large.', 'error');
+    return;
+  }
+
     Swal.fire({
       icon: 'info',
       title: 'Uploading...',
@@ -102,6 +232,8 @@ if (!checkFileExtension(ebookFile, ['pdf', 'epub', 'mobi'])) {
 });
   return;
 }
+
+ 
 
 const isCoverDimensionsValid = await isImageDimensionsValid(coverFile, 600, 800);
 /*if (!isCoverDimensionsValid) {
@@ -160,143 +292,212 @@ if (!isValidISBN(isbn) && isbn) {
 });
   return;
 }
-    try {
-        // Upload files to Azure Blob Storage
-        const ebookUrl = await uploadToAzure(ebookFile);
-        const coverUrl = await uploadToAzure(coverFile);
 
-        // Ensure both URLs are valid
-        if (!ebookUrl || !coverUrl) {
-            throw new Error('Failed to get valid URLs for the files.');
-        }
+// Resize the image to thumbnail size
+const thumbnailBlob = await resizeImage(coverFile, 256);
 
-        const data = {
-          ebookUrl: ebookUrl,
-          coverUrl: coverUrl,
-          title: title,
-          description: description,
-          genres: genres,
-          isbn: isbn,
-          subtitle: subtitle,
-          monetization: monetization,
-          publicationDate: publicationDate,
-          author_platform_id: firebaseId
-      };
-      
+// Upload files to Azure Blob Storage (optional, can be moved outside)
+const coverUrl = await uploadToAzure(coverFile);
+const thumbnailUrl = await uploadToAzure(thumbnailBlob, true);
+const previewUrl = await uploadToAzure(previewFile);
 
-        const response = await axios.post(`http://localhost:3000/ebookupload/${firebaseId}`, data);
-
-        console.log(response.data);
-        Swal.close();
-        resetForm()
-       //Swal.fire('Success!', 'Ebook uploaded successfully!', 'success');
-        setDialogOpen(true);
-       
-      } catch (error) {
-        console.error('Error uploading the ebook:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Error uploading the ebook. Please try again.'
-        });
-      }
-};
-
-
-
-
-
-  async function uploadToAzure(file) {
-    const response = await fetch('http://localhost:3000/generateSasToken');
-    const data = await response.json();
-    const sasToken = data.sasToken;
-
-    const blobURL = `https://yeeplatform.blob.core.windows.net/yeeusers/${file.name}?${sasToken}`;
-
-    const requestOptions = {
-        method: 'PUT',
-        body: file,
-        headers: {
-            'x-ms-blob-type': 'BlockBlob'
-        }
-    };
-
-    const uploadResponse = await fetch(blobURL, requestOptions);
-
-    if (uploadResponse.ok) {
-        return blobURL; // Return the blob URL of the uploaded file
-    } else {
-        throw new Error('Error uploading to Azure Blob Storage');
-    }
+// Ensure valid URLs
+if (!coverUrl || !thumbnailUrl) {
+  throw new Error('Failed to get valid URLs for the files.');
 }
 
-  
+let ebookUrl;
+
+if (ebookFile.type === 'application/pdf') {
+  // Create a new FormData instance for the file
+  const fileData = new FormData();
+
+  // Append ebook file to the fileData instance
+  fileData.append('ebookFile', ebookFile);
+
+  try {
+    // Upload the ebook file to the server and get the ebookUrl
+    const uploadResponse = await axios.post(`http://localhost:3000/fileupload/${firebaseId}`, fileData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    ebookUrl = uploadResponse.data.azureFileUrl;
+  } catch (error) {
+    // Handle upload errors
+    console.error('Error uploading the ebook:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Error uploading the ebook. Please try again.',
+    });
+    return;
+  }
+} else if (ebookFile.type === 'application/epub+zip') {
+  // Upload EPUB file to Azure Blob Storage
+  const ebookBlob = await uploadToAzure(ebookFile);
+  ebookUrl = ebookBlob.url;
+} else {
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: 'Invalid eBook format. Please upload in .pdf or .epub format.',
+  });
+  return;
+}
+
+// Create a new FormData instance for the rest of the data
+const formData = new FormData();
+
+// Append non-chunked data (cover, thumbnail, preview URLs, etc.)
+formData.append('coverUrl', coverUrl);
+formData.append('thumbnailUrl', thumbnailUrl);
+formData.append('title', title);
+formData.append('description', description);
+formData.append('categories', selectedCategories);
+formData.append('isbn', isbn);
+formData.append('previewUrl', previewUrl);
+formData.append('subtitle', subtitle);
+formData.append('monetization', monetization);
+formData.append('publicationDate', publicationDate);
+formData.append('author_platform_id', firebaseId);
+formData.append('ebookUrl', ebookUrl);
+
+try {
+  // Submit the complete formData to backend (including remaining data)
+  const response = await axios.post(`http://localhost:3000/ebookupload/${firebaseId}`, formData);
+  console.log(response.data);
+  Swal.close();
+  resetForm();
+  setIsSuccessDialogOpen(true);
+} catch (error) {
+  // Handle upload errors
+  console.error('Error uploading the ebook:', error);
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: 'Error uploading the ebook. Please try again.',
+  });
+}
+
+
+  }
+
+
+const handleMonetizationChange = (e) => {
+  setMonetization(e.target.value === 'notfree');
+};
 
   return (
     <div className="p-8 bg-white shadow-md rounded-lg max-w-md mx-auto">
+      <Typography variant="h4" className="text-center mb-6">Upload your Ebook</Typography>
       <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Title:</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
+      <div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2">Title:</label>
+  <input
+    type="text"
+    value={title}
+    onChange={(e) => {
+      if (e.target.value.length <= maxTitleLength) {
+        setTitle(e.target.value);
+      }
+    }}
+    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    required
+  />
+  <div className="text-right text-sm">
+    {title.length}/{maxTitleLength}
+  </div>
+</div>
 
-        <div className="mb-4">
+
+<div className="mb-4">
   <label className="block text-gray-700 text-sm font-bold mb-2">Subtitle:</label>
   <input
     type="text"
     value={subtitle}
-    onChange={(e) => setSubtitle(e.target.value)}
+    onChange={(e) => {
+      if (e.target.value.length <= maxSubtitleLength) {
+        setSubtitle(e.target.value);
+      }
+    }}
     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
   />
+  <div className="text-right text-sm">
+    {subtitle.length}/{maxSubtitleLength}
+  </div>
 </div>
 
 
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          ></textarea>
-        </div>
-
-        <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2 relative">
-    Upload Cover Image:
-    <input 
-        type="file" 
-        onChange={(e) => {
-          setCoverFile(e.target.files[0]);
-          setCoverFileName(e.target.files[0].name);
-      }} 
-        className="absolute inset-0 opacity-0 pointer-events-none"
-        required 
-        accept=".jpg, .jpeg, .png"
+<div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2">
+    Upload Cover Image (Max size: {maxCoverImageSizeMB}MB):
+  </label>
+  <UploadButton
+    onChange={handleCoverChange}
+    fileName={coverFileName}
+    accept=".jpg, .jpeg, .png"
+    required
+  />
+  {coverPreview && (
+    <Box
+      component="img"
+      sx={{
+        height: 240, // Fixed height
+        width: 180,  // Width according to aspect ratio 3:4
+        maxHeight: { xs: 233, md: 167 },
+        maxWidth: { xs: 350, md: 250 },
+        objectFit: 'cover', // This will cover the area without stretching the image
+      }}
+      alt="Cover Preview"
+      src={coverPreview}
     />
-    <div className="py-2 px-3 border border-gray-400 rounded cursor-pointer hover:bg-yellow-400">
-    {coverFileName ? coverFileName : 'Select Cover Image'}
+  )}
+</div>
+
+
+<div className = "mb-4">
+      <Autocomplete
+  multiple
+  id="categories-autocomplete"
+  options={availableCategories}
+  value={selectedCategories}
+  onChange={handleCategoryChange}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Categories"
+      placeholder="Select categories"
+    />
+  )}
+  renderTags={(value, getTagProps) =>
+    value.map((option, index) => (
+      <Chip 
+        key={option}  // Use the option itself as a unique key
+        label={option} 
+        {...getTagProps({ index })} 
+      />
+    ))
+  }
+/>
+
+</div>
+
+
+<div className="mb-4">
+      <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        maxLength={maxDescriptionLength}
+        required
+      ></textarea>
+      <p className="text-sm text-gray-600">
+        {description.length} / {maxDescriptionLength} characters
+      </p>
     </div>
-</label>
 
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Genres:</label>
-          <input
-            type="text"
-            value={genres}
-            onChange={(e) => setGenres(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
 
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">ISBN(Optional):</label>
@@ -324,65 +525,57 @@ if (!isValidISBN(isbn) && isbn) {
         <div className="mb-4">
   <label className="block text-gray-700 text-sm font-bold mb-2">Monetization:</label>
   <select
-    value={monetization}
-    onChange={(e) => setMonetization(e.target.value)}
-    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-  >
-    <option value="free">Free</option>
-    <option value="notfree">Not Free</option>
-  </select>
+  value={monetization ? 'notfree' : 'free'}
+  onChange={handleMonetizationChange}
+  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+>
+  <option value="free">Free</option>
+  <option value="notfree">Not Free</option>
+</select>
+
 </div>
 
-
+{/* eBook Preview File Upload Field */}
         <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2 relative">
-    Upload eBook File:
-    <input 
-        type="file" 
-        onChange={(e) =>{ 
-          setEbookFile(e.target.files[0]);
-          setEbookFileName(e.target.files[0].name);
-        }}
-        className="absolute inset-0 opacity-0 pointer-events-none"
-        required 
-        accept=".pdf, .epub, .mobi"
-    />
-    <div className="py-2 px-3 border border-gray-400 rounded cursor-pointer hover:bg-yellow-400">
-    {ebookFileName ? ebookFileName : 'Select eBook File'}
-    </div>
-</label>
-
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Upload eBook Previewn (Max size: {maxPreviewFileSizeMB}MB):
+          </label>
+          <UploadButton
+    onChange={handlePreviewChange}
+    fileName={previewFileName}
+    accept=".pdf, .epub, .mobi"
+    required
+  />
         </div>
 
-        <div className="flex justify-end">
-        <button 
-    type="submit" 
-    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 transform hover:scale-105 focus:outline-none focus:shadow-outline"
->
-    Upload
-</button>
 
+    {/* eBook File Upload Field */}
+    <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Upload eBook File (Max size: {maxEbookFileSizeMB}MB):</label>
+          <UploadButton
+            onChange={handleEbookChange}
+            fileName={ebookFileName}
+            accept=".pdf, .epub, .mobi"
+            required
+          />
         </div>
+
+
+        <div className="flex justify-center">
+        <SubmitButton buttonText="Upload" />
+</div>
+
       </form>
 
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-    <DialogTitle className="text-center">Success!</DialogTitle>
-    <DialogContent className="flex flex-col items-center justify-center space-y-4">
-        <Lottie 
-            animationData={congs1Animation} 
-            style={{ width: 'auto', maxWidth: '100%', height: 200 }} 
-        />
-        <p>Well done! You&apos;re a real YeePlatform author.</p>
-        <div className="text-center animate-pulse">
-        <p className="text-yellow-500 font-bold text-xl">You&#39;ve got</p>
-<span className="text-4xl text-yellow-500">100 Points!</span>
-
-        </div>
-        <p>Your content will be available in the marketplace soon.</p>
-    </DialogContent>
-</Dialog>
-
+      {isSuccessDialogOpen && (
+   <SuccessDialog
+   isOpen={isSuccessDialogOpen}
+   onClose={() => setIsSuccessDialogOpen(false)}
+   points={pointsAwarded}
+   message={successMessage}
+ />
+      )}
 
     </div>
   );

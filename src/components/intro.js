@@ -1,14 +1,5 @@
 import React from 'react';
 import IntroCarousel from "./IntroCarousel";
-import {
-  MDBCard,
-  MDBCardImage,
-  MDBCardBody,
-  MDBCardTitle,
-  MDBCardText,
-  MDBRow,
-  MDBCol
-} from 'mdb-react-ui-kit';
 
 
 export default function intro() {
@@ -40,26 +31,22 @@ export default function intro() {
     return (
         <div>
             <IntroCarousel />
-            <MDBRow className='row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-4'>
-                {categories.map((data, index) => (
-                    <MDBCol key={data.id}>
-                        <MDBCard className="h-100 d-flex flex-column" style={{ cursor: 'pointer' }}>
-                            <MDBCardImage
-                                src={data.pic}
-                                alt='Y.webp'
-                                position='top'
-                                style={{ height: '150px', objectFit: 'cover' }}
-                            />
-                            <MDBCardBody className="d-flex flex-column">
-                                <MDBCardTitle style={{ fontSize: '1.2rem' }}>{data.name}</MDBCardTitle>
-                                <MDBCardText className="flex-grow-1" style={{ fontSize: '0.8rem' }}>
-                                    {data.description}
-                                </MDBCardText>
-                            </MDBCardBody>
-                        </MDBCard>
-                    </MDBCol>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+                {categories.map((data) => (
+                    <div key={data.id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                        <img
+                            src={data.pic}
+                            alt={data.name}
+                            className="w-full h-36 object-cover"
+                        />
+                        <div className="p-4">
+                            <h5 className="text-lg font-semibold mb-2">{data.name}</h5>
+                            <p className="text-sm text-gray-600">{data.description}</p>
+                        </div>
+                    </div>
                 ))}
-            </MDBRow>
+            </div>
+    
         </div>
     );
 }

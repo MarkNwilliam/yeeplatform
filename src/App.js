@@ -5,6 +5,12 @@ import LoadingScreen from "./components/loadingscreen";
 import { Helmet } from 'react-helmet';
 import ProtectedRouteWrapper from "./contexts/ProtectedRoute";
 
+import ItemDetailPage from './pages/ItemDetailPage';
+import AudiobookDetailPage from './pages/AudiobookDetailPage';
+import ChapterDetailPage from './pages/ChapterDetailPage';
+import EbookDetailPage from './pages/EbookDetailPage';
+import EbookReaderPage from './pages/EbookReaderPage';
+
 // Lazy-load the components
 const Home = lazy(() => import('./pages/home'));
 const Chapters = lazy(() => import('./pages/Chapters'));
@@ -85,21 +91,24 @@ function App() {
         <BrowserRouter>
     <Routes>
     
-        <Route path ="/" element={<Home />}>
-        <Route path="search" element={<Scontent />} />
-          <Route path="home" element={<Intro />} />
+        <Route path ="/*" element={<Home />}>
+        <Route path="search" element={<Scontent />}/>
+          <Route path="home" element={<Intro />}/>
           <Route path="ebooks" element={<Ebooks />} />
-<Route path="ebooks/:id" element={<EbookDetails />} />
-<Route path="chapters/:id" element={<ChapterDetail />} />
-          <Route path="audiobooks" element={<Audiobooks />}/>
-              <Route path="audiobooks/:id" element={<AudiobookDetail />} />
-            
+          <Route path="audiobooks" element={<Audiobooks />}/>  
+          <Route path="items/:id" element={<ItemDetailPage />} />
           <Route path="chapters" element={<Chapters />} />
         </Route>
-        
+
+        <Route path="ebooks/:id" element={<EbookDetailPage />} />
+        <Route path="ebooks/:id/read" element={<EbookReaderPage />} />
+
+        <Route path="audiobooks/:id" element={<AudiobookDetailPage />} />
+        <Route path="chapters/:id" element={<ChapterDetailPage />} />
+        <Route path="ebooks/:id" element={<EbookDetailPage />} />
         <Route path="/verify-email" element={<VerifyEmail />}/>
         <Route path="/Signup" element={<Signup />}/>
-        <Route path="/my-account" element={<AccountPage />} />
+        <Route path="/myaccount" element={<AccountPage />} />
         <Route path="/Signin" element={<Signin />}/>
 
 
@@ -128,7 +137,7 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />}/>
       <Route path="/Welcome" element={<Welcome />}/>
       
-      <Route path="/Premium" element={<Premium />}/>
+      <Route path="/Permium" element={<Premium />}/>
     </Routes>
   </BrowserRouter>
 ): (
