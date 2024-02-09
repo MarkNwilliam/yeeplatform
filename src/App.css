@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 .App {
   text-align: center;
 }
@@ -50,3 +52,13 @@
     border-color: #fff;
   }
 }
+
+@media (min-width: 768px) {
+  .dark-mode-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+  }
+}
+

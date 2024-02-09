@@ -3,32 +3,40 @@ import { Link } from 'react-router-dom';
 import Rating from '@mui/material/Rating';
 
 function ContentCard({ title, coverImage, itemType, itemId, rating }) {
-  // Function to determine the button based on the item type
-
   const defaultCoverImage = "yeeplatform_book_cover.png";
 
   const handleImageError = (e) => {
     e.target.src = defaultCoverImage;
   };
 
-
   const renderActionButton = () => {
+    const buttonStyle = "bg-transparent text-yellow-500 font-bold py-2 px-4 rounded border border-yellow-500 focus:outline-none focus:border-none focus:ring ring-transparent no-underline transition-all duration-300 hover:bg-yellow-500 hover:text-red hover:border-yellow-500 hover:scale-105";
+
+
     switch (itemType) {
       case 'audiobook':
         return (
-          <a href={`/audiobook/${itemId}`} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <a href={`/audiobooks/${itemId}`} className={buttonStyle}>
             Listen
           </a>
         );
+
+      case 'audiochapter':
+        return (
+          <a href={`/audiochapters/${itemId}`} className={buttonStyle}>
+            Listen
+          </a>
+        );
+
       case 'Text':
         return (
-          <Link to={`/chapters/${itemId}`} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+          <Link to={`/chapters/${itemId}`} className={buttonStyle}>
             Chapter
           </Link>
         );
       case 'ebook':
         return (
-          <Link to={`/ebooks/${itemId}`} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <Link to={`/ebooks/${itemId}`} className={`no-underline ${buttonStyle}`}>
             Book
           </Link>
         );
@@ -39,7 +47,7 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
 
   return (
     <div className="rounded overflow-hidden shadow-lg bg-white w-full">
-      <div className="aspect-w-16 aspect-h-25 overflow-hidden"> {/* Adjust aspect ratio */}
+      <div className="aspect-w-16 aspect-h-25 overflow-hidden">
         <img 
           className="object-cover w-full h-full"
           src={coverImage || defaultCoverImage} 

@@ -7,9 +7,14 @@ import ProtectedRouteWrapper from "./contexts/ProtectedRoute";
 
 import ItemDetailPage from './pages/ItemDetailPage';
 import AudiobookDetailPage from './pages/AudiobookDetailPage';
+import AudioChapterdetail from './pages/AudioChapterdetail';
 import ChapterDetailPage from './pages/ChapterDetailPage';
 import EbookDetailPage from './pages/EbookDetailPage';
 import EbookReaderPage from './pages/EbookReaderPage';
+import Chapterreader from './pages/Chapterreader';
+import AudioChapterListen from './pages/Audiochapterlisten';
+import AudiobookListen from './pages/Audiobooklisten';
+import AudioChapters from './pages/AudioChapters';
 
 // Lazy-load the components
 const Home = lazy(() => import('./pages/home'));
@@ -93,23 +98,32 @@ function App() {
     
         <Route path ="/*" element={<Home />}>
         <Route path="search" element={<Scontent />}/>
-          <Route path="home" element={<Intro />}/>
+          <Route path="home" element={<Home />}/>
           <Route path="ebooks" element={<Ebooks />} />
           <Route path="audiobooks" element={<Audiobooks />}/>  
           <Route path="items/:id" element={<ItemDetailPage />} />
           <Route path="chapters" element={<Chapters />} />
+          <Route path="audiochapters" element={<AudioChapters />} />
         </Route>
 
         <Route path="ebooks/:id" element={<EbookDetailPage />} />
         <Route path="ebooks/:id/read" element={<EbookReaderPage />} />
+        <Route path="audiochapterlisten/:id/listen" element={<AudioChapterListen />} />
+       
+        <Route path="/audiobooklisten/:id/listen" element={<AudiobookListen />} />
 
-        <Route path="audiobooks/:id" element={<AudiobookDetailPage />} />
+        <Route path="chapters/:id/read" element={<Chapterreader />} />
+
+
+        <Route path="/audiobooks/:id" element={<AudiobookDetailPage />} />
+        <Route path="/audiochapters/:id" element={<AudioChapterdetail />} />
         <Route path="chapters/:id" element={<ChapterDetailPage />} />
         <Route path="ebooks/:id" element={<EbookDetailPage />} />
         <Route path="/verify-email" element={<VerifyEmail />}/>
         <Route path="/Signup" element={<Signup />}/>
         <Route path="/myaccount" element={<AccountPage />} />
         <Route path="/Signin" element={<Signin />}/>
+        <Route path="/login" element={<Signin />}/>
 
 
         <Route path="/Dashboard/*" element={

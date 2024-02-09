@@ -235,6 +235,7 @@ function DAudio() {
         author_platform_id: firebaseId,
         Duration: Duration,
         monetization: isMonetized,
+        audioUrl: audioUrl,
       };
 
       const response = await axios.post(`http://localhost:3000/audiobookupload/${firebaseId}`, data);
@@ -279,27 +280,59 @@ function DAudio() {
   };
   
 
- 
   const handleCoverChange = async (e) => {
     const file = e.target.files[0];
+    console.log("Handle Cover Change Function Called");
     if (file) {
       if (!isFileSizeValid(file)) {
-        Swal.fire('Error', 'Image size should not exceed 5MB.', 'error');
+
+        try{
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Image size should not exceed 5MB.',
+        }).then(() => {
+          // Close the SweetAlert2 and reset state
+          setCoverFile(null);
+          setSelectedCoverFileName("");
+          setImagePreviewUrl("");
+        });
+      }
+      catch(error){
+        console.log(error)
+      }
         return;
       }
   
       const dimensionsValid = await isImageDimensionsValid(file);
       if (!dimensionsValid) {
-        Swal.fire('Error', 'Image dimensions should be exactly 512x800 pixels.', 'error');
+        try{
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Image dimensions should be exactly 512x800 pixels.',
+          timer: 3000,
+        }).then(() => {
+          // Close the SweetAlert2 and reset state
+          setCoverFile(null);
+          setSelectedCoverFileName("");
+          setImagePreviewUrl("");
+        });
+      }
+      catch(error){
+        console.log(error)
+      }
         return;
       }
   
       setCoverFile(file);
       setSelectedCoverFileName(file.name);
       setImagePreviewUrl(URL.createObjectURL(file));
-      
+
+      console.log("Function Execution Completed");
     }
   };
+  
   
   
 

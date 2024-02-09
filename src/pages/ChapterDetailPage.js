@@ -51,7 +51,7 @@
       };
     
       const handleReadBook = () => {
-        navigate(`/ebooks/${id}/read`);
+        navigate(`/chapters/${id}/read`);
       };
       
     
@@ -71,14 +71,14 @@
           <div className="flex flex-col lg:flex-row items-center lg:items-start bg-white rounded-lg shadow">
             <div className="w-full lg:w-1/4 p-4">
               <img
-                src={ebook.coverImage}
+                src={ebook.coverimage}
                 alt={ebook.title}
                 className="rounded-lg shadow-xl mx-auto"
                 style={{ maxWidth: '100%', height: 'auto' }}
               />
             </div>
             <div className="w-full lg:w-3/4 lg:ml-6">
-              <h1 className="text-3xl font-bold mb-2 text-center lg:text-left">{ebook.title}</h1>
+              <h1 className="text-3xl font-bold mb-2 text-center lg:text-left overflow-auto">{ebook.title}</h1>
               <p className="text-sm text-gray-600 text-center lg:text-left mb-4">Published on: {new Date(ebook.publishedDate).toLocaleDateString()}</p>
               <Rating name="read-only" value={ebook.averageRating || 0} readOnly /> {/* Replace with actual rating */}
               <div className="mt-4">
@@ -106,7 +106,7 @@
             onClick={handleReadBook} 
             className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
-            Read Book
+            Read Chapter
           </button>
     
               {/* Review section */}
@@ -130,7 +130,7 @@
     
        {/* Related Books Section */}
        <div className="mt-8">
-            <h3 className="text-lg font-semibold">Related Books</h3>
+            <h3 className="text-lg font-semibold">Related Chapters</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {relatedContent.length > 0 ? relatedContent.map((content, index) => (
                 <ContentCard
@@ -142,7 +142,7 @@
                   rating={content.rating}
                 />
               )) : (
-                <p>No related books found.</p>
+                <p>No related chapters found.</p>
               )}
             </div>
           </div>

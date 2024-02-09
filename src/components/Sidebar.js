@@ -13,7 +13,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
             </div>
       {/* Logo */}
       <div className="flex justify-center p-6">
-        <img src="/Y.webp" alt="Logo" className="h-16 w-16" />
+        <img src="/Y.webp" alt="Logo" className="h-16 w-16 hover:scale-110 transition-transform duration-300" />
       </div>
       <nav className="flex flex-col justify-between h-full">
         <Link to="/" className="flex items-center py-3 px-4 rounded transition duration-200 hover:bg-yellow-500 hover:text-white text-gray-700 no-underline">

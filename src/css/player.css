@@ -1,0 +1,27 @@
+/* Override the root container background color to yellow */
+#rm-audio-player {
+    background-color: #ffd700; /* Yellow color */
+  }
+  
+  /* Override the interface container background color to match dark theme */
+  .rm-audio-player-provider {
+    background-color: #333; /* Dark background color */
+    color: #fff; /* Light text color on dark background */
+  }
+  
+  /* Override the volume panel background color to match dark theme */
+  .rm-audio-player-volume-panel-background {
+    background-color: #444; /* Dark background color */
+  }
+  
+  /* Override other specific colors as needed */
+  /* For example, progress bar color */
+  .rm-audio-player-progress-bar {
+    background-color: #ffd700; /* Yellow color for progress bar */
+  }
+  
+  /* Override waveform cursor color */
+  :root {
+    --rm-audio-player-waveform-cursor: #ffd700; /* Yellow color for waveform cursor */
+  }
+  

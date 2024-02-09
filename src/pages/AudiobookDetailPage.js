@@ -14,7 +14,7 @@ import ContentCard from '../subcomponents/ContentCard';
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch(`http://localhost:3000/getEbook/${id}`);
+            const response = await fetch(`http://localhost:3000/getAudiobook/${id}`);
             if (!response.ok) {
                 throw new Error('Ebook not found');
             }
@@ -50,10 +50,10 @@ import ContentCard from '../subcomponents/ContentCard';
       };
     
       const handleReadBook = () => {
-        navigate(`/ebooks/${id}/read`);
+        navigate(`/audiobooklisten/${id}/listen`);
       };
       
-    
+     
       if (loading) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>;
       }
@@ -105,7 +105,7 @@ import ContentCard from '../subcomponents/ContentCard';
             onClick={handleReadBook} 
             className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
-            Read Book
+            Listen
           </button>
     
               {/* Review section */}
@@ -129,7 +129,7 @@ import ContentCard from '../subcomponents/ContentCard';
     
        {/* Related Books Section */}
        <div className="mt-8">
-            <h3 className="text-lg font-semibold">Related Books</h3>
+            <h3 className="text-lg font-semibold">Listen</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {relatedContent.length > 0 ? relatedContent.map((content, index) => (
                 <ContentCard
@@ -141,7 +141,7 @@ import ContentCard from '../subcomponents/ContentCard';
                   rating={content.rating}
                 />
               )) : (
-                <p>No related books found.</p>
+                <p>No related content found.</p>
               )}
             </div>
           </div>

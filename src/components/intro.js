@@ -1,52 +1,61 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import IntroCarousel from "./IntroCarousel";
 
-
-export default function intro() {
-
+export default function Intro() {
     const categories = [
-        { name: "Stories",
-        pic:'stories.jpg',
-        description:"Adventure, Power and challenges 😁",
-        id:1
+        {
+            name: "Ebooks and Magazines",
+            pic: 'stories.jpg',
+            description: "Ordinary ebooks and magazines 📚",
+            id: 1,
+            link: "/ebooks"
         },
-        { name: "Life",
-        pic:'life.jpg',
-        description:"Life improvement 😀",
-        id:2
+        {
+            name: "Audio books",
+            pic: 'life.jpg',
+            description: "Just audiobooks 🎧",
+            id: 2,
+            link: "/audiobooks"
         },
-        { name: "Romantic Stories",
-        pic:'roma.jpg',
-        description:"Stories of love 😍	",
-        id:3
+        {
+            name: "Audio chapters",
+            pic: 'roma.jpg',
+            description: "Chapters in audio form 🎵",
+            id: 3,
+            link: "/audiochapters"
         },
-        { 
-            name: "Others",
-            pic:'others.jpg',
-            description:"A lot for you 😉",
-            id:4
+        {
+            name: "Chapters",
+            pic: 'others.jpg',
+            description: "Chapters written to the whole book 📖",
+            id: 4,
+            link: "/chapters"
         }
-    ]
+    ];
 
     return (
         <div>
             <IntroCarousel />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
                 {categories.map((data) => (
-                    <div key={data.id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-                        <img
-                            src={data.pic}
-                            alt={data.name}
-                            className="w-full h-36 object-cover"
-                        />
-                        <div className="p-4">
-                            <h5 className="text-lg font-semibold mb-2">{data.name}</h5>
-                            <p className="text-sm text-gray-600">{data.description}</p>
+                    <Link to={data.link} key={data.id} className="no-underline">
+                        <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+                            <img
+                                src={data.pic}
+                                alt={data.name}
+                                className="w-full h-36 object-cover"
+                            />
+                            <div className="p-4">
+                                <h5 className="text-lg font-semibold mb-2">{data.name}</h5>
+                                <p className="text-sm text-gray-600">{data.description}</p>
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
-    
+
+
         </div>
     );
 }

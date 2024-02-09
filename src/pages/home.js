@@ -14,7 +14,7 @@ import Footer from '../components/Footer';
 import Dbarlist from '../subcomponents/Dbarlist';
 import MPopper from '../components/MPopper';
 import { useAuth } from '../contexts/AuthContext'; // Import useAuth
-
+import AudioChapters from './AudioChapters';
 
 function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -58,13 +58,13 @@ function Home() {
           <div className="flex items-center justify-center ml-auto">
             {user ? (
               <>
-                <button onClick={handleMyAccountClick} className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline">My Account</button>
-                <button onClick={handleLogout} className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black">Logout</button>
+                <button onClick={handleMyAccountClick} className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">My Account</button>
+                <button onClick={handleLogout} className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black hover:scale-110">Logout</button>
               </>
             ) : (
               <>
-                <Link to="/login" className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline">Login</Link>
-                <Link to="/signup" className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline">Signup</Link>
+                <Link to="/login" className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Login</Link>
+                <Link to="/signup" className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Signup</Link>
               </>
             )}
           </div>
@@ -83,9 +83,10 @@ function Home() {
         {/* Menu popup */}
         {menuOpen && <MPopper open={menuOpen} anchorRef={menuIconRef.current} handleClose={() => setMenuOpen(false)} handleListKeyDown={() => {}} />}
 
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className="flex-1 overflow-y-auto p-2">
           <Routes>
             <Route path="/" index element={<Intro />} />
+            <Route path="home" index element={<Intro />} />
             <Route path="search" element={<Scontent />} />
             <Route path="ebooks" element={<Ebooks />} />
             <Route path="ebooks/:id" element={<EbookDetails />} />
@@ -93,6 +94,7 @@ function Home() {
             <Route path="audiobooks/:id" element={<AudiobookDetail />} />
             <Route path="chapters/:id" element={<ChapterDetail />} />
             <Route path="chapters" element={<Chapters />} />
+            <Route path="audiochapters" element={<AudioChapters />} />
           </Routes>
           <Footer />
         </main>
