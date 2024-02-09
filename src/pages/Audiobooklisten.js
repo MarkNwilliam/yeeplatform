@@ -38,7 +38,7 @@ const AudiobookListen = () => {
     const fetchAudiobookData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/getAudiobook/${id}`
+          `https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`
         );
         setAudiobook(response.data);
       } catch (e) {

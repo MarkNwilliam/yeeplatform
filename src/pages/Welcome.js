@@ -53,7 +53,7 @@ const Welcome = () => {
             localStorage.setItem('isVerified', true);
 
             // Make API call to update email verification in MongoDB
-            fetch('http://localhost:3000/updateVerification', {
+            fetch('https://yeeplatformbackend.azurewebsites.net/updateVerification', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ firebaseId: user.uid, emailVerified: true })

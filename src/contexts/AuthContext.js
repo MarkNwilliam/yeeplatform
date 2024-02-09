@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
     if (!currentUser || !currentUser.uid) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/isAuthor/${currentUser.uid}`);
+      const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/isAuthor/${currentUser.uid}`);
       if (response.ok) {
           const data = await response.json();
           setIsAuthor(data.isAuthor);

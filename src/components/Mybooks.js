@@ -34,7 +34,7 @@ const Mybooks = () => {
   
       const authorId = auth.currentUser.uid;
       console.log("here is the author id"+authorId)
-      const response = await fetch(`http://localhost:3000/getAllBooks/${authorId}`);
+      const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAllBooks/${authorId}`);
       const data = await response.json();
       setBooks(data);
   
@@ -95,7 +95,7 @@ const handleDeleteConfirmation = (book) => {
     try {
       Swal.showLoading();  // Show the loading indicator
   
-      const response = await fetch(`http://localhost:3000/deleteBook/${docId}`, { method: 'DELETE' });
+      const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/deleteBook/${docId}`, { method: 'DELETE' });
       if(response.status === 200) {
           setBooks(prevBooks => prevBooks.filter(book => book.id !== docId));
       } else {
@@ -118,7 +118,7 @@ const handleDeleteConfirmation = (book) => {
     try {
       Swal.showLoading();  // Show the loading indicator
       console.log("Here is book id "+selectedDocId)
-      const response = await fetch(`http://localhost:3000/updateDescription`, { 
+      const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/updateDescription`, { 
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json'

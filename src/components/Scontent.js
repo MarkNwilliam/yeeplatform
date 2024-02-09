@@ -19,8 +19,8 @@ export default function Scontent() {
     setIsLoading(true); // Set loading state to true when fetching starts
     try {
       const url = searchTerm 
-        ? `http://localhost:3000/search?term=${searchTerm}&page=${currentPage}&limit=15`
-        : `http://localhost:3000/getallcontent?page=${currentPage}&limit=15`;
+        ? `https://yeeplatformbackend.azurewebsites.net/search?term=${searchTerm}&page=${currentPage}&limit=15`
+        : `https://yeeplatformbackend.azurewebsites.net/getallcontent?page=${currentPage}&limit=15`;
   
       const response = await fetch(url);
       if (!response.ok) throw new Error(`Data fetching failed with status: ${response.status}`);

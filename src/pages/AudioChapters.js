@@ -19,8 +19,8 @@ export default function AudioChapters() {
   
     try {
       const url = searchTerm
-        ? `http://localhost:3000/search/audiochapters?title=${searchTerm}&page=${currentPage}&limit=15`
-        : `http://localhost:3000/getallaudiochapters?page=${currentPage}&limit=15`;
+        ? `https://yeeplatformbackend.azurewebsites.net/search/audiochapters?title=${searchTerm}&page=${currentPage}&limit=15`
+        : `https://yeeplatformbackend.azurewebsites.net/getallaudiochapters?page=${currentPage}&limit=15`;
   
       const response = await fetch(url);
       if (!response.ok) throw new Error(`Data fetching failed with status: ${response.status}`);

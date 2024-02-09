@@ -14,7 +14,7 @@ const EbookDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/getEbook/${id}`);
+        const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getEbook/${id}`);
         if (!response.ok) {
             throw new Error('Ebook not found');
         }
@@ -30,7 +30,7 @@ const EbookDetailPage = () => {
     try {
       const category = encodeURIComponent(ebook.category);
       const genre = encodeURIComponent(ebook.genres.join(',')); // Assuming 'genres' is an array
-      const relatedResponse = await fetch(`http://localhost:3000/relatedContent?currentItemId=${id}&category=${category}&genre=${genre}`);
+      const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/relatedContent?currentItemId=${id}&category=${category}&genre=${genre}`);
       if (!relatedResponse.ok) {
         throw new Error('Failed to fetch related content');
       }

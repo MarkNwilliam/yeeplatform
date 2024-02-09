@@ -238,7 +238,7 @@ function DAudio() {
         audioUrl: audioUrl,
       };
 
-      const response = await axios.post(`http://localhost:3000/audiobookupload/${firebaseId}`, data);
+      const response = await axios.post(`https://yeeplatformbackend.azurewebsites.net/audiobookupload/${firebaseId}`, data);
 
       Swal.close();
 

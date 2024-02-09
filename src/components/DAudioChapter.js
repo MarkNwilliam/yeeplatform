@@ -251,7 +251,7 @@ if (chapterDetails.categories.length < minCategoriesRequired) {
             return;
         }
 
-        const response = await axios.post(`http://localhost:3000/AudioChapterupload/${user.uid}`, {
+        const response = await axios.post(`https://yeeplatformbackend.azurewebsites.net/AudioChapterupload/${user.uid}`, {
             ...chapterDetails,
             content: blobURL,
             duration: audioDetails.duration,

@@ -1,7 +1,7 @@
 // azureUpload.js
 
 async function uploadToAzure(file, isThumbnail = false) {
-    const response = await fetch('http://localhost:3000/generateSasToken');
+    const response = await fetch('https://yeeplatformbackend.azurewebsites.net/generateSasToken');
     const data = await response.json();
     const sasToken = data.sasToken;
 

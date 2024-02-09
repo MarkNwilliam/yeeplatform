@@ -22,7 +22,7 @@ const EbookReaderPage = () => {
     const fetchEbookContent = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:3000/getEbook/${id}`);
+        const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getEbook/${id}`);
         const data = await response.json();
         setEbookContent(data);
       } catch (error) {

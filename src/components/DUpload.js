@@ -317,7 +317,7 @@ if (ebookFile.type === 'application/pdf') {
 
   try {
     // Upload the ebook file to the server and get the ebookUrl
-    const uploadResponse = await axios.post(`http://localhost:3000/fileupload/${firebaseId}`, fileData, {
+    const uploadResponse = await axios.post(`https://yeeplatformbackend.azurewebsites.net/fileupload/${firebaseId}`, fileData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -365,7 +365,7 @@ formData.append('ebookUrl', ebookUrl);
 
 try {
   // Submit the complete formData to backend (including remaining data)
-  const response = await axios.post(`http://localhost:3000/ebookupload/${firebaseId}`, formData);
+  const response = await axios.post(`https://yeeplatformbackend.azurewebsites.net/ebookupload/${firebaseId}`, formData);
   console.log(response.data);
   Swal.close();
   resetForm();

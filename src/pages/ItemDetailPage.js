@@ -11,7 +11,7 @@ const ItemDetailPage = () => {
         // Function to fetch item details
         const fetchItemDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/items/${id}`);
+                const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/items/${id}`);
                 if (!response.ok) throw new Error('Item not found');
                 const data = await response.json();
                 setItemDetails(data);

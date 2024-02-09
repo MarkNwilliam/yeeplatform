@@ -30,7 +30,7 @@ const AccountPage = () => {
   useEffect(() => {
     const firebaseId = auth.currentUser.uid;
 
-    axios.get(`http://localhost:3000/userDetails/${firebaseId}`)
+    axios.get(`https://yeeplatformbackend.azurewebsites.net/userDetails/${firebaseId}`)
       .then(response => {
         const user = response.data;
         setUserData(user);
@@ -72,7 +72,7 @@ const AccountPage = () => {
           isAuthor: true
         };
   
-        const response = await axios.put(`http://localhost:3000/becomeAuthor/${firebaseId}`, data);
+        const response = await axios.put(`https://yeeplatformbackend.azurewebsites.net/becomeAuthor/${firebaseId}`, data);
         console.log(response.data);
   
         // Displaying a success alert
@@ -113,7 +113,7 @@ const AccountPage = () => {
         allowOutsideClick: false // Prevents user from closing the dialog
     });
 
-    axios.put(`http://localhost:3000/updateaccountinfo/${firebaseId}`, formData)
+    axios.put(`https://yeeplatformbackend.azurewebsites.net/updateaccountinfo/${firebaseId}`, formData)
          .then(response => {
              console.log('User data updated:', response.data);
 

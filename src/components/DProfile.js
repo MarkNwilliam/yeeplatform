@@ -30,7 +30,7 @@ export default function DProfile() {
         const firebaseId = auth.currentUser.uid;
 
         try {
-            const response = await axios.post(`http://localhost:3000/userprofilestore/${firebaseId}`, formData);
+            const response = await axios.post(`https://yeeplatformbackend.azurewebsites.net/userprofilestore/${firebaseId}`, formData);
             if (response.data?.imageUrl) {
                 setUserData(prev => ({ ...prev, profileImage: response.data.imageUrl }));
                 Swal.fire('Success', 'Image uploaded successfully!', 'success');
@@ -44,7 +44,7 @@ export default function DProfile() {
 
     useEffect(() => {
         const firebaseId = auth.currentUser.uid;
-        axios.get(`http://localhost:3000/userDetails/${firebaseId}`)
+        axios.get(`https://yeeplatformbackend.azurewebsites.net/userDetails/${firebaseId}`)
             .then(response => {
                 const user = response.data;
                 setUserData(user);
@@ -67,7 +67,7 @@ export default function DProfile() {
         const firebaseId = auth.currentUser.uid;
 
         try {
-            const response = await axios.put(`http://localhost:3000/updateaccountinfo/${firebaseId}`, userData);
+            const response = await axios.put(`https://yeeplatformbackend.azurewebsites.net/updateaccountinfo/${firebaseId}`, userData);
             if (response.data.success && response.data.message === 'User data updated successfully') {
                 Swal.fire('Success', 'Profile updated successfully!', 'success');
             } else {

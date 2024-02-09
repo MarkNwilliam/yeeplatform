@@ -10,7 +10,7 @@ const Chapterreader = () => {
   useEffect(() => {
     const fetchChapter = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/getChapter/${id}`);
+        const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getChapter/${id}`);
         const data = await response.json();
         setChapter(data);
       } catch (error) {

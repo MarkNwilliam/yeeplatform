@@ -35,7 +35,7 @@ const MyChapters = () => {
     const user = auth.currentUser;
     if (user) {
       try {
-        const response = await fetch(`http://localhost:3000/getauthorchapter/${user.uid}`);
+        const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getauthorchapter/${user.uid}`);
         if (!response.ok) {
           
           const errorData = await response.json();
@@ -59,7 +59,7 @@ const MyChapters = () => {
     const user = auth.currentUser;
     if (user) {
       try {
-        const response = await fetch(`http://localhost:3000/getAudioChapters/${user.uid}`);
+        const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudioChapters/${user.uid}`);
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || 'An error occurred while fetching the audio chapters.');
@@ -107,7 +107,7 @@ const MyChapters = () => {
   const handleSave = async () => {
     // Start loading, e.g. with a loading spinner or similar
     try {
-      const response = await fetch(`http://localhost:3000/updatechapter/${selectedDocId}`, {
+      const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/updatechapter/${selectedDocId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +167,7 @@ const handleTextChapterSave = async () => {
   });
 
   try {
-    const response = await fetch(`http://localhost:3000/updatechapter/${selectedDocId}`, {
+    const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/updatechapter/${selectedDocId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -207,7 +207,7 @@ const handleDelete = async (docId, isAudio = false) => {
         // Here we'll call the backend API to delete the chapter or audio chapter
         // Let's assume the endpoint to delete a chapter is /deleteChapter/:id for text chapters
         // and /deleteAudioChapter/:id for audio chapters
-        const deleteEndpoint = isAudio ? `http://localhost:3000/deleteaudiochapter/${docId}` : `http://localhost:3000/deletechapter/${docId}`;
+        const deleteEndpoint = isAudio ? `https://yeeplatformbackend.azurewebsites.net/deleteaudiochapter/${docId}` : `https://yeeplatformbackend.azurewebsites.net/deletechapter/${docId}`;
         const response = await fetch(deleteEndpoint, { method: 'DELETE' });
         
         if (response.ok) {
@@ -256,7 +256,7 @@ const handleAudioSave = async () => {
       description: editedAudioChapter.description // send only the required fields
     };
 
-    const response = await fetch(`http://localhost:3000/updateAudioChapter/${selectedAudioDocId}`, {
+    const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/updateAudioChapter/${selectedAudioDocId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

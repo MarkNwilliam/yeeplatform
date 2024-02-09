@@ -168,7 +168,7 @@ const handleSubmit = async (e) => {
         if (coverImage) formData.append("coverimage", coverImage);
     
         try {
-            const response = await fetch(`http://localhost:3000/uploadchapter/${firebaseId}`, {
+            const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/uploadchapter/${firebaseId}`, {
                 method: "POST",
                 body: formData
             });

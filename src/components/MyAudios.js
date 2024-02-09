@@ -31,7 +31,7 @@ const MyAudios = () => {
   const fetchAudiobooks = async () => {
     Swal.showLoading();
     try {
-      const response = await fetch(`http://localhost:3000/getauthoraudios?userId=${auth.currentUser.uid}`);
+      const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getauthoraudios?userId=${auth.currentUser.uid}`);
       if (response.ok) {
         const data = await response.json();
         setAudiobooks(data);
@@ -65,7 +65,7 @@ const MyAudios = () => {
   const handleSave = async () => {
     try {
       Swal.showLoading();
-      const response = await fetch(`http://localhost:3000/updateABD`, { 
+      const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/updateABD`, { 
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -103,7 +103,7 @@ const MyAudios = () => {
       if (result.isConfirmed) {
         try {
           Swal.showLoading();
-          const response = await fetch(`http://localhost:3000/deleteAudiobook/${docId}`, { method: 'DELETE' });
+          const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/deleteAudiobook/${docId}`, { method: 'DELETE' });
           if (response.ok) {
             setAudiobooks(prevBooks => prevBooks.filter(book => book._id !== docId));
             Swal.fire('Deleted!', 'The audiobook has been deleted.', 'success');
