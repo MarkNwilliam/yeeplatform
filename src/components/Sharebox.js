@@ -23,7 +23,7 @@ const ShareBox = ({ shareUrl, selectedText }) => {
   return (
     <div className="share-box w-full max-w-md mx-auto p-4">
       <div className="share-header mb-4">
-        <img src="/Y.webp" alt="YeePlatform Logo" className="logo w-12 h-auto" />
+        <img src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" alt="YeePlatform Logo" className="logo w-12 h-auto" />
         <span className="share-title text-lg">Share this quote with friends:</span>
       </div>
       <div className="share-icons flex justify-center">

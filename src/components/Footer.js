@@ -8,7 +8,7 @@ export default function Footer() {
     <div className="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
       <div className="lg:w-1/3">
         <a href="#" className="flex justify-center space-x-3 lg:justify-start no-underline text-gray-800">
-          <img src="/Y.webp" alt="Yeeplatform Logo" className="h-12 w-12" />
+          <img src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" alt="Yeeplatform Logo" className="h-12 w-12" />
           <span className="self-center text-2xl font-semibold">Yeeplatform</span>
         </a>
       </div>

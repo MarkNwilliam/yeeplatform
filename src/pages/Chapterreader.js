@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ShareBox from '../components/Sharebox';
+import { Helmet } from 'react-helmet';
 
 const Chapterreader = () => {
   const { id } = useParams();

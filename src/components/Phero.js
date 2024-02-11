@@ -35,7 +35,7 @@ export default function Phero() {
                     <img
                       alt="Your Company"
                       className="h-8 w-auto sm:h-10"
-                      src="prem.jpg"
+                      src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/prem.jpg"
                     />
                   </a>
                   <div className="-mr-2 flex items-center md:hidden">
@@ -77,7 +77,7 @@ export default function Phero() {
                   <div>
                     <img
                       className="h-8 w-auto"
-                      src="prem.jpg"
+                      src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/prem.jpg"
                       alt=""
                     />
                   </div>
@@ -144,7 +144,7 @@ export default function Phero() {
     <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
       <img
         className="h-56 w-full object-cover sm:h-72 md:h-96 lg:h-full lg:w-full"
-        src="prem.jpg"
+        src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/prem.jpg"
         alt=""
       />
     </div>

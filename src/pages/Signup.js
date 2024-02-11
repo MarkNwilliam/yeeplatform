@@ -6,6 +6,8 @@ import { FaGoogle } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
 import { countries } from '../constants/countries';
+import { debounce } from 'lodash';
+import { Helmet } from 'react-helmet';
 
 function Signup() {
   const [name, setName] = useState("");
@@ -17,7 +19,10 @@ function Signup() {
   const [isConsentGiven, setIsConsentGiven] = useState(false);
   const [country, setCountry] = useState("");
 
+  const debounceDelay = 1000; // 1 second
 
+  const debouncedHandleSignUp = debounce(handleSignUp, debounceDelay);
+  
 
   const sendUserDataToBackend = async (userData) => {
     try {
@@ -214,13 +219,19 @@ function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-200 p-4 md:p-0">
+      <Helmet>
+  <title>Sign Up - Yee FM</title>
+  <meta name="description" content="Sign up for a new account on Yee FM." />
+  <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+</Helmet>
     <div className="max-w-md w-full space-y-8 bg-white p-6 rounded-lg shadow-md">
       <div className="text-center">
         <IoArrowBack
           className="text-gray-700 text-2xl cursor-pointer mb-4"
           onClick={() => navigate(-1)}
         />
-       <img src="/Y.webp" alt="Platform logo" loading="lazy" className="mx-auto h-16 w-auto mb-2" />
+       <img src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" alt="Platform logo" loading="lazy" className="mx-auto h-16 w-auto mb-2" />
 
         <h2 className="text-2xl font-bold text-gray-800">Sign Up</h2>
         <p className="mt-2 text-gray-600">
@@ -242,7 +253,9 @@ function Signup() {
         Continue with Google
       </button>
 
-      <form onSubmit={handleSignUp} className="space-y-4" autoComplete="off">
+      
+      <form onSubmit={debouncedHandleSignUp} className="space-y-4" autoComplete="off">
+
         <input
           type="text"
           id="name"

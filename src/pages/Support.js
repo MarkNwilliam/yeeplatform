@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Avatar from '@mui/material/Avatar';
 import { Link } from "react-router-dom";
+import { Helmet } from 'react-helmet';
 
 const Item = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(false);

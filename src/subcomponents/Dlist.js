@@ -25,7 +25,7 @@ export default function MList() {
     return (
         <div>
             <Avatar
-  src="/Y.webp"
+  src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"
   sx={{ width: 50,
      height: 50 , 
     justifyContent: 'center',

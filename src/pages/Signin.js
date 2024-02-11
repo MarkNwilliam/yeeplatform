@@ -6,6 +6,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../contexts/AuthContext';
+import { Helmet } from 'react-helmet';
 
 function SignIn() {
   const [email, setEmail] = useState("");
@@ -86,10 +87,16 @@ function SignIn() {
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-200 p-4 sm:p-0">
+        <Helmet>
+      <title>Sign In - Yee FM</title>
+      <meta name="description" content="Sign in to your account on Yee FM." />
+      <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+    </Helmet>
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-start mb-6">
           <FaArrowLeft className="text-gray-800 cursor-pointer" onClick={() => navigate(-1)} />
-          <img src="/Y.webp" alt="Platform logo" loading="lazy" className="mx-auto h-16 w-auto mb-2" />
+          <img src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" alt="Platform logo" loading="lazy" className="mx-auto h-16 w-auto mb-2" />
         </div>
         <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">Sign In</h1>
         <button

@@ -15,6 +15,7 @@ import Dbarlist from '../subcomponents/Dbarlist';
 import MPopper from '../components/MPopper';
 import { useAuth } from '../contexts/AuthContext'; // Import useAuth
 import AudioChapters from './AudioChapters';
+import { Helmet } from 'react-helmet';
 
 function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

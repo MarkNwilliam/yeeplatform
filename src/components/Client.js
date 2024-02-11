@@ -102,7 +102,7 @@ const drawerWidth = 240;
 
 <Head>
         <title>Dashboard</title>
-        <link rel="icon" href="/Y.webp" />
+        <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
       </Head>
 
       <Box sx={{ display: 'flex' }}>

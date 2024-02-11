@@ -29,7 +29,7 @@ function DNews() {
           <NewsImage
             component="img"
             alt="Logo"
-            image="/Y.webp"
+            image="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"
             title="Logo"
           />
           <CardContent>

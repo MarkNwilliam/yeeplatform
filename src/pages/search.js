@@ -22,7 +22,7 @@ import MList from "../subcomponents/MList.js"
 import { useWindowWidth } from '@react-hook/window-size';
 import Barlist from "../subcomponents/Barlist.js";
 
-
+import { Helmet } from 'react-helmet';
 
 
 const drawerWidth = 240;
@@ -40,7 +40,12 @@ const drawerWidth = 240;
     return (
       <ThemeProvider>
 
-
+<Helmet>
+      <title>Search - Yee FM</title>
+      <meta name="description" content="Search for content on Yee FM." />
+      <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+      <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+    </Helmet>
 
   
 

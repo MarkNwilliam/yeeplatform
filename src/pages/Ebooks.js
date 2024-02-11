@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+
 
 export default function Scontent() {
   const [items, setItems] = useState([]);

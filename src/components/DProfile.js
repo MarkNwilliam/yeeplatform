@@ -85,7 +85,7 @@ export default function DProfile() {
           <div className="flex items-center justify-center space-x-4 relative">
     <img
         alt="Profile Picture"
-        src={userData.profileImage || "/Y.webp"}
+        src={userData.profileImage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"}
         className="w-32 h-32 rounded-full"
     />
 

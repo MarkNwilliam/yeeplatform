@@ -6,28 +6,28 @@ export default function Intro() {
     const categories = [
         {
             name: "Ebooks and Magazines",
-            pic: 'stories.jpg',
+            pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/stories.jpg',
             description: "Ordinary ebooks and magazines 📚",
             id: 1,
             link: "/ebooks"
         },
         {
             name: "Audio books",
-            pic: 'life.jpg',
+            pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/life.jpg',
             description: "Just audiobooks 🎧",
             id: 2,
             link: "/audiobooks"
         },
         {
             name: "Audio chapters",
-            pic: 'roma.jpg',
+            pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/roma.jpg',
             description: "Chapters in audio form 🎵",
             id: 3,
             link: "/audiochapters"
         },
         {
             name: "Chapters",
-            pic: 'others.jpg',
+            pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/others.jpg',
             description: "Chapters written to the whole book 📖",
             id: 4,
             link: "/chapters"

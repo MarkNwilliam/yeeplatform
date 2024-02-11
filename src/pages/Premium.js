@@ -5,6 +5,7 @@ import Phero from "../components/Phero.js"
 import Plist from "../components/Plist"
 import Pricingtable from "../components/Pricingtable"
 import Footer from "../components/Footer.js"
+import { Helmet } from 'react-helmet';
 
 export default function Premium() {
   return (

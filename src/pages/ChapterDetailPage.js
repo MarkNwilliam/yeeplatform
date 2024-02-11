@@ -3,6 +3,7 @@
     import { useParams, useNavigate } from 'react-router-dom';
     import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
     import ContentCard from '../subcomponents/ContentCard';
+    import { Helmet } from 'react-helmet';
     
     const ChapterDetailPage = () => {
       const { id } = useParams();
