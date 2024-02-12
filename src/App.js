@@ -97,7 +97,7 @@ function App() {
     <Routes>
     
         <Route path ="/*" element={<Home />}>
-        <Route path="search" element={<Scontent />}/>
+          b<Route path="search" element={<Scontent />}/>
           <Route path="home" element={<Home />}/>
           <Route path="ebooks" element={<Ebooks />} />
           <Route path="audiobooks" element={<Audiobooks />}/>  
