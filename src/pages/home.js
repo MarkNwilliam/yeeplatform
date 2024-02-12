@@ -16,6 +16,7 @@ import MPopper from '../components/MPopper';
 import { useAuth } from '../contexts/AuthContext'; // Import useAuth
 import AudioChapters from './AudioChapters';
 import { Helmet } from 'react-helmet';
+import Swal from 'sweetalert2';
 
 function Home() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,8 +27,60 @@ function Home() {
 
     const { user, logout, isAuthor } = useAuth(); // Use the useAuth function
 
-    const handleLogout = () => {
-        logout(); // Logout function from AuthContext
+    const handleLogout = async () => {
+        try {
+            const result = await Swal.fire({
+                title: "Are you sure you want to log out?",
+                text: "You will be logged out of your account.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#FFD700", // Yellow color
+                cancelButtonColor: "#FF8C00", // DarkOrange color
+                confirmButtonText: "Yes, log me out",
+                cancelButtonText: "No, cancel",
+                showClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeInUp
+                        animate__faster
+                    `
+                },
+                hideClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeOutDown
+                        animate__faster
+                    `
+                },
+            });
+    
+            if (result.isConfirmed) {
+                await logout();
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "success",
+                    title: "Signed out successfully",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: '#fff', 
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                title: "Error",
+                text: "An error occurred while logging out.",
+                icon: "error",
+                showConfirmButton: false,
+                timer: 3000,
+                background: '#FF8C00' // DarkOrange color
+            });
+        }
     };
 
     const handleMyAccountClick = () => {

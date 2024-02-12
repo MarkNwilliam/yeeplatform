@@ -4,13 +4,15 @@ import Swal from "sweetalert2";
 import { FaGoogle, FaArrowLeft } from "react-icons/fa";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from '../contexts/AuthContext';
 import { Helmet } from 'react-helmet';
+import queryString from 'query-string';
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const location = useLocation();
   const navigate = useNavigate();
   
   const { login, loginWithGoogle } = useContext(AuthContext);
@@ -18,7 +20,7 @@ function SignIn() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-  
+
     if (!email || !password) {
       Swal.fire({
         icon: "error",
@@ -27,21 +29,32 @@ function SignIn() {
       });
       return;
     }
-  
+
     try {
       Swal.fire({
         title: "Signing in...",
         allowEscapeKey: false,
         allowOutsideClick: false,
-        onBeforeOpen: () => {
-          Swal.showLoading();
+        showConfirmButton: false,
+        background: '#fff', 
+        backdrop: `
+        rgba(255,255,224,0.4) // Light yellow
+      `,
+        didOpen: () => {
+            Swal.showLoading();
         },
-      });
-  
+        willClose: (dismiss) => {
+            if (dismiss === Swal.DismissReason.cancel) {
+                // Handle cancel action
+                console.log("Sign in canceled");
+            }
+        },
+    });
+
       await signInWithEmailAndPassword(auth, email, password);
       Swal.close();
       await login(email, password);
-      navigate("/home");
+      navigate(location.state?.from || "/home");
     } catch (error) {
       console.error("Error signing in:", error);
       Swal.fire({
@@ -62,17 +75,30 @@ function SignIn() {
         title: "Signing in with Google...",
         allowEscapeKey: false,
         allowOutsideClick: false,
-        onBeforeOpen: () => {
-          Swal.showLoading();
+        showConfirmButton: false,
+        background: '#fff', 
+        backdrop: `
+        rgba(255,255,224,0.4) // Light yellow
+      `,
+        didOpen: () => {
+            Swal.showLoading();
+          
         },
-      });
+        willClose: (dismiss) => {
+            if (dismiss === Swal.DismissReason.cancel) {
+                // Handle cancel action
+                console.log("Sign in canceled");
+            }
+        },
+    });
   
       const result = await signInWithPopup(auth, provider);
       const { email, uid } = result.user;
       Swal.close();
     
        await loginWithGoogle();
-      navigate("/home");
+       // Redirect back to the previous page or "/home" if no "from" parameter
+      navigate(queryString.parse(location.search).from || "/home");
       
     } catch (error) {
       console.error("Error signing in with Google:", error);

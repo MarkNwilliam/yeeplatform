@@ -4,7 +4,8 @@ import OfflineStatus from './components/OfflineStatus';
 import LoadingScreen from "./components/loadingscreen";
 import { Helmet } from 'react-helmet';
 import ProtectedRouteWrapper from "./contexts/ProtectedRoute";
-
+import Swal from 'sweetalert2';
+import swal from 'sweetalert2';
 import ItemDetailPage from './pages/ItemDetailPage';
 import AudiobookDetailPage from './pages/AudiobookDetailPage';
 import AudioChapterdetail from './pages/AudioChapterdetail';

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from 'react-router-dom';
+import { Navigate,useLocation } from 'react-router-dom';
 import { useAuth } from "./AuthContext";
+import queryString from 'query-string';
 
 const ProtectedRouteWrapper = ({ children }) => {
   const { user, isAuthor: contextIsAuthor, loading } = useAuth();
+  const location = useLocation();
 
   console.log("ProtectedRoute: User from context:", user);
   console.log("ProtectedRoute: isAuthor from context:", contextIsAuthor);
@@ -15,11 +17,16 @@ const ProtectedRouteWrapper = ({ children }) => {
 
   if (!user) {
     console.log("ProtectedRoute: No user found, navigating to Signin");
-    return <Navigate to="/Signin" replace />;
+    const query = queryString.stringify({ from: location.pathname }); // Append current page to query parameter
+    console.log("Query parameter:", query);
+    console.log("Location object:", location);
+    return <Navigate to={`/signin?${query}`} replace />;
   } 
 
   if (!contextIsAuthor) {
     console.log("ProtectedRoute: User is not an author, navigating to home");
+
+
     return <Navigate to="/" replace />;
   }
 
