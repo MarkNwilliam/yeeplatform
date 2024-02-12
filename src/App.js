@@ -107,12 +107,12 @@ function App() {
         </Route>
 
         <Route path="ebooks/:id" element={<EbookDetailPage />} />
-        <Route path="ebooks/:id/read" element={<EbookReaderPage />} />
-        <Route path="audiochapterlisten/:id/listen" element={<AudioChapterListen />} />
+        <Route path="ebooks/:id/read" element={<ProtectedRouteWrapper> <EbookReaderPage /> </ProtectedRouteWrapper>} />
+        <Route path="audiochapterlisten/:id/listen" element={<ProtectedRouteWrapper> <AudioChapterListen /> </ProtectedRouteWrapper>} />
        
-        <Route path="/audiobooklisten/:id/listen" element={<AudiobookListen />} />
+        <Route path="/audiobooklisten/:id/listen" element={<ProtectedRouteWrapper> <AudiobookListen /> </ProtectedRouteWrapper>} />
 
-        <Route path="chapters/:id/read" element={<Chapterreader />} />
+        <Route path="chapters/:id/read" element={<ProtectedRouteWrapper> <Chapterreader /> </ProtectedRouteWrapper>} />
 
 
         <Route path="/audiobooks/:id" element={<AudiobookDetailPage />} />
@@ -121,8 +121,10 @@ function App() {
         <Route path="ebooks/:id" element={<EbookDetailPage />} />
         <Route path="/verify-email" element={<VerifyEmail />}/>
         <Route path="/Signup" element={<Signup />}/>
+        <Route path="/signup" element={<Signup />}/>
         <Route path="/myaccount" element={<AccountPage />} />
         <Route path="/Signin" element={<Signin />}/>
+        <Route path="/login" element={<Signin />}/>
         <Route path="/login" element={<Signin />}/>
 
 
