@@ -11,7 +11,7 @@ import ContentCard from '../subcomponents/ContentCard';
       const [error, setError] = useState(null);
       const [relatedContent, setRelatedContent] = useState([]);
 
-      const defaultCoverImage = "/yeeplatform_book_cover.png";
+      const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
         const fetchData = async () => {

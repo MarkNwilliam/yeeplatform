@@ -4,7 +4,7 @@
     import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
     import ContentCard from '../subcomponents/ContentCard';
     import { Helmet } from 'react-helmet';
-    
+
     const ChapterDetailPage = () => {
       const { id } = useParams();
       const navigate = useNavigate();
@@ -12,6 +12,8 @@
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
       const [relatedContent, setRelatedContent] = useState([]);
+
+      const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
         const fetchData = async () => {
@@ -72,7 +74,8 @@
           <div className="flex flex-col lg:flex-row items-center lg:items-start bg-white rounded-lg shadow">
             <div className="w-full lg:w-1/4 p-4">
               <img
-                src={ebook.coverimage}
+
+                src={ebook.coverimage && ebook.coverimage.endsWith("undefined") ? defaultCoverImage : ebook.coverimage || defaultCoverImage}
                 alt={ebook.title}
                 className="rounded-lg shadow-xl mx-auto"
                 style={{ maxWidth: '100%', height: 'auto' }}

@@ -10,6 +10,8 @@ import ContentCard from '../subcomponents/ContentCard';
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
       const [relatedContent, setRelatedContent] = useState([]);
+
+      const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
         const fetchData = async () => {
@@ -70,7 +72,8 @@ import ContentCard from '../subcomponents/ContentCard';
           <div className="flex flex-col lg:flex-row items-center lg:items-start bg-white rounded-lg shadow">
             <div className="w-full lg:w-1/4 p-4">
               <img
-                src={ebook.coverImage}
+                
+                src={ebook.coverImage && ebook.coverImage.endsWith("undefined") ? defaultCoverImage : ebook.coverImage || defaultCoverImage}
                 alt={ebook.title}
                 className="rounded-lg shadow-xl mx-auto"
                 style={{ maxWidth: '100%', height: 'auto' }}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Rating from '@mui/material/Rating';
 
 function ContentCard({ title, coverImage, itemType, itemId, rating }) {
-  const defaultCoverImage = "yeeplatform_book_cover.png";
+  const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
 
   const handleImageError = (e) => {
     e.target.src = defaultCoverImage;
@@ -50,7 +50,7 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
       <div className="aspect-w-16 aspect-h-25 overflow-hidden">
         <img 
           className="object-cover w-full h-full"
-          src={coverImage || defaultCoverImage} 
+          src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
           alt={title}
           loading="lazy"
           onError={handleImageError}
