@@ -79,18 +79,18 @@ export default function Audiobooks() {
   <meta property="og:type" content="website" />
 </Helmet>
 
-      <div className="mb-4 flex items-center">
+      <div className="mb-4 flex flex-col items-center">
         <input
           type="text"
           placeholder="Search for audiobooks..."
           value={searchTerm}
           onChange={handleSearchChange}
           className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200"
-          style={{ width: "300px" }}
+          style={{ width: "100%", maxWidth: "300px" }}
         />
         <button 
           onClick={handleSearchClick}
-          className="ml-2 p-3 border border-gray-300 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+          className="mt-2 p-3 border border-gray-300 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
           style={{ minWidth: "100px" }}
         >
           Search
