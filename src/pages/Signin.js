@@ -1,4 +1,4 @@
-import React, { useState , useContext} from "react";
+import React, { useState , useContext, useEffect} from "react";
 import { auth } from "../firebase";
 import Swal from "sweetalert2";
 import { FaGoogle, FaArrowLeft } from "react-icons/fa";
@@ -9,6 +9,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 import queryString from 'query-string';
+import { logFirebaseEvent } from '../firebase.js';
 
 function SignIn() {
   const [email, setEmail] = useState("");
@@ -18,6 +19,9 @@ function SignIn() {
   
   const { login, loginWithGoogle } = useContext(AuthContext);
 
+  useEffect(() => {
+    logFirebaseEvent('page_view', { page_path: '/Signin' });
+  }, []);
 
   const handleSignIn = async (e) => {
     e.preventDefault();

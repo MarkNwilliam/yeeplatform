@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import ShareBox from '../components/Sharebox';
-import { logEvent } from '../firebase.js'
+import {analytics, logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 
@@ -22,7 +22,7 @@ const EbookReaderPage = () => {
   const [selectedText, setSelectedText] = useState('');
 
   useEffect(() => {
-    logEvent(ebookContent.title+'_reader_page_visited');
+    logEvent(analytics, ebookContent.title+'_reader_page_visited');
     const fetchEbookContent = async () => {
       setIsLoading(true);
       try {

@@ -8,7 +8,7 @@ import "tailwindcss/tailwind.css";
 import { auth } from "../firebase";
 import axios from 'axios';
 import { countries } from '../constants/countries';
-import { logEvent } from '../firebase.js'
+import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 const AccountPage = () => {
@@ -54,7 +54,7 @@ const AccountPage = () => {
         console.log(user);
 
         // Log event
-        logEvent('AccountPage', 'UserDetailsFetched', { userId: firebaseId })
+        logEvent(analytics, 'AccountPage', 'UserDetailsFetched', { userId: firebaseId })
       })
       .catch(error => {
         console.error("Error fetching user data:", error);

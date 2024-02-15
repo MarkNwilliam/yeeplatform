@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../css/player.css';
 import AudioPlayer from 'react-modern-audio-player';
 import { useParams, useNavigate } from 'react-router-dom';
-import { logEvent } from '../firebase.js'
+import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 import {
   FaPlay,
@@ -39,8 +39,8 @@ const AudioChapterListen = () => {
 
   const defaultCoverImage = "/yeeplatform_book_cover.png";
   useEffect(() => {
-    logEvent('audiochapter_listen_page_visited');
-    logEvent(audiobook.title+'_listen_visited');
+    logEvent(analytics,'audiochapter_listen_page_visited');
+    logEvent(analytics,audiobook.title+'_listen_visited');
     const fetchAudiobookData = async () => {
       try {
         const response = await axios.get(

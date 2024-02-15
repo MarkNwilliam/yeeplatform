@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
 import ContentCard from '../subcomponents/ContentCard';
-import { logEvent } from '../firebase.js'
+import {analytics, logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 
@@ -17,7 +17,7 @@ const EbookDetailPage = () => {
   const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
 
   useEffect(() => {
-    logEvent(ebook.title+' visited');
+    logEvent(analytics, ebook.title+' visited');
     const fetchData = async () => {
       try {
         const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getEbook/${id}`);

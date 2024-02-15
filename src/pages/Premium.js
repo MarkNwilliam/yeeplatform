@@ -5,13 +5,13 @@ import Phero from "../components/Phero.js"
 import Plist from "../components/Plist"
 import Pricingtable from "../components/Pricingtable"
 import Footer from "../components/Footer.js"
-import { logEvent } from '../firebase.js'
+import { analytics , logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 export default function Premium() {
 
   useEffect(() => {
-    logEvent('page_view', { page: 'premium' });
+    logEvent(analytics,'page_view', { page: 'premium' });
   }, []);
 
   return (

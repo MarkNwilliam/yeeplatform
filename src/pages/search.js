@@ -21,7 +21,7 @@ import MPopper from "../components/MPopper.js"
 import MList from "../subcomponents/MList.js"
 import { useWindowWidth } from '@react-hook/window-size';
 import Barlist from "../subcomponents/Barlist.js";
-import { logEvent } from '../firebase.js'
+import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 
@@ -35,7 +35,7 @@ const drawerWidth = 240;
  
   React.useEffect(() => {
     // Log event when the Search page is loaded
-    logEvent('SearchPageLoaded', { page: 'Search' });
+    logEvent(analytics,'SearchPageLoaded', { page: 'Search' });
   }, []);
   
   

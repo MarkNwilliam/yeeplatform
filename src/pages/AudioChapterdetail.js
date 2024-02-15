@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
 import ContentCard from '../subcomponents/ContentCard';
-import { logEvent } from '../firebase.js'
+import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
     
     const AudioChapterdetail = () => {
@@ -16,8 +16,8 @@ import { Helmet } from 'react-helmet';
       const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
-        logEvent('audiochapter_details_page_visited');
-        logEvent(ebook.title+'_detail_page-visited');
+        logEvent(analytics, 'audiochapter_details_page_visited');
+        logEvent(analytics,ebook.title+'_detail_page-visited');
         const fetchData = async () => {
           try {
             const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudioChapter/${id}`);

@@ -19,7 +19,7 @@ import {
   Image,
   useColorMode,
 } from '@chakra-ui/react';
-import { logEvent } from '../firebase.js'
+import { analytics, logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 // MUI
@@ -37,7 +37,7 @@ const AudiobookListen = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    logEvent(audiobook.title+'_listen_visited');
+    logEvent(analytics, audiobook.title+'_listen_visited');
     const fetchAudiobookData = async () => {
       try {
         const response = await axios.get(

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
 import ContentCard from '../subcomponents/ContentCard';
-import { logEvent } from '../firebase.js'
+import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
     
     const AudiobookDetailPage = () => {
@@ -16,7 +16,7 @@ import { Helmet } from 'react-helmet';
       const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
-        logEvent(ebook.title+'_detail_page_visited');
+        logEvent( analytics, ebook.title+'_detail_page_visited');
         const fetchData = async () => {
           try {
             const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`);
@@ -53,12 +53,12 @@ import { Helmet } from 'react-helmet';
     
       const handleBack = () => {
         navigate(-1);
-        logEvent('audiobook_detail_back_clicked', { audiobookId: id });
+        logEvent(analytics,'audiobook_detail_back_clicked', { audiobookId: id });
       };
     
       const handleReadBook = () => {
         navigate(`/audiobooklisten/${id}/listen`);
-        logEvent('audiobook_detail_listen_clicked', { audiobookId: id });
+        logEvent(analytics,'audiobook_detail_listen_clicked', { audiobookId: id });
       };
       
      

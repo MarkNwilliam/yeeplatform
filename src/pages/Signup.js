@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth } from '../firebase';
 import Swal from 'sweetalert2';
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
@@ -9,6 +9,7 @@ import { countries } from '../constants/countries';
 import { debounce } from 'lodash';
 import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
+import { logFirebaseEvent } from '../firebase.js';
 
 function Signup() {
   const [name, setName] = useState("");
@@ -24,6 +25,9 @@ function Signup() {
 
   const debouncedHandleSignUp = debounce(handleSignUp, debounceDelay);
   
+  useEffect(() => {
+    logFirebaseEvent('page_view', { page_path: '/Signup' });
+  }, []);
 
   const sendUserDataToBackend = async (userData) => {
     try {

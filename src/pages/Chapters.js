@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
 import { Link } from 'react-router-dom';
-import { logEvent } from '../firebase.js'
+import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 export default function Chapters() {
@@ -13,7 +13,7 @@ export default function Chapters() {
   const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
-    logEvent('chapters_page_visited');
+    logEvent(analytics,'chapters_page_visited');
     
     fetchData();
   }, [currentPage, searchTerm]);

@@ -15,7 +15,7 @@ import Dbarlist from '../subcomponents/Dbarlist';
 import MPopper from '../components/MPopper';
 import { useAuth } from '../contexts/AuthContext'; // Import useAuth
 import AudioChapters from './AudioChapters';
-import { logEvent } from '../firebase.js'
+import { logFirebaseEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
 import Swal from 'sweetalert2';
 
@@ -28,10 +28,10 @@ function Home() {
     const location = useLocation();
 
     const { user, logout, isAuthor } = useAuth(); // Use the useAuth function
-
     useEffect(() => {
-        logEvent('page_view', { page_path: location.pathname });
-      }, [location.pathname]);
+        logFirebaseEvent('page_view', { page_path: '/Home' });
+      }, []);
+  
 
     const handleLogout = async () => {
         try {

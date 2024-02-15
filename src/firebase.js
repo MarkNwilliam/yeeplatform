@@ -44,6 +44,14 @@ export const auth = getAuth(app);
 export const database = getDatabase(app);
 export const firestore = getFirestore(app);
 export const storage = getStorage(app); // Add this export statement
+// Export a function to log events after Firebase Analytics is initialized
+export const logFirebaseEvent = (eventName, eventParams) => {
+  if (analytics) {
+    logEvent(analytics, eventName, eventParams);
+  } else {
+    console.warn("Firebase Analytics is not initialized yet.");
+  }
+};
 export {
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -52,4 +60,5 @@ export {
   sendEmailVerification,
   signOut,
   logEvent,
+  analytics,
 };

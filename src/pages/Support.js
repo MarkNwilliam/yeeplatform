@@ -4,15 +4,16 @@ import { Link } from "react-router-dom";
 import { logEvent } from '../firebase.js'
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from 'react-helmet';
+import { logFirebaseEvent } from '../firebase.js';
 
 const Item = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
   const navigate = useNavigate();
 
-    useEffect(() => {
-      logEvent('page_view', { page_path: location.pathname });
-    }, [location.pathname]);
+  useEffect(() => {
+    logFirebaseEvent('page_view', { page_path: '/Support' });
+  }, []);
   
     return (
       <div className="border rounded shadow-sm">

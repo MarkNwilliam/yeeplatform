@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ShareBox from '../components/Sharebox';
-import { logEvent } from '../firebase.js'
+import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 const Chapterreader = () => {
@@ -10,8 +10,8 @@ const Chapterreader = () => {
   const [chapter, setChapter] = useState(null);
 
   useEffect(() => {
-    logEvent('chapter_reader_visited');
-    logEvent(chapter.title+'_chapter_reader_visited');
+    logEvent(analytics,'chapter_reader_visited');
+    logEvent(analytics,chapter.title+'_chapter_reader_visited');
     const fetchChapter = async () => {
       try {
         const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getChapter/${id}`);
