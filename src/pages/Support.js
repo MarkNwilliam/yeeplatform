@@ -1,13 +1,34 @@
-import React, { useState } from "react";
+import React, { useState ,  useEffect  } from "react";
 import Avatar from '@mui/material/Avatar';
 import { Link } from "react-router-dom";
+import { logEvent } from '../firebase.js'
+import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from 'react-helmet';
 
 const Item = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
+  const navigate = useNavigate();
+
+    useEffect(() => {
+      logEvent('page_view', { page_path: location.pathname });
+    }, [location.pathname]);
   
     return (
       <div className="border rounded shadow-sm">
+
+<Helmet>
+  <title>Support - Yee FM</title>
+  <meta name="description" content="Get support and assistance for Yee FM." />
+  <meta name="keywords" content="Yee FM, support, assistance, help, contact" />
+  <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Support - Yee FM" />
+  <meta property="og:description" content="Get support and assistance for Yee FM." />
+  <meta property="og:url" content="https://www.yeefm.com/support" />
+</Helmet>
+
         <button
           type="button"
           aria-label="Open item"
@@ -47,6 +68,18 @@ const Item = ({ title, children }) => {
   export default function Support() {
     return (
       <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+        <Helmet>
+  <title>Support - Yee FM</title>
+  <meta name="description" content="Get support and assistance for Yee FM." />
+  <meta name="keywords" content="Yee FM, support, assistance, help, contact" />
+  <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Support - Yee FM" />
+  <meta property="og:description" content="Get support and assistance for Yee FM." />
+  <meta property="og:url" content="https://www.yeefm.com/support" />
+</Helmet>
+
         <div className="max-w-xl sm:mx-auto lg:max-w-2xl">
           <div className="flex flex-col mb-16 sm:text-center">
             <a  className="mb-6 sm:mx-auto">

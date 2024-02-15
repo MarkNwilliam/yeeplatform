@@ -6,6 +6,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from '../contexts/AuthContext';
+import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 import queryString from 'query-string';
 
@@ -113,12 +114,18 @@ function SignIn() {
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-200 p-4 sm:p-0">
-        <Helmet>
-      <title>Sign In - Yee FM</title>
-      <meta name="description" content="Sign in to your account on Yee FM." />
-      <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <Helmet>
+  <title>Sign In - Yee FM</title>
+  <meta name="description" content="Sign in to your account on Yee FM." />
+  <meta name="keywords" content="Yee FM, sign in, login, email, Google, account" />
+  <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
   <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
-    </Helmet>
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Sign In - Yee FM" />
+  <meta property="og:description" content="Sign in to your account on Yee FM." />
+  <meta property="og:url" content="https://www.yeefm.com/signin" />
+</Helmet>
+
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-start mb-6">
           <FaArrowLeft className="text-gray-800 cursor-pointer" onClick={() => navigate(-1)} />

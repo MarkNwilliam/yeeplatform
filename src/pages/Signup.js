@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
 import { countries } from '../constants/countries';
 import { debounce } from 'lodash';
+import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 function Signup() {
@@ -219,12 +220,18 @@ function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-200 p-4 md:p-0">
-      <Helmet>
+    <Helmet>
   <title>Sign Up - Yee FM</title>
   <meta name="description" content="Sign up for a new account on Yee FM." />
+  <meta name="keywords" content="Yee FM, sign up, register, new account, join" />
   <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
   <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Sign Up - Yee FM" />
+  <meta property="og:description" content="Sign up for a new account on Yee FM." />
+  <meta property="og:url" content="https://www.yeefm.com/signup" />
 </Helmet>
+
     <div className="max-w-md w-full space-y-8 bg-white p-6 rounded-lg shadow-md">
       <div className="text-center">
         <IoArrowBack

@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { logEvent } from '../firebase.js'
+import { Helmet } from 'react-helmet';
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    logEvent('page_view', { page_path: location.pathname });
+  }, [location.pathname]);
 
   const handleResetPassword = async (e) => {
     e.preventDefault();

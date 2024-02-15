@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics, isSupported } from "firebase/analytics";
+import { getAnalytics,  isSupported, logEvent } from "firebase/analytics";
 import {
   getAuth,
   onAuthStateChanged,
@@ -25,12 +25,15 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
 let analytics;
+
 isSupported().then((isSupported) => {
   if (isSupported) {
     analytics = getAnalytics(app);
+    console.log("Firebase Analytics is supported and loaded successfully!");
   } else {
-    console.log("Firebase analytics is not supported in this environment");
+    console.log("Firebase Analytics is not supported in this environment");
   }
 });
 
@@ -48,4 +51,5 @@ export {
   signInWithPopup,
   sendEmailVerification,
   signOut,
+  logEvent,
 };

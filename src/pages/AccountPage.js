@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from 'sweetalert2';
-import {IconButton} from "@mui/material";
+import { IconButton, Button } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -8,14 +8,16 @@ import "tailwindcss/tailwind.css";
 import { auth } from "../firebase";
 import axios from 'axios';
 import { countries } from '../constants/countries';
+import { logEvent } from '../firebase.js'
+import { Helmet } from 'react-helmet';
 
 const AccountPage = () => {
   const [userData, setUserData] = useState({});
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
   const navigate = useNavigate();
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
       username: userData.username,
-      email: userData.email,
       phone: userData.phone,
       country: userData.country,
       age: userData.age,
@@ -34,6 +36,7 @@ const AccountPage = () => {
       .then(response => {
         const user = response.data;
         setUserData(user);
+        setIsGoogleUser(user.providerData && user.providerData[0].providerId === 'google.com');
 
         for (let key in user) {
           if (Object.prototype.hasOwnProperty.call(user, key)) {
@@ -49,6 +52,9 @@ const AccountPage = () => {
         }
 
         console.log(user);
+
+        // Log event
+        logEvent('AccountPage', 'UserDetailsFetched', { userId: firebaseId })
       })
       .catch(error => {
         console.error("Error fetching user data:", error);
@@ -57,6 +63,57 @@ const AccountPage = () => {
   }, []);
 
 
+
+const handleEmailChange = async (newEmail) => {
+  try {
+    // Send verification email to the new email address
+    await auth.currentUser.verifyBeforeUpdateEmail(newEmail);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Email Change Initiated',
+      text: `A verification email has been sent to ${newEmail}. Please verify your new email address.`,
+      confirmButtonColor: '#3085d6',
+    });
+  } catch (error) {
+    console.error('Error initiating email change:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Something went wrong. Please try again.',
+      confirmButtonColor: '#d33',
+    });
+  }
+};
+
+
+const handleDeleteAccount = async () => {
+  try {
+    // Delete user data from your database
+    await axios.delete(`https://yeeplatformbackend.azurewebsites.net/deleteaccount/${firebaseId}`);
+
+    // Delete user account in Firebase
+    await auth.currentUser.delete();
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Account Deleted',
+      text: 'Your account has been deleted.',
+      confirmButtonColor: '#3085d6',
+    }).then(() => {
+      // After the user acknowledges the success, redirect them to the login page.
+      window.location.href = '/login';  // Redirect to login
+    });
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Something went wrong. Please try again.',
+      confirmButtonColor: '#d33',
+    });
+  }
+};
   const handleBecomeAuthor = async () => {
     try {
         // Displaying a progress/loading alert
@@ -157,13 +214,15 @@ return (
           placeholder="Username"
           defaultValue={userData.username}
         />
-        <input 
-          {...register("email")} 
-          className="w-full p-2 mb-4 border rounded" 
-          placeholder="Email"
-          defaultValue={userData.email}
-          disabled
-        />
+        {!isGoogleUser && (
+          <input 
+            {...register("email")} 
+            className="w-full p-2 mb-4 border rounded" 
+            placeholder="Email"
+            defaultValue={userData.email}
+            disabled
+          />
+        )}
         <input 
           {...register("phone", { pattern: /^[0-9]{10}$/ })} 
           className="w-full p-2 mb-4 border rounded" 
@@ -217,9 +276,16 @@ return (
             Save Changes
           </button>
           <button onClick={handleBecomeAuthor} className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded shadow-md transition duration-300">
-  Become an Author
-</button>
-
+            Become an Author
+          </button>
+          <Button variant="outlined" color="error" onClick={handleDeleteAccount}>
+            Delete Account
+          </Button>
+          {!isGoogleUser && (
+            <button onClick={() => handleEmailChange("newEmail@example.com")} className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded shadow-md transition duration-300">
+              Change Email
+            </button>
+          )}
         </div>
       </form>
     </div>

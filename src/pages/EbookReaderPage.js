@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import ShareBox from '../components/Sharebox';
+import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 
@@ -21,6 +22,7 @@ const EbookReaderPage = () => {
   const [selectedText, setSelectedText] = useState('');
 
   useEffect(() => {
+    logEvent(ebookContent.title+'_reader_page_visited');
     const fetchEbookContent = async () => {
       setIsLoading(true);
       try {
@@ -69,6 +71,23 @@ const EbookReaderPage = () => {
 
   return (
     <div className="container mx-auto mt-8 p-4 flex flex-col bg-yellow-100">
+
+
+<Helmet>
+  <title>{ebookContent?.title || "Ebook Reader - Yee FM"}</title>
+  <meta name="description" content={ebookContent?.description || "Read your favorite ebooks on Yee FM."} />
+  <meta name="keywords" content="Yee FM, ebooks, reading, literature, digital library" />
+  <link rel="icon" href={ebookContent?.coverImage || ebookContent?.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:title" content={ebookContent?.title || "Ebook Reader - Yee FM"} />
+  <meta property="og:description" content={ebookContent?.description || "Read your favorite ebooks on Yee FM."} />
+  <meta property="og:image" content={ebookContent?.coverImage || ebookContent?.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content={window.location.href} />
+</Helmet>
+
+
+
+
       <div className="flex items-center mb-4">
         <button
           className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mr-2"

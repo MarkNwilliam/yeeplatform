@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
 import { Link } from 'react-router-dom';
+import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 export default function Chapters() {
@@ -12,6 +13,8 @@ export default function Chapters() {
   const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
+    logEvent('chapters_page_visited');
+    
     fetchData();
   }, [currentPage, searchTerm]);
   
@@ -67,6 +70,20 @@ export default function Chapters() {
 
   return (
     <div className="flex flex-col items-center p-4">
+
+<Helmet>
+  <title>Chapters - Yee FM</title>
+  <meta name="description" content="Search and explore chapters on Yee FM. Find your favorite books and start reading now!" />
+  <meta name="keywords" content="Yee FM, chapters, search, explore, reading, literature, digital library" />
+  <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:title" content="Chapters - Yee FM" />
+  <meta property="og:description" content="Search and explore chapters on Yee FM. Find your favorite books and start reading now!" />
+  <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:url" content="https://www.yeefm.com/echapters" />
+  <meta property="og:type" content="website" />
+</Helmet>
+
+
       <div className="mb-4 flex items-center">
         <input
           type="text"

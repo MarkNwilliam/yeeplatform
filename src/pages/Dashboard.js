@@ -9,6 +9,7 @@ import DSupport from "../components/DSupport";
 import DStats from "../components/DStats";
 import DWrite from "../components/DWrite";
 import DAudioChapter from "../components/DAudioChapter";
+import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 import DNft from "../components/DNft";
 import DProfile from "../components/DProfile";

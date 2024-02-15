@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ShareBox from '../components/Sharebox';
+import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
 const Chapterreader = () => {
@@ -9,6 +10,8 @@ const Chapterreader = () => {
   const [chapter, setChapter] = useState(null);
 
   useEffect(() => {
+    logEvent('chapter_reader_visited');
+    logEvent(chapter.title+'_chapter_reader_visited');
     const fetchChapter = async () => {
       try {
         const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getChapter/${id}`);
@@ -28,6 +31,19 @@ const Chapterreader = () => {
 
   return (
     <div className="container mx-auto mt-8 p-4 flex flex-col bg-yellow-100">
+
+<Helmet>
+  <title>{chapter?.title || "Ebook Reader - Yee FM"}</title>
+  <meta name="description" content={chapter?.description || "Read your favorite ebooks on Yee FM."} />
+  <meta name="keywords" content="Yee FM, ebooks, reading, literature, digital library" />
+  <link rel="icon" href={chapter?.coverImage || chapter?.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:title" content={chapter?.title || "Ebook Reader - Yee FM"} />
+  <meta property="og:description" content={chapter?.description || "Read your favorite ebooks on Yee FM."} />
+  <meta property="og:image" content={chapter?.coverImage || chapter?.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content={window.location.href} />
+</Helmet>
+
       <div className="flex items-center mb-4">
         <button
           className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mr-2"

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
 import { Link } from 'react-router-dom';
+import { logEvent } from '../firebase.js'
+import { Helmet } from 'react-helmet';
 
 export default function Audiobooks() {
   const [results, setResults] = useState([]);
@@ -11,6 +13,7 @@ export default function Audiobooks() {
   const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
+    logEvent('audiobooks_page_visited');
     fetchData();
   }, [currentPage, searchTerm]);
   
@@ -63,6 +66,19 @@ export default function Audiobooks() {
 
   return (
     <div className="flex flex-col items-center p-4">
+
+<Helmet>
+  <title>Audiobooks - Yee FM</title>
+  <meta name="description" content="Search and listen to audiobooks on Yee FM." />
+  <meta name="keywords" content="Yee FM, audiobooks, search, listen, literature, digital library" />
+  <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:title" content="Audiobooks - Yee FM" />
+  <meta property="og:description" content="Search and listen to audiobooks on Yee FM." />
+  <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:url" content="https://www.yeefm.com/audiobooks" />
+  <meta property="og:type" content="website" />
+</Helmet>
+
       <div className="mb-4 flex items-center">
         <input
           type="text"

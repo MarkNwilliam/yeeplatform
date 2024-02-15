@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
 import ContentCard from '../subcomponents/ContentCard';
+import { logEvent } from '../firebase.js'
+import { Helmet } from 'react-helmet';
     
     const AudiobookDetailPage = () => {
       const { id } = useParams();
@@ -14,6 +16,7 @@ import ContentCard from '../subcomponents/ContentCard';
       const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
+        logEvent(ebook.title+'_detail_page_visited');
         const fetchData = async () => {
           try {
             const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`);
@@ -22,6 +25,7 @@ import ContentCard from '../subcomponents/ContentCard';
             }
             const data = await response.json();
             setEbook(data);
+            logEvent('audiobook_detail_fetched', { audiobookId: id });
           } catch (err) {
             setError(err.message);
           } finally {
@@ -49,10 +53,12 @@ import ContentCard from '../subcomponents/ContentCard';
     
       const handleBack = () => {
         navigate(-1);
+        logEvent('audiobook_detail_back_clicked', { audiobookId: id });
       };
     
       const handleReadBook = () => {
         navigate(`/audiobooklisten/${id}/listen`);
+        logEvent('audiobook_detail_listen_clicked', { audiobookId: id });
       };
       
      
@@ -66,6 +72,21 @@ import ContentCard from '../subcomponents/ContentCard';
     
       return (
         <div className="container mx-auto p-4">
+      <Helmet>
+  <title>{ebook.title} - Yee FM</title>
+  <meta name="description" content={ebook.description} />
+  <meta name="keywords" content={ebook.keywords || ebook.genre || ebook.categories || "audiobook, Yee FM, reading, literature"} />
+  <link rel="icon" href={ebook.coverImage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:title" content={`${ebook.title} - Yee FM`} />
+  <meta property="og:description" content={ebook.description} />
+  <meta property="og:image" content={ebook.coverImage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:type" content="audiobook" />
+  <meta property="og:url" content={window.location.href} />
+  {/* Additional Open Graph meta tags */}
+  <meta property="og:audio" content={ebook.audioUrl} />
+  <meta property="og:audio:type" content="audio/mpeg" />
+</Helmet>
+
           <button onClick={handleBack} className="mb-4 text-blue-600 hover:text-blue-800">
             &larr; Back
           </button>

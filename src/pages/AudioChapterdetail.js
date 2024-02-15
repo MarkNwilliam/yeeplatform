@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
 import ContentCard from '../subcomponents/ContentCard';
+import { logEvent } from '../firebase.js'
+import { Helmet } from 'react-helmet';
     
     const AudioChapterdetail = () => {
       const { id } = useParams();
@@ -14,6 +16,8 @@ import ContentCard from '../subcomponents/ContentCard';
       const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
+        logEvent('audiochapter_details_page_visited');
+        logEvent(ebook.title+'_detail_page-visited');
         const fetchData = async () => {
           try {
             const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudioChapter/${id}`);
@@ -68,6 +72,20 @@ import ContentCard from '../subcomponents/ContentCard';
     
       return (
         <div className="container mx-auto p-4">
+
+<Helmet>
+  <title>{ebook.title} - Yee FM</title>
+  <meta name="description" content={ebook.description} />
+  <link rel="icon" href={ebook.coverImage || ebook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta name="keywords" content="Yee FM, audiobooks, search, listen, literature, digital library" />
+  <meta property="og:title" content={`${ebook.title} - Yee FM`} />
+  <meta property="og:description" content={ebook.description} />
+  <meta property="og:image" content={ebook.coverImage || ebook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:url" content={window.location.href} />
+  <meta property="og:type" content="book" />
+</Helmet>
+
+
           <button onClick={handleBack} className="mb-4 text-blue-600 hover:text-blue-800">
             &larr; Back
           </button>

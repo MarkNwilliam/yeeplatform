@@ -19,6 +19,8 @@ import {
   Image,
   useColorMode,
 } from '@chakra-ui/react';
+import { logEvent } from '../firebase.js'
+import { Helmet } from 'react-helmet';
 
 // MUI
 import { Slider, Switch } from '@mui/material';
@@ -35,12 +37,14 @@ const AudiobookListen = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    logEvent(audiobook.title+'_listen_visited');
     const fetchAudiobookData = async () => {
       try {
         const response = await axios.get(
           `https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`
         );
         setAudiobook(response.data);
+        logEvent('audiobook_detail_fetched', { audiobookId: id });
       } catch (e) {
         setError(e);
       } finally {
@@ -80,6 +84,8 @@ const AudiobookListen = () => {
 
     return (
       <Box>
+   
+
          <AudioPlayer
           playList={[
             {
@@ -139,6 +145,19 @@ const AudiobookListen = () => {
       className={isDarkMode ? 'bg-black text-white' : 'bg-yellow-200'}
       h="100vh"
     >
+
+<Helmet>
+  <title>{audiobook.title} - Yee FM</title>
+  <meta name="description" content={audiobook.description} />
+  <meta name="keywords" content={`${audiobook.title}, audiobooks, listen, audio, literature, Yee FM`} />
+  <link rel="icon" href={audiobook.coverImage || audiobook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:title" content={`${audiobook.title} - Yee FM`} />
+  <meta property="og:description" content={audiobook.description} />
+  <meta property="og:image" content={audiobook.coverImage || audiobook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+  <meta property="og:url" content={`https://www.yeefm.com/audiobooks/${id}/listen`} />
+  <meta property="og:type" content="website" />
+</Helmet>
+
       <Flex
         flexDirection="column"
         alignItems="center"

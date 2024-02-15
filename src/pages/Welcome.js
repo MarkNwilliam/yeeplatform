@@ -6,6 +6,8 @@ import notVerifiedAnimation from '../animations/problem.json';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, applyActionCode, checkActionCode } from 'firebase/auth';
 import { auth } from '../firebase';
+import { logEvent } from '../firebase.js'
+import { Helmet } from 'react-helmet';
 
 const Welcome = () => {
   const [isVerified, setIsVerified] = useState(() => JSON.parse(localStorage.getItem('isVerified')) || false);

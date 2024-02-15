@@ -3,6 +3,8 @@ import axios from 'axios';
 import '../css/player.css';
 import AudioPlayer from 'react-modern-audio-player';
 import { useParams, useNavigate } from 'react-router-dom';
+import { logEvent } from '../firebase.js'
+import { Helmet } from 'react-helmet';
 import {
   FaPlay,
   FaPause,
@@ -37,6 +39,8 @@ const AudioChapterListen = () => {
 
   const defaultCoverImage = "/yeeplatform_book_cover.png";
   useEffect(() => {
+    logEvent('audiochapter_listen_page_visited');
+    logEvent(audiobook.title+'_listen_visited');
     const fetchAudiobookData = async () => {
       try {
         const response = await axios.get(
@@ -82,6 +86,18 @@ const AudioChapterListen = () => {
 
     return (
       <Box>
+        <Helmet>
+  <title>{audiobook.title} - Yee FM</title>
+  <meta name="description" content={audiobook.description} />
+  <meta name="keywords" content={`${audiobook.title}, audio chapter, listen, audio, literature, Yee FM`} />
+  <link rel="icon" href={audiobook.coverimage || defaultCoverImage|| defaultCoverImage} />
+  <meta property="og:title" content={`${audiobook.title} - Yee FM`} />
+  <meta property="og:description" content={audiobook.description} />
+  <meta property="og:image" content={audiobook.coverimage || defaultCoverImage} />
+  <meta property="og:url" content={`https://www.yeefm.com/audiochapters/${id}/listen`} />
+  <meta property="og:type" content="website" />
+</Helmet>
+
          <AudioPlayer
           playList={[
             {
