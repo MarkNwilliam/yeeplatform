@@ -28,6 +28,8 @@ function Home() {
     const location = useLocation();
 
     const { user, logout, isAuthor } = useAuth(); // Use the useAuth function
+
+    
     useEffect(() => {
         logFirebaseEvent('page_view', { page_path: '/Home' });
       }, []);
