@@ -6,15 +6,15 @@ export default function IntroCarousel() {
   const carouselItems = [
     {
       id: 1,
-      src: '/images/yee3.jpg',
+      src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee3.jpg',
       alt: '',
       caption: '',
       description: '',
-      link: 'https://example.com/page1' // Example link URL for the first item
+      link: '' // Example link URL for the first item
     },
     {
       id: 2,
-      src: '/images/yee2.jpg',
+      src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee2.jpg',
       alt: '',
       caption: '',
       description: '',
@@ -22,11 +22,11 @@ export default function IntroCarousel() {
     },
     {
       id: 3,
-      src: '/images/yee1.png',
+      src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee1.png',
       alt: '',
       caption: '',
       description: '',
-      link: 'https://example.com/page3' // Example link URL for the third item
+      link: '' // Example link URL for the third item
     }
   ];
 
@@ -37,34 +37,40 @@ export default function IntroCarousel() {
   };
 
   return (
-    <Carousel>
-      {carouselItems.map((item) => (
-        <Carousel.Item key={item.id} interval={1500}>
-          {item.link ? (
-            <a href={item.link} target="_blank" rel="noopener noreferrer">
-              <img
-                className="d-block w-100"
-                src={item.src}
-                alt={item.alt}
-                style={{ height: '50vh', maxHeight: '500px', objectFit: 'cover' }}
-                onClick={handleClick}
-              />
-            </a>
-          ) : (
-            <img
-              className="d-block w-100"
-              src={item.src}
-              alt={item.alt}
-              style={{ height: '50vh', maxHeight: '500px', objectFit: 'cover' }}
-              onClick={handleClick}
-            />
-          )}
-          <Carousel.Caption className="d-none d-md-block">
-            <h3 style={{ fontSize: '1.5em' }}>{item.caption}</h3>
-            <p>{item.description}</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-      ))}
-    </Carousel>
+    <div className="container">
+      <div className="row">
+        <div className="col">
+          <Carousel>
+            {carouselItems.map((item) => (
+              <Carousel.Item key={item.id} interval={1500}>
+                {item.link ? (
+                  <a href={item.link} target="_blank" rel="noopener noreferrer">
+                    <img
+                      className="d-block w-100"
+                      src={item.src}
+                      alt={item.alt}
+                      style={{ maxHeight: '500px', objectFit: 'cover' }}
+                      onClick={handleClick}
+                    />
+                  </a>
+                ) : (
+                  <img
+                    className="d-block w-100"
+                    src={item.src}
+                    alt={item.alt}
+                    style={{ maxHeight: '500px', objectFit: 'cover' }}
+                    onClick={handleClick}
+                  />
+                )}
+                <Carousel.Caption className="d-none d-md-block">
+                  <h3 style={{ fontSize: '1.5em' }}>{item.caption}</h3>
+                  <p>{item.description}</p>
+                </Carousel.Caption>
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        </div>
+      </div>
+    </div>
   );
 }

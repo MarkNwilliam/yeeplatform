@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import IntroCarousel from "./IntroCarousel";
-
+import { Helmet } from 'react-helmet';
 export default function Intro() {
     const categories = [
         {
@@ -36,6 +36,17 @@ export default function Intro() {
 
     return (
         <div>
+               <Helmet>
+  <title>Home - Yee FM</title>
+  <meta name="description" content="Explore a wide range of content on Yee FM, including audiobooks, ebooks, magazines, comics, and more. Enjoy personalized recommendations and curated playlists." />
+  <meta name="keywords" content="Yee FM, music, audiobooks, ebooks, magazines, comics, entertainment, streaming, recommendations, playlists" />
+  <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Home - Yee FM" />
+  <meta property="og:description" content="Explore a wide range of content on Yee FM, including music, audiobooks, ebooks, magazines, comics, and more. Enjoy personalized recommendations and curated playlists." />
+  <meta property="og:url" content="https://www.yeefm.com/home" />
+</Helmet>
             <IntroCarousel />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
                 {categories.map((data) => (

@@ -16,7 +16,7 @@ import MPopper from '../components/MPopper';
 import { useAuth } from '../contexts/AuthContext'; // Import useAuth
 import AudioChapters from './AudioChapters';
 import { logFirebaseEvent } from '../firebase.js';
-import { Helmet } from 'react-helmet';
+
 import Swal from 'sweetalert2';
 
 function Home() {
@@ -112,17 +112,7 @@ function Home() {
 
     return (
         <div className="flex h-screen bg-gray-100">
-   <Helmet>
-  <title>Home - Yee FM</title>
-  <meta name="description" content="Explore a wide range of content on Yee FM, including audiobooks, ebooks, magazines, comics, and more. Enjoy personalized recommendations and curated playlists." />
-  <meta name="keywords" content="Yee FM, music, audiobooks, ebooks, magazines, comics, entertainment, streaming, recommendations, playlists" />
-  <link rel="icon" href="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
-  <meta property="og:image" content="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Home - Yee FM" />
-  <meta property="og:description" content="Explore a wide range of content on Yee FM, including music, audiobooks, ebooks, magazines, comics, and more. Enjoy personalized recommendations and curated playlists." />
-  <meta property="og:url" content="https://www.yeefm.com/home" />
-</Helmet>
+
 
 
             <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} handleSectionClick={handleSectionClick} selectedSection={selectedSection} />
