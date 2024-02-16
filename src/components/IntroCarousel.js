@@ -37,40 +37,34 @@ export default function IntroCarousel() {
   };
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col">
-          <Carousel>
-            {carouselItems.map((item) => (
-              <Carousel.Item key={item.id} interval={1500}>
-                {item.link ? (
-                  <a href={item.link} target="_blank" rel="noopener noreferrer">
-                    <img
-                      className="d-block w-100"
-                      src={item.src}
-                      alt={item.alt}
-                      style={{ maxHeight: '500px', objectFit: 'cover' }}
-                      onClick={handleClick}
-                    />
-                  </a>
-                ) : (
-                  <img
-                    className="d-block w-100"
-                    src={item.src}
-                    alt={item.alt}
-                    style={{ maxHeight: '500px', objectFit: 'cover' }}
-                    onClick={handleClick}
-                  />
-                )}
-                <Carousel.Caption className="d-none d-md-block">
-                  <h3 style={{ fontSize: '1.5em' }}>{item.caption}</h3>
-                  <p>{item.description}</p>
-                </Carousel.Caption>
-              </Carousel.Item>
-            ))}
-          </Carousel>
-        </div>
-      </div>
-    </div>
+    <Carousel style={{ maxHeight: '500px', overflow: 'hidden' }}>
+      {carouselItems.map((item) => (
+        <Carousel.Item key={item.id} interval={1500}>
+          {item.link ? (
+            <a href={item.link} target="_blank" rel="noopener noreferrer">
+              <img
+                className="d-block w-100"
+                src={item.src}
+                alt={item.alt}
+                style={{ maxHeight: '500px', objectFit: 'cover' }}
+                onClick={handleClick}
+              />
+            </a>
+          ) : (
+            <img
+              className="d-block w-100"
+              src={item.src}
+              alt={item.alt}
+              style={{ maxHeight: '500px', objectFit: 'cover' }}
+              onClick={handleClick}
+            />
+          )}
+          <Carousel.Caption className="d-none d-md-block">
+            <h3 style={{ fontSize: '1.5em' }}>{item.caption}</h3>
+            <p>{item.description}</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+      ))}
+    </Carousel>
   );
 }
