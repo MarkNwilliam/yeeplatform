@@ -17,7 +17,7 @@ import { Helmet } from 'react-helmet';
     
       useEffect(() => {
         logEvent(analytics, 'audiochapter_details_page_visited');
-        logEvent(analytics,ebook.title+'_detail_page-visited');
+        
         const fetchData = async () => {
           try {
             const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudioChapter/${id}`);
@@ -27,7 +27,7 @@ import { Helmet } from 'react-helmet';
             const data = await response.json();
             setEbook(data);
             console.log(data);
-    
+            logEvent(analytics,ebook.title+'_detail_page-visited');
             // Fetch related content
             if (data) {
               try {

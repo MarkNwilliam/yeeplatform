@@ -3,7 +3,7 @@ import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase";
 import Swal from "sweetalert2";
 import { useNavigate, useLocation } from "react-router-dom";
-import { logEvent } from '../firebase.js'
+import { logFirebaseEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
 
 function ForgotPassword() {
@@ -11,9 +11,11 @@ function ForgotPassword() {
   const navigate = useNavigate();
   const location = useLocation();
 
+
+
   useEffect(() => {
-    logEvent('page_view', { page_path: location.pathname });
-  }, [location.pathname]);
+    logFirebaseEvent('page_view', { page_path: '/forgotpassword' });
+  }, []);
 
   const handleResetPassword = async (e) => {
     e.preventDefault();

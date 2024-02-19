@@ -18,7 +18,7 @@
     
       useEffect(() => {
         logEvent(analytics, 'chapter_detail_page_visited');
-        logEvent(analytics, ebook.title+'_chapter_detail_page_visited');
+        
         const fetchData = async () => {
           try {
             const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getChapter/${id}`);
@@ -27,6 +27,7 @@
             }
             const data = await response.json();
             setEbook(data);
+            
           } catch (err) {
             setError(err.message);
           } finally {

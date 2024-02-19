@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 
+
 export default function Chapters() {
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,6 +19,9 @@ export default function Chapters() {
     fetchData();
   }, [currentPage, searchTerm]);
   
+
+
+
   const fetchData = async () => {
     setIsLoading(true);
   

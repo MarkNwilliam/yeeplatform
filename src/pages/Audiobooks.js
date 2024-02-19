@@ -80,7 +80,7 @@ export default function Audiobooks() {
 </Helmet>
 
       <div className="mb-4 flex flex-col items-center">
-        <div className="flex">
+   
           <input
             type="text"
             placeholder="Search for audiobooks..."
@@ -96,7 +96,7 @@ export default function Audiobooks() {
           >
             Search
           </button>
-        </div>
+       
       </div>
 
       <CustomPagination totalPages={totalPages} currentPage={currentPage} onChange={handlePageChange} />

@@ -16,7 +16,7 @@ import { Helmet } from 'react-helmet';
       const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
-        logEvent( analytics, ebook.title+'_detail_page_visited');
+        
         const fetchData = async () => {
           try {
             const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`);
@@ -42,6 +42,7 @@ import { Helmet } from 'react-helmet';
           }
           const relatedData = await relatedResponse.json();
           setRelatedContent(relatedData);
+          logEvent( analytics, ebook.title+'_detail_page_visited');
         } catch (err) {
           console.error('Error fetching related content:', err);
         }

@@ -17,7 +17,7 @@ const EbookDetailPage = () => {
   const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
 
   useEffect(() => {
-    logEvent(analytics, ebook.title+' visited');
+
     const fetchData = async () => {
       try {
         const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getEbook/${id}`);
@@ -42,6 +42,7 @@ const EbookDetailPage = () => {
       }
       const relatedData = await relatedResponse.json();
       setRelatedContent(relatedData);
+      logEvent(analytics, ebook.title+' visited');
     } catch (err) {
       console.error('Error fetching related content:', err);
     }
@@ -71,13 +72,14 @@ fetchData();
   return (
     <div className="container mx-auto p-4">
 
-<Helmet>
-  <title>{ebook.title} - Yee FM</title>
-  <meta name="description" content={ebook.description} />
-  <link rel="icon" href={ebook.coverImage || ebook.coverimage|| "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
-  <meta property="og:image" content={ebook.coverImage || ebook.coverimage|| "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
-</Helmet>
-
+{ebook && (
+        <Helmet>
+          <title>{ebook.title || "Ebook Details - Yee FM"}</title>
+          <meta name="description" content={ebook.description} />
+          <link rel="icon" href={ebook.coverImage || ebook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+          <meta property="og:image" content={ebook.coverImage || ebook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+        </Helmet>
+      )}
 
       <button onClick={handleBack} className="mb-4 text-blue-600 hover:text-blue-800">
         &larr; Back

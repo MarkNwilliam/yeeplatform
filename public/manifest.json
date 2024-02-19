@@ -3,17 +3,17 @@
   "name": "YeeFM",
   "icons": [
     {
-      "src": "Y.webp",
+      "src": "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "Y.webp",
+      "src": "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "Y.webp",
+      "src": "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp",
       "type": "image/png",
       "sizes": "512x512"
     }

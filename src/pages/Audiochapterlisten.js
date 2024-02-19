@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../css/player.css';
 import AudioPlayer from 'react-modern-audio-player';
 import { useParams, useNavigate } from 'react-router-dom';
-import { analytics,logEvent } from '../firebase.js'
+import { analytics, logEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
 import {
   FaPlay,
@@ -37,16 +37,28 @@ const AudioChapterListen = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const PROGRESS_STORAGE_KEY = 'audioChapterProgress';
+
   const defaultCoverImage = "/yeeplatform_book_cover.png";
+
   useEffect(() => {
-    logEvent(analytics,'audiochapter_listen_page_visited');
-    logEvent(analytics,audiobook.title+'_listen_visited');
+    logEvent(analytics, 'audiochapter_listen_page_visited');
+    
+
     const fetchAudiobookData = async () => {
       try {
         const response = await axios.get(
           `https://yeeplatformbackend.azurewebsites.net/getAudioChapter/${id}`
         );
         setAudiobook(response.data);
+        logEvent(analytics, audiobook?.title + '_listen_visited');
+        // Fetch saved progress for this chapter
+        const savedProgress = localStorage.getItem(
+          PROGRESS_STORAGE_KEY + `_${id}`
+        );
+        if (savedProgress) {
+          setSeek(parseFloat(savedProgress));
+        }
       } catch (e) {
         setError(e);
       } finally {
@@ -59,6 +71,9 @@ const AudioChapterListen = () => {
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
+    if (isPlaying) {
+      localStorage.setItem(PROGRESS_STORAGE_KEY + `_${id}`, seek);
+    }
   };
 
   const handleVolumeChange = (e) => {
@@ -67,6 +82,7 @@ const AudioChapterListen = () => {
 
   const handleSeekChange = (e) => {
     setSeek(parseFloat(e.target.value));
+    localStorage.setItem(PROGRESS_STORAGE_KEY + `_${id}`, seek);
   };
 
   const handleGoBack = () => {
@@ -75,6 +91,14 @@ const AudioChapterListen = () => {
 
   const handleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
+  };
+
+  const onEnd = () => {
+    console.log('Audio ended');
+    if (seek >= audiobook?.content.duration * 0.95) {
+      // Mark chapter as completed (logic based on your requirements)
+    }
+    localStorage.removeItem(PROGRESS_STORAGE_KEY + `_${id}`); // No need to store progress anymore
   };
 
   const renderPlayer = () => {

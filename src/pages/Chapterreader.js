@@ -1,28 +1,75 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ShareBox from '../components/Sharebox';
-import { analytics,logEvent } from '../firebase.js'
+import { analytics, logEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
+
 
 const Chapterreader = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [chapter, setChapter] = useState(null);
+  const [isRead, setIsRead] = useState(false);
+  const [viewed, setViewed] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0); // Track elapsed time
+  const mountRef = useRef(null);
+
+  const CHAPTER_READ_DATA_KEY = 'chapterReadData';
 
   useEffect(() => {
-    logEvent(analytics,'chapter_reader_visited');
-    logEvent(analytics,chapter.title+'_chapter_reader_visited');
+    logEvent(analytics, 'chapter_reader_visited');
+   
+    setViewed(true); // Mark as viewed on mount
+
+    // Retrieve chapter data from local storage
+    const chapterReadData = JSON.parse(localStorage.getItem(CHAPTER_READ_DATA_KEY)) || {};
+    if (chapterReadData[id]) {
+      setIsRead(chapterReadData[id].isRead);
+      setViewed(chapterReadData[id].viewed);
+      setElapsedTime(chapterReadData[id].elapsedTime || 0); // Set elapsed time if stored
+    }
+
+   
+
     const fetchChapter = async () => {
       try {
         const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getChapter/${id}`);
         const data = await response.json();
         setChapter(data);
+        logEvent(analytics, chapter?.title + '_chapter_reader_visited');
       } catch (error) {
         console.error('Error fetching chapter:', error.message);
       }
     };
 
+    const markChapterAsViewed = async () => {
+      try {
+        // Replace 'userId' with the actual user ID
+        await fetch(`https://yeeplatformbackend.azurewebsites.net/updateViewedChapters/userId/${id}`, {
+          method: 'POST',
+        });
+      } catch (error) {
+        console.error('Error marking chapter as viewed:', error.message);
+      }
+    };
+
+    const handleMount = () => {
+      mountRef.current = performance.now(); // Store mount time
+    };
+
     fetchChapter();
+    handleMount();
+
+    return () => {
+      const diff = performance.now() - mountRef.current + elapsedTime; // Calculate time diff with elapsed time
+      if (diff > 120000) { // Check if read time > 2 mins
+        setIsRead(true); // Mark as read if condition met
+      }
+
+      // Update chapter data in local storage, including elapsed time
+      chapterReadData[id] = { isRead, viewed, elapsedTime: diff };
+      localStorage.setItem(CHAPTER_READ_DATA_KEY, JSON.stringify(chapterReadData));
+    };
   }, [id]);
 
   const handleGoBack = () => {

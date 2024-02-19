@@ -17,6 +17,7 @@ import AudioChapterListen from './pages/Audiochapterlisten';
 import AudiobookListen from './pages/Audiobooklisten';
 import AudioChapters from './pages/AudioChapters';
 
+
 // Lazy-load the components
 const Home = lazy(() => import('./pages/home'));
 const Chapters = lazy(() => import('./pages/Chapters'));
@@ -48,18 +49,32 @@ const EbookDetails = lazy(() => import('./components/EbookDetails'));
 const ChapterDetail = lazy(() => import('./components/ChapterDetail'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const Welcome = lazy(() => import('./pages/Welcome'));
+import { elb } from '@elbwalker/walker.js';
+import destinationAPI from '@elbwalker/destination-web-api';
+
 
 
 import {
   BrowserRouter,
   Routes,
   Route,
+  useLocation
 } from "react-router-dom";
 
 function App() {
 
+
+
   const [loading, setLoading] = useState(false);
   const [onlineStatus, setOnlineStatus] = useState(navigator.onLine);
+
+  const config = {
+    custom: {
+      url: 'https://httpbin.org/anything',
+    },
+  };
+
+  elb('walker destination', destinationAPI, config);
 
   useEffect(() => {
     function updateOnlineStatus() {
