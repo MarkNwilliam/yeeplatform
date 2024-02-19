@@ -35,6 +35,11 @@
 .App-link {
   color: #61dafb;
 }
+.yellow-button {
+  background-color: #ffff00;
+  /* Add any additional styles you need */
+}
+
 
 @keyframes App-logo-spin {
   from {

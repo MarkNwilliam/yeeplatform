@@ -43,3 +43,7 @@ code {
   scrollbar-width: thin;
   scrollbar-color: #FFC107 #FFEB3B; /* primary over secondary color */
 }
+.yellow-button {
+  background-color: yellow;
+  /* Add any additional styles you need */
+}

@@ -20,10 +20,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseIcon from '@mui/icons-material/Pause';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import Tesseract from 'tesseract.js';
 import Swal from 'sweetalert2';
+import '../App.css';
 
 
 const EbookReaderPage = () => {
@@ -50,9 +52,9 @@ const EbookReaderPage = () => {
   const [fullScreenMode, setFullScreenMode] = useState(false);
   const [speechText, setSpeechText] = useState('');
   const [value, setValue] = useState('');
-  const { speak } = useSpeechSynthesis();
+  const { speak, cancel } = useSpeechSynthesis();
   const [isPlaying, setIsPlaying] = useState(false);
-
+  const [darkMode, setDarkMode] = useState(false); 
   useEffect(() => {
     
     const fetchEbookContent = async () => {
@@ -244,13 +246,30 @@ const EbookReaderPage = () => {
   const showLoadingDialog = () => {
     Swal.fire({
       title: 'Loading',
+      showClass: {
+        popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+      },
+      hideClass: {
+        popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `
+      },
       html: 'Processing your request...',
       allowOutsideClick: false,
+      showConfirmButton: false,
       onBeforeOpen: () => {
         Swal.showLoading();
       },
+      
     });
   };
+  
   
   const showPlayingDialog = () => {
     setIsPlaying(true);
@@ -258,11 +277,18 @@ const EbookReaderPage = () => {
       title: 'Playing',
       html: 'Text is being played...',
       showCancelButton: true,
+      showConfirmButton: false,
       cancelButtonText: 'Stop',
       allowOutsideClick: false,
+      cancelButtonClass: '#ffff00',
       didClose: () => {
         setIsPlaying(false);
       },
+    }).then((result) => {
+      // If the user clicks the "Stop" button
+      if (result.dismiss === Swal.DismissReason.cancel) {
+        cancel(); // Stop the speech synthesis
+      }
     });
   };
   
@@ -408,20 +434,22 @@ const EbookReaderPage = () => {
   
   
   const handleSpeak = async () => {
-    console.log('Speaking text:', speechText);
     if (!isLoading && ebookContent) {
       try {
-        showLoadingDialog(); // Show loading dialog before starting text extraction
-        const voices = window.speechSynthesis.getVoices();
-        console.log('Voices:', voices);
-        const pageText = await extractPageText(currentPage); // Extract text from the current page
-        //const formattedText = pageText.replace(/\s+/g, ' ').trim(); // Replace multiple whitespaces with a single space
-        // Set the speech text when the Promise is resolved
-        speak({ text: pageText, rate: 0.5 });
-        setSpeechText(pageText);
-        console.log('Speech text:', pageText);
-        Swal.close(); // Close loading dialog after text extraction is done
-        showPlayingDialog(); // Show playing dialog
+        // If speech synthesis is currently playing, pause it
+        if (isPlaying) {
+          cancel(); // Stop the speech synthesis
+          setIsPlaying(false); // Update the state to indicate that speech synthesis is paused
+        } else {
+          showLoadingDialog(); // Show loading dialog before starting text extraction
+          const voices = window.speechSynthesis.getVoices();
+          const pageText = await extractPageText(currentPage); // Extract text from the current page
+          speak({ text: pageText, rate: 0.9 });
+          setSpeechText(pageText);
+          Swal.close(); // Close loading dialog after text extraction is done
+          showPlayingDialog(); // Show playing dialog
+          setIsPlaying(true); // Update the state to indicate that speech synthesis is playing
+        }
       } catch (error) {
         Swal.close(); // Close loading dialog in case of error
         console.error('Error extracting page text:', error);
@@ -430,12 +458,26 @@ const EbookReaderPage = () => {
     }
   };
   
+  // Function to toggle Dark Mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  // CSS class based on Dark Mode state
+  const containerClassName = darkMode ? 'bg-gray-900 text-white' : 'bg-yellow-100';
+
+  // CSS class for button based on Dark Mode state
+  const buttonClassName = darkMode
+    ? 'bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full'
+    : 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full';
+
+  
   
   const pageWidth = window.innerWidth * 1 * zoom;
   const pageHeight = window.innerHeight * 1 * zoom;
 
   return (
-    <div className={`p-4 flex flex-col ${fullScreenMode ? 'h-screen' : 'bg-yellow-100'}`}>
+    <div className={`p-4 flex flex-col ${containerClassName } ${fullScreenMode }`}>
       {fullScreenMode ? (
         <button
           className="fixed top-2 right-2 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full"
@@ -492,48 +534,49 @@ const EbookReaderPage = () => {
           className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mr-2"
           onClick={() => navigate(-1)}
         >
-          {'< Back'}
+          <ArrowBackIcon />
         </button>
         <h1 className="text-3xl font-bold text-yellow-800">{ebookContent?.title}</h1>
       </div>
       <div className="w-full max-w-screen-md mx-auto bg-white rounded-lg shadow-md p-6 flex-1">
-        <div className="flex justify-between mb-4">
-          <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center mr-2 sm:py-1 sm:px-2"
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-          >
-            <NavigateBeforeIcon />
-          </button>
-          <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center sm:py-1 sm:px-2"
-            onClick={handleNextPage}
-            disabled={currentPage === ebookContent?.totalPages}
-          >
-            <NavigateNextIcon />
-          </button>
-          <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center ml-2 sm:py-1 sm:px-2"
-            onClick={handleZoomIn}
-          >
-            <ZoomInIcon />
-          </button>
-          <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center ml-2 sm:py-1 sm:px-2"
-            onClick={handleZoomOut}
-          >
-            <ZoomOutIcon />
-          </button>
+  <div className="flex flex-wrap justify-center mb-4">
+    <button
+      className="m-1 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center sm:py-1 sm:px-2"
+      onClick={handlePreviousPage}
+      disabled={currentPage === 1}
+    >
+      <NavigateBeforeIcon />
+    </button>
+    <button
+      className="m-1 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center sm:py-1 sm:px-2"
+      onClick={handleNextPage}
+      disabled={currentPage === ebookContent?.totalPages}
+    >
+      <NavigateNextIcon />
+    </button>
+    <button
+      className="m-1 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center sm:py-1 sm:px-2"
+      onClick={handleZoomIn}
+    >
+      <ZoomInIcon />
+    </button>
+    <button
+      className="m-1 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center sm:py-1 sm:px-2"
+      onClick={handleZoomOut}
+    >
+      <ZoomOutIcon />
+    </button>
+    <button
+      className="m-1 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center sm:py-1 sm:px-2"
+      onClick={handleSpeak}
+      disabled={isLoading || !ebookContent}
+    >
+      {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+    </button>
+  </div>
 
-          <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center ml-2 sm:py-1 sm:px-2"
-            onClick={handleSpeak}
-            disabled={isLoading || !ebookContent}
-          >
-            <span>Play</span>
-          </button>
-        </div>
-        <div className="w-full h-full overflow-auto" onMouseUp={handleTextSelection} ref={viewportRef}>
+
+        <div className="w-full h-full overflow-auto mt-8" onMouseUp={handleTextSelection} ref={viewportRef}>
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <div className="loader ease-linear rounded-full border-8 border-t-8 border-yellow-300 h-24 w-24"></div>
@@ -545,7 +588,14 @@ const EbookReaderPage = () => {
             </Document>
           )}
         </div>
-        
+
+  <button
+  className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full"
+  onClick={toggleDarkMode}
+>
+  {darkMode ? 'Light Mode' : 'Dark Mode'}
+</button>
+
       </div>
       {showShareBox && <ShareBox shareUrl={window.location.href} selectedText={selectedText} />}
     </div>
