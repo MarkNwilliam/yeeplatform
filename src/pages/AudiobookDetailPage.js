@@ -16,41 +16,57 @@ import { Helmet } from 'react-helmet';
       const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
     
       useEffect(() => {
-        
         const fetchData = async () => {
-          try {
-            const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`);
-            if (!response.ok) {
-                throw new Error('Ebook not found');
+            try {
+                const response = await fetch(`http://localhost:3000/getAudiobook/${id}`);
+                if (!response.ok) {
+                    throw new Error('Ebook not found');
+                }
+                const data = await response.json();
+                console.log(data);
+                setEbook(data);
+                logEvent('audiobook_detail_fetched', { audiobookId: id });
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
             }
-            const data = await response.json();
-            setEbook(data);
-            logEvent('audiobook_detail_fetched', { audiobookId: id });
-          } catch (err) {
-            setError(err.message);
-          } finally {
-            setLoading(false);
-          }
-       // Fetch related content
-       if (ebook) {
-        try {
-          const category = encodeURIComponent(ebook.category);
-          const genre = encodeURIComponent(ebook.genres.join(',')); // Assuming 'genres' is an array
-          const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/relatedContent?currentItemId=${id}&category=${category}&genre=${genre}`);
-          if (!relatedResponse.ok) {
-            throw new Error('Failed to fetch related content');
-          }
-          const relatedData = await relatedResponse.json();
-          setRelatedContent(relatedData);
-          logEvent( analytics, ebook.title+'_detail_page_visited');
-        } catch (err) {
-          console.error('Error fetching related content:', err);
-        }
-      }
-    };
+        };
     
-    fetchData();
+        fetchData();
+    }, [id]);
+    
+    useEffect(() => {
+        const fetchRelatedContent = async () => {
+            if (ebook) {
+                try {
+                    const params = [];
+                    if (ebook.category) {
+                        params.push(`category=${encodeURIComponent(ebook.category)}`);
+                    }
+                    if (ebook.genres && ebook.genres.length > 0) {
+                        params.push(`genre=${encodeURIComponent(ebook.genres.join(','))}`);
+                    }
+    
+                    if (params.length > 0) {
+                        const queryParams = params.join('&');
+                        const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/relatedContent?currentItemId=${id}&${queryParams}`);
+                        if (!relatedResponse.ok) {
+                            throw new Error('Failed to fetch related content');
+                        }
+                        const relatedData = await relatedResponse.json();
+                        setRelatedContent(relatedData);
+                        logEvent(analytics, `${ebook.title}_detail_page_visited`);
+                    }
+                } catch (err) {
+                    console.error('Error fetching related content:', err);
+                }
+            }
+        };
+    
+        fetchRelatedContent();
     }, [id, ebook]);
+    
     
       const handleBack = () => {
         navigate(-1);
@@ -68,9 +84,14 @@ import { Helmet } from 'react-helmet';
       }
     
       if (error) {
-        return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
+        console.log(error.message);
       }
     
+
+
+      console.log('ebook:', ebook);
+console.log('ebook.categories:', ebook.categories);
+
       return (
         <div className="container mx-auto p-4">
       <Helmet>
@@ -102,28 +123,29 @@ import { Helmet } from 'react-helmet';
               />
             </div>
             <div className="w-full lg:w-3/4 lg:ml-6">
-              <h1 className="text-3xl font-bold mb-2 text-center lg:text-left">{ebook.title}</h1>
-              <p className="text-sm text-gray-600 text-center lg:text-left mb-4">Published on: {new Date(ebook.publishedDate).toLocaleDateString()}</p>
+              <h1 className="text-3xl font-bold mb-2 text-center lg:text-left">{ebook.title || 'N/A'}</h1>
+              <p className="text-sm text-gray-600 text-center lg:text-left mb-4">Published on: {new Date(ebook.publishedDate || 'N/A').toLocaleDateString()}</p>
               <Rating name="read-only" value={ebook.averageRating || 0} readOnly /> {/* Replace with actual rating */}
               <div className="mt-4">
                 <h2 className="text-xl font-semibold mb-2">Description</h2>
-                <p className="text-gray-700">{ebook.description}</p>
+                <p className="text-gray-700">{ebook.description || 'N/A'}</p>
               </div>
               <div className="mt-6">
       <h3 className="text-lg font-semibold">Details</h3>
       <div className="space-y-2">
       <div className="flex items-center text-center">
       <span className="font-semibold mr-2">Author:</span>
-      <span>{ebook.author}</span>
+      <span>{ebook.author || 'N/A'}</span>
     </div>
         <div className="flex items-center text-center">
           <span className="font-semibold mr-2">ISBN:</span>
           <span>{ebook.ISBN || 'N/A'}</span>
         </div>
         <div className="flex items-center text-center">
-          <span className="font-semibold mr-2">Categories:</span>
-          <span>{ebook.categories.join(', ')}</span>
-        </div>
+  <span className="font-semibold mr-2">Categories:</span>
+  <span>{ebook.categories ? ebook.categories.join(', ') : 'N/A'}</span>
+</div>
+
       </div>
     </div>
     <button 

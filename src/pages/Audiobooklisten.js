@@ -107,7 +107,7 @@ const AudiobookListen = () => {
   }
 
   if (error) {
-    return <div>Error loading audiobook: {error.message}</div>;
+    console.log(error.message) ;
   }
 
   return (

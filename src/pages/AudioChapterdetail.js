@@ -67,7 +67,8 @@ import { Helmet } from 'react-helmet';
       }
     
       if (error) {
-        return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
+        //return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
+        console.log(error.message);
       }
     
       return (
