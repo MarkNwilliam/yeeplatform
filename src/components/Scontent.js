@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
 import { Link } from 'react-router-dom';
+import SearchIcon from '@mui/icons-material/Search';
 export default function Scontent() {
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,25 +51,23 @@ export default function Scontent() {
 
   return (
     <div className="flex flex-col items-center p-4">
-     {/* Search bar with button */}
-     <div className="mb-4 flex flex-col sm:flex-row items-center">
-  <input
-    type="text"
-    placeholder="Search for content..."
-    value={searchTerm}
-    onChange={handleSearchChange}
-    className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 mb-2 sm:mb-0"
-    style={{ width: "100%", maxWidth: "300px" }}
-  />
-  <button 
-    onClick={handleSearchClick}
-    className="ml-0 sm:ml-2 p-3 border border-gray-300 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-    style={{ minWidth: "100px" }}
-  >
-    Search
-  </button>
-</div>
-
+      <div className="mb-4 flex flex-col sm:flex-row items-center">
+        <input
+          type="text"
+          placeholder="Search for content..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="p-3 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 mb-2 sm:mb-0"
+          style={{ width: "100%", maxWidth: "300px" }}
+        />
+        <button 
+          onClick={handleSearchClick}
+          className="ml-0 sm:ml-2 p-3 border border-gray-300 rounded-full bg-yellow-500 text-white hover:bg-yellow-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 flex items-center justify-center"
+          style={{ minWidth: "100px" }}
+        >
+          <SearchIcon /> {/* Search icon */}
+        </button>
+      </div>
 
       {/* Pagination at the top */}
       <CustomPagination totalPages={totalPages} currentPage={currentPage} onChange={handlePageChange} />

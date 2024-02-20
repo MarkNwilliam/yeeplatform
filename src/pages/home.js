@@ -16,13 +16,16 @@ import MPopper from '../components/MPopper';
 import { useAuth } from '../contexts/AuthContext'; // Import useAuth
 import AudioChapters from './AudioChapters';
 import { logFirebaseEvent } from '../firebase.js';
-
+import PointsTourGuide from '../constants/PointsTourGuide.js';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 function Home() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [selectedSection, setSelectedSection] = useState(''); // New state variable
+    const [runTour, setRunTour] = useState(true);
+    const [userPoints, setUserPoints] = useState(0);
     const menuIconRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
@@ -32,8 +35,20 @@ function Home() {
     
     useEffect(() => {
         logFirebaseEvent('page_view', { page_path: '/Home' });
-      }, []);
-  
+        // Fetch user points when component mounts
+        if (user) {
+            fetchUserPoints();
+        }
+    }, [user]); // Trigger useEffect when user changes
+
+      const fetchUserPoints = async () => {
+        try {
+            const response = await axios.get(`https://yeeplatformbackend.azurewebsites.net/getUserPoints/${user.firebaseId}`); // Fetch user points using the API endpoint
+            setUserPoints(response.data.points); // Set user points in state
+        } catch (error) {
+            console.error('Error fetching user points:', error);
+        }
+    };
 
     const handleLogout = async () => {
         try {
@@ -116,39 +131,41 @@ function Home() {
 
 
             <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} handleSectionClick={handleSectionClick} selectedSection={selectedSection} />
-
+            <PointsTourGuide runTour={runTour} setRunTour={setRunTour} />
             <div className="flex-1 flex flex-col overflow-hidden">
-                <header className="flex justify-between items-center p-4 text-white z-10" style={{ backgroundColor: '#FFDE59' }}>
-                    {/* Hamburger Icon */}
-                    <button onClick={() => setSidebarOpen(!sidebarOpen)} className={`focus:outline-none lg:hidden ${sidebarOpen ? 'hidden' : ''}`}>
-                        <Bars3Icon className="h-6 w-6 text-white" />
-                    </button>
+            <header className="flex justify-between items-center p-4 text-white z-10" style={{ backgroundColor: '#FFDE59' }}>
+      <button onClick={() => setSidebarOpen(!sidebarOpen)} className={`focus:outline-none lg:hidden ${sidebarOpen ? 'hidden' : ''}`}>
+        <Bars3Icon className="h-6 w-6 text-white" />
+      </button>
 
-                    {/* Authentication Buttons */}
-                    <div className="flex items-center justify-center ml-auto">
-                        {user ? (
-                            <>
-                                <button onClick={handleMyAccountClick} className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">My Account</button>
-                                <button onClick={handleLogout} className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black hover:scale-110">Logout</button>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/login" className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Login</Link>
-                                <Link to="/signup" className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Signup</Link>
-                            </>
-                        )}
-                    </div>
+      <div className="flex items-center justify-center ml-auto">
+        {/* Show user points if user is logged in */}
+        {user && (
+          <div className="mr-4 text-white user-points">{`Points: ${userPoints}`}</div>
+        )}
 
-                    {/* Right-aligned Dbarlist */}
-                    <div className="hidden lg:flex items-center ml-auto">
-                        <Dbarlist />
-                    </div>
+        {/* Conditional rendering of authentication buttons */}
+        {user ? (
+          <>
+            <button onClick={handleMyAccountClick} className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">My Account</button>
+            <button onClick={handleLogout} className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black hover:scale-110">Logout</button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Login</Link>
+            <Link to="/signup" className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Signup</Link>
+          </>
+        )}
+      </div>
 
-                    {/* Menu icon for smaller screens with added margin-left */}
-                    <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden focus:outline-none ml-4" ref={menuIconRef}>
-                        <EllipsisVerticalIcon className="h-6 w-6 text-white" />
-                    </button>
-                </header>
+      <div className="hidden lg:flex items-center ml-auto">
+        <Dbarlist />
+      </div>
+
+      <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden focus:outline-none ml-4" ref={menuIconRef}>
+        <EllipsisVerticalIcon className="h-6 w-6 text-white" />
+      </button>
+    </header>
 
                 {/* Menu popup */}
                 {menuOpen && <MPopper open={menuOpen} anchorRef={menuIconRef.current} handleClose={() => setMenuOpen(false)} handleListKeyDown={() => { }} />}

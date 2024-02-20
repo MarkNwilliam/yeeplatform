@@ -4,7 +4,7 @@ import CustomPagination from "../subcomponents/CustomPagination";
 import { Link } from 'react-router-dom';
 import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
-
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function Chapters() {
   const [items, setItems] = useState([]);
@@ -89,21 +89,23 @@ export default function Chapters() {
 
 
       <div className="mb-4 flex flex-col sm:flex-row items-center">
-        <input
+
+         <input
           type="text"
           placeholder="Search for chapters..."
           value={searchTerm}
           onChange={handleSearchChange}
-          className="p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 mb-2 sm:mb-0"
+          className="p-3 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 mb-2 sm:mb-0"
           style={{ width: "100%", maxWidth: "300px" }}
         />
-        <button 
+           <button 
           onClick={handleSearchClick}
-          className="ml-0 sm:ml-2 p-3 border border-gray-300 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+          className="ml-0 sm:ml-2 p-3 border border-gray-300 rounded-full bg-yellow-500 text-white hover:bg-yellow-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 flex items-center justify-center"
           style={{ minWidth: "100px" }}
         >
-          Search
+          <SearchIcon /> {/* Search icon */}
         </button>
+    
       </div>
 
       <CustomPagination totalPages={totalPages} currentPage={currentPage} onChange={handlePageChange} />
