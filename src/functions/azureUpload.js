@@ -7,7 +7,7 @@ async function uploadToAzure(file, isThumbnail = false) {
 
     // Create a unique file name for the thumbnail to avoid name clashes
     let fileName = isThumbnail ? `thumbnail-${Date.now()}.jpg` : file.name;
-    const blobURL = `https://yeeplatform.blob.core.windows.net/yeeusers/${fileName}?${sasToken}`;
+    const blobURL = `https://yeeplatform.blob.core.windows.net/yeeebooks/${fileName}?${sasToken}`;
 
     const requestOptions = {
         method: 'PUT',
