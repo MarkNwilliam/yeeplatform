@@ -26,6 +26,7 @@ const EbookDetailPage = () => {
         }
         const data = await response.json();
         setEbook(data);
+        console.log(data.authors)
       } catch (err) {
         setError(err.message);
       } finally {
@@ -88,7 +89,7 @@ fetchData();
       <div className="flex flex-col lg:flex-row items-center lg:items-start bg-white rounded-lg shadow">
         <div className="w-full lg:w-1/4 p-4">
           <img
-            src={ebook.coverImage && ebook.coverImage.endsWith("undefined") ? defaultCoverImage : ebook.coverimage || defaultCoverImage}
+            src={ebook.coverImage || ebook.coverimage || defaultCoverImage}
             alt={ebook.title}
             className="rounded-lg shadow-xl mx-auto"
             style={{ maxWidth: '100%', height: 'auto' }}
@@ -107,7 +108,7 @@ fetchData();
   <div className="space-y-2">
   <div className="flex items-center text-center">
   <span className="font-semibold mr-2">Author:</span>
-  <span>{ebook.author}</span>
+  <span> {Array.isArray(ebook.authors) ? ( ebook.authors.join(', ')): ebook.authors}</span>
 </div>
     <div className="flex items-center text-center">
       <span className="font-semibold mr-2">ISBN:</span>
@@ -124,7 +125,7 @@ fetchData();
         className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
         Read Book
-      </button>
+      </button>  
 
           {/* Review section */}
       
