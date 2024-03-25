@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
-import { Link } from 'react-router-dom';
 import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 import SearchIcon from '@mui/icons-material/Search';

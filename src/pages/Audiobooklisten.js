@@ -15,15 +15,12 @@ import {
   Box,
   Flex,
   Button,
-  Text,
   Image,
-  useColorMode,
 } from '@chakra-ui/react';
 import { analytics, logEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
 
 // MUI
-import { Slider, Switch } from '@mui/material';
 
 const AudiobookListen = () => {
   const [audiobook, setAudiobook] = useState(null);

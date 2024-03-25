@@ -4,8 +4,6 @@ import OfflineStatus from './components/OfflineStatus';
 import LoadingScreen from "./components/loadingscreen";
 import { Helmet } from 'react-helmet';
 import ProtectedRouteWrapper from "./contexts/ProtectedRoute";
-import Swal from 'sweetalert2';
-import swal from 'sweetalert2';
 import ItemDetailPage from './pages/ItemDetailPage';
 import AudiobookDetailPage from './pages/AudiobookDetailPage';
 import AudioChapterdetail from './pages/AudioChapterdetail';
@@ -45,7 +43,7 @@ const MyAudios = lazy(() => import('./components/MyAudios'));
 const MyChapters = lazy(() => import('./components/MyChapters'));
 const AudiobookDetail = lazy(() => import('./components/AudiobookDetail'));
 const DAudioChapter = lazy(() => import('./components/DAudioChapter'));
-const EbookDetails = lazy(() => import('./components/EbookDetails'));
+
 const ChapterDetail = lazy(() => import('./components/ChapterDetail'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const Welcome = lazy(() => import('./pages/Welcome'));
@@ -57,8 +55,7 @@ import destinationAPI from '@elbwalker/destination-web-api';
 import {
   BrowserRouter,
   Routes,
-  Route,
-  useLocation
+  Route
 } from "react-router-dom";
 
 function App() {

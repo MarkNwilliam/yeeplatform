@@ -5,7 +5,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import congs1Animation from '../animations/congs.json';
-import Box from '@mui/material/Box';
 
 
 function SuccessDialog({ isOpen, onClose, points, message }) {

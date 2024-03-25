@@ -9,7 +9,6 @@ import { auth } from "../firebase";
 import axios from 'axios';
 import { countries } from '../constants/countries';
 import { analytics,logEvent } from '../firebase.js'
-import { Helmet } from 'react-helmet';
 
 const AccountPage = () => {
   const [userData, setUserData] = useState({});

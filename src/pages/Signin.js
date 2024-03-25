@@ -6,7 +6,6 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from '../contexts/AuthContext';
-import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 import queryString from 'query-string';
 import { logFirebaseEvent } from '../firebase.js';

@@ -4,11 +4,10 @@ import { getAuth } from "firebase/auth";
 import { Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import Chip from "@mui/material/Chip";
 import UploadButton from '../subcomponents/UploadButton';  // Import UploadButton component
 import SubmitButton from '../subcomponents/SubmitButton'; // Import SubmitButton component
 import SuccessDialog from '../subcomponents/SuccessDialog';
-import { resizeImage, isImageDimensionsValid, isFileSizeWithinRange } from '../functions/imageUtils';
+import { resizeImage, isFileSizeWithinRange } from '../functions/imageUtils';
 import uploadToAzure from '../functions/azureUpload';
 
 const DWrite = () => {

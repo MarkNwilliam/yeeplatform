@@ -5,8 +5,6 @@ import notVerifiedAnimation from '../animations/problem.json';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAuth, applyActionCode, checkActionCode } from 'firebase/auth';
 import { auth } from '../firebase';
-import { logEvent } from '../firebase.js'
-import { Helmet } from 'react-helmet';
 import { debounce } from 'lodash';
 import { updatePassword } from 'firebase/auth';
 import Swal from 'sweetalert2';

@@ -4,7 +4,6 @@ import { auth } from "../firebase";
 import Swal from "sweetalert2";
 import { useNavigate, useLocation } from "react-router-dom";
 import { logFirebaseEvent } from '../firebase.js';
-import { Helmet } from 'react-helmet';
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");

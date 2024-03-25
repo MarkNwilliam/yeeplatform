@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { firestore } from '../firebase';
 import { Typography, Grid, Paper, Button, Box } from '@mui/material';
 
 function EbookDetails() {
@@ -10,21 +8,7 @@ function EbookDetails() {
   const [pdfUrl, setPdfUrl] = useState(null);
 
   console.log('This is the is '+id);
-  useEffect(() => {
-    const fetchData = async () => {
-      const docRef = doc(firestore, 'books', id);
-      const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        setEbook({ id: docSnap.id, ...docSnap.data() });
-        setPdfUrl(docSnap.data().ebookPdfURL);
-      } else {
-        console.log('No such document!');
-      }
-    };
-
-    fetchData();
-  }, [id]);
 
   if (!ebook) return <div>Loading...</div>;
 

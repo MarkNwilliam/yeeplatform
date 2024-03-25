@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { firestore } from '../firebase';
 import AudioPlayer from '../AudioPlayer';
 import { Typography, Container, CircularProgress, Box, Card, CardContent, CardMedia } from '@mui/material';
 
@@ -10,17 +8,8 @@ const AudiobookDetail = () => {
   const [audiobook, setAudiobook] = useState(null);
 
   useEffect(() => {
-    const fetchAudiobook = async () => {
-      const audiobookRef = doc(firestore, 'audio', id);
-      const audiobookDoc = await getDoc(audiobookRef);
-
-      if (audiobookDoc.exists()) {
-        setAudiobook(audiobookDoc.data());
-      }
-    };
-
-    fetchAudiobook();
-  }, [id]);
+   
+  });
 
   return (
     <div>

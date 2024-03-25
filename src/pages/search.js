@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import Scontent from "../components/Scontent";
 
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 
 import { useWindowWidth } from '@react-hook/window-size';
 

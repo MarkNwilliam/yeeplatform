@@ -18,13 +18,11 @@ import {
   Box,
   Flex,
   Button,
-  Text,
   Image,
   useColorMode,
 } from '@chakra-ui/react';
 
 // MUI
-import { Slider, Switch } from '@mui/material';
 
 const AudioChapterListen = () => {
   const [audiobook, setAudiobook] = useState(null);

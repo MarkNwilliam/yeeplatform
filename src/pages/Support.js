@@ -1,7 +1,6 @@
 import React, { useState ,  useEffect  } from "react";
 import Avatar from '@mui/material/Avatar';
 import { Link } from "react-router-dom";
-import { logEvent } from '../firebase.js'
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from 'react-helmet';
 import { logFirebaseEvent } from '../firebase.js';

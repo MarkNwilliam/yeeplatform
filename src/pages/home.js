@@ -4,7 +4,7 @@ import { Bars3Icon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import Sidebar from '../components/Sidebar';
 import Intro from "../components/intro";
 import Scontent from "../components/Scontent";
-import EbookDetails from "../components/EbookDetails";
+
 import AudiobookDetail from "../components/AudiobookDetail";
 import ChapterDetail from "../components/ChapterDetail";
 import Ebooks from "./Ebooks";
@@ -176,7 +176,7 @@ function Home() {
                         <Route path="home" index element={<Intro />} />
                         <Route path="search" element={<Scontent />} />
                         <Route path="ebooks" element={<Ebooks />} />
-                        <Route path="ebooks/:id" element={<EbookDetails />} />
+                     
                         <Route path="audiobooks" element={<Audiobooks />} />
                         <Route path="audiobooks/:id" element={<AudiobookDetail />} />
                         <Route path="chapters/:id" element={<ChapterDetail />} />

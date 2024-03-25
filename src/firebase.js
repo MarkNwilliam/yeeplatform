@@ -9,7 +9,7 @@ import {
   sendEmailVerification,
   signOut,
 } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+
 
 
 const firebaseConfig = {
@@ -40,7 +40,7 @@ isSupported().then((isSupported) => {
 console.log("Firebase connected successfully");
 
 export const auth = getAuth(app);
-export const database = getDatabase(app);
+
 
 // Export a function to log events after Firebase Analytics is initialized
 export const logFirebaseEvent = (eventName, eventParams) => {

@@ -14,7 +14,7 @@ import SuccessDialog from "../subcomponents/SuccessDialog";
 import SubmitButton from "../subcomponents/SubmitButton";
 import UploadButton from "../subcomponents/UploadButton";
 import uploadToAzure from '../functions/azureUpload';
-import { resizeImage, isFileSizeWithinRange, checkFileExtension } from '../functions/imageUtils';
+import { resizeImage } from '../functions/imageUtils';
 
 const maxDescriptionLength = 500; // Maximum length for description
 const maxAudiobookFileSizeMB = 300;

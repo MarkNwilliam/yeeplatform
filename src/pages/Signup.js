@@ -7,7 +7,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
 import { countries } from '../constants/countries';
 import { debounce } from 'lodash';
-import { logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 import { logFirebaseEvent } from '../firebase.js';
 

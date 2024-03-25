@@ -18,10 +18,8 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseIcon from '@mui/icons-material/Pause';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import Tesseract from 'tesseract.js';
 import Swal from 'sweetalert2';

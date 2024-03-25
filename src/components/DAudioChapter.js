@@ -4,23 +4,15 @@ import Swal from 'sweetalert2'; // Importing sweetalert2
 import { auth } from "../firebase";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
-  Button,
   TextField,
   Typography,
-  Grid,
   Box,
 
   Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
 } from "@mui/material";
 import SuccessDialog from '../subcomponents/SuccessDialog';
-import CloudUploadIcon from "@mui/icons-material/CloudUpload"; 
-import Lottie from 'lottie-react';
-import congs1Animation from '../animations/congs.json';
 import uploadToAzure from '../functions/azureUpload';
-import { resizeImage, isFileSizeWithinRange, checkFileExtension } from '../functions/imageUtils';
+import { resizeImage } from '../functions/imageUtils';
 import UploadButton from '../subcomponents/UploadButton';
 import SubmitButton from '../subcomponents/SubmitButton';
 function DAudioChapter() {
