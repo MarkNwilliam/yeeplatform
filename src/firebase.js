@@ -10,8 +10,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { getDatabase } from "firebase/database";
-import { getFirestore } from "firebase/firestore"; // Add this import statement
-import { getStorage } from "firebase/storage"; // Add this import statement
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXS56tIro9cd-Sd4ySn5AwLw3T6cnMHr0",
@@ -42,8 +41,7 @@ console.log("Firebase connected successfully");
 
 export const auth = getAuth(app);
 export const database = getDatabase(app);
-export const firestore = getFirestore(app);
-export const storage = getStorage(app); // Add this export statement
+
 // Export a function to log events after Firebase Analytics is initialized
 export const logFirebaseEvent = (eventName, eventParams) => {
   if (analytics) {
