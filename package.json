@@ -68,6 +68,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "npm install --force && DISABLE_ESLINT_PLUGIN=true CI=false react-scripts build",
+    "purgecss": "purgecss --css src/**/*.css --content src/**/*.js --out build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -90,12 +92,15 @@
     ]
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^5.0.0",
     "@wixc3/react-board": "^2.4.0",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.49.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-unused-imports": "^3.0.0",
     "postcss": "^8.4.30",
+    "purgecss": "^5.0.0",
+    "source-map-explorer": "^2.5.3",
     "tailwindcss": "^3.3.3"
   }
 }
