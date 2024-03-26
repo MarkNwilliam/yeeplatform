@@ -14,6 +14,8 @@ import Chapterreader from './pages/Chapterreader';
 import AudioChapterListen from './pages/Audiochapterlisten';
 import AudiobookListen from './pages/Audiobooklisten';
 import AudioChapters from './pages/AudioChapters';
+import EbookViewer from './pages/EpubViewer';
+
 
 
 // Lazy-load the components
@@ -110,17 +112,19 @@ function App() {
     <Routes>
     
         <Route path ="/*" element={<Home />}>
-          b<Route path="search" element={<Scontent />}/>
+          <Route path="search" element={<Scontent />}/>
           <Route path="home" element={<Home />}/>
           <Route path="ebooks" element={<Ebooks />} />
           <Route path="audiobooks" element={<Audiobooks />}/>  
           <Route path="items/:id" element={<ItemDetailPage />} />
           <Route path="chapters" element={<Chapters />} />
           <Route path="audiochapters" element={<AudioChapters />} />
+         
         </Route>
 
         <Route path="ebooks/:id" element={<EbookDetailPage />} />
         <Route path="ebooks/:id/read" element={<ProtectedRouteWrapper> <EbookReaderPage /> </ProtectedRouteWrapper>} />
+        <Route path="/ebooks/epub/:id" element={<ProtectedRouteWrapper> <EbookViewer /> </ProtectedRouteWrapper>} />
         <Route path="audiochapterlisten/:id/listen" element={<ProtectedRouteWrapper> <AudioChapterListen /> </ProtectedRouteWrapper>} />
        
         <Route path="/audiobooklisten/:id/listen" element={<ProtectedRouteWrapper> <AudiobookListen /> </ProtectedRouteWrapper>} />

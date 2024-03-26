@@ -16,6 +16,11 @@ const EbookDetailPage = () => {
 
   const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
 
+  function getFileType(url) {
+    const extension = url.split('.').pop();
+    return extension;
+  }
+
   useEffect(() => {
 
     const fetchData = async () => {
@@ -51,14 +56,27 @@ const EbookDetailPage = () => {
 };
 
 fetchData();
-}, [id, ebook]);
+}, [id]);
 
   const handleBack = () => {
     navigate(-1);
   };
 
   const handleReadBook = () => {
-    navigate(`/ebooks/${id}/read`);
+
+    const fileType = getFileType(ebook.ebookUrl);
+console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or 'docx' or 'txt' or 'rtf' or 'fb2' or 'djvu' or 'azw' or 'lit' or 'prc' or 'pdb' or 'oxps' or 'xps' or 'cbz' or 'cbr' or 'cb7' or 'cbt' or 'cba' or 'chm' or 'html' or 'htm' or 'xhtml' or 'mht' or 'mhtml' or 'webarchive' or 'webarchivexml' or 'webarchivezip' or 'webarchivexmlzip' or 'opf' or 'ibooks' or 'ibook' or 'azw1' or 'azw4' or 'azw8' or 'azw6' or 'azw7' or 'azw8' or 'azw9' or 'azw10' or 'azw11' or 'azw12' or 'azw13' or 'azw14' or 'azw15' or 'azw16' or 'azw17' or 'azw18' or 'azw19' or 'azw20' or 'azw21' or 'azw22' or 'azw23' or 'azw24' or 'azw25' or 'azw26' or 'azw27' or 'azw28' or 'azw29' or 'azw30' or 'azw31' or 'azw32' or 'azw33' or 'azw34' or 'azw35' or 'azw36' or 'azw37' or 'azw38' or 'azw39' or 'azw40' or 'azw41' or 'azw42' or 'azw43' or 'azw44' or 'azw45' or 'azw46' or 'azw47' or 'azw48' or 'azw49' or 'azw50' or 'azw51' or 'azw52' or 'azw53' or 'azw54' or 'azw55' or 'azw56' or 'azw57' or
+
+
+   
+
+    if (fileType === 'pdf') {
+      logEvent(analytics, 'pdf opened');
+      navigate(`/ebooks/${id}/read`);
+    } else if (fileType === 'epub') {
+      logEvent(analytics, 'epub opened');
+      navigate(`/ebooks/epub/${id}`);
+    }
   };
   
 
@@ -70,6 +88,9 @@ fetchData();
     //return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
     console.log(error.message);
   }
+
+
+  
 
   return (
     <div className="container mx-auto p-4">
