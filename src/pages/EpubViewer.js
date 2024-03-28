@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ReactReader,  ReactReaderStyle } from 'react-reader';
 import { YELLOW } from '../constants/colors';
-import { FaSun, FaMoon, FaPlay } from 'react-icons/fa';
+import { useParams, useNavigate } from 'react-router-dom';
+import { analytics, logEvent } from '../firebase.js';
+import { FaSun, FaMoon, FaPlay, FaArrowLeft } from 'react-icons/fa';
+
 
 function updateTheme(rendition, theme) {
   const themes = rendition.themes
@@ -21,7 +24,31 @@ function updateTheme(rendition, theme) {
 const EbookViewer = () => {
   const [largeText, setLargeText] = useState(false);
   const [theme, setTheme] = useState('light');
+  const navigate = useNavigate();
   const rendition = useRef(undefined);
+  const { id } = useParams();
+  const [ebookContent, setEbookContent] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchEbookContent = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `https://yeeplatformbackend.azurewebsites.net/getEbook/${id}`
+        );
+        const data = await response.json();
+        setEbookContent(data);
+      } catch (error) {
+        console.error('Error fetching eBook content:', error.message);
+      } finally {
+        setIsLoading(false);
+        logEvent(analytics, ebookContent?.title + '_reader_page_visited');
+      }
+    };
+
+    fetchEbookContent();
+  }, [id]);
 
 
   useEffect(() => {
@@ -37,22 +64,43 @@ const EbookViewer = () => {
     const text = contents.map(content => content.document.body.textContent).join('\n');
     console.log(text);
   };
-  
+  const backButtonStyle = {
+    backgroundColor: YELLOW,
+    color: 'black',
+    borderRadius: '50%',
+    padding: '10px',
+    fontSize: '20px',
+    position: 'absolute',
+    top: '10px',
+    left: '10px',
+  };
+
+  const buttonStyle = {
+    backgroundColor: YELLOW,
+    color: 'black',
+    borderRadius: '50%',
+    padding: '10px',
+    fontSize: '20px',
+    margin: '10px',
+  };
 
   return (
     <div style={{ height: '100vh' }}>
-         <button onClick={() => setTheme('light')}>
-      <FaSun /> Light Theme
+      <button style={backButtonStyle} onClick={() => navigate(`/ebooks/${id}`)}>
+        <FaArrowLeft /> {/*Back*/}
+      </button>
+         <button style={buttonStyle} onClick={() => setTheme('light')}>
+      <FaSun /> {/*Light Theme*/}
     </button>
-    <button onClick={() => setTheme('dark')}>
-      <FaMoon /> Dark Theme
+    <button style={buttonStyle} onClick={() => setTheme('dark')}>
+      <FaMoon /> {/*Dark Theme*/}
     </button>
-    <button onClick={handlePlayClick}>
-      <FaPlay /> Play
+    <button style={buttonStyle} onClick={handlePlayClick}>
+      <FaPlay /> {/*Play*/}
     </button>
       <ReactReader
-        title="test"
-        url="https://yeeplatform.blob.core.windows.net/yeeebooks/34344/pg34344.epub"
+        title = {ebookContent?.title}
+        url={ebookContent?.ebookUrl}
         location={location}
         locationChanged={(epubcfi) => setLocation(epubcfi)}
         readerStyles={theme === 'dark' ? darkReaderTheme : lightReaderTheme}
