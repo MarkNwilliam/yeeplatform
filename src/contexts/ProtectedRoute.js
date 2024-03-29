@@ -23,12 +23,7 @@ const ProtectedRouteWrapper = ({ children }) => {
     return <Navigate to={`/signin?${query}`} replace />;
   } 
 
-  if (!contextIsAuthor) {
-    console.log("ProtectedRoute: User is not an author, navigating to home");
 
-
-    return <Navigate to="/" replace />;
-  }
 
   console.log("ProtectedRoute: Rendering protected content");
   return children;
