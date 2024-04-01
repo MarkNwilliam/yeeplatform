@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { auth } from '../firebase';
 import Swal from 'sweetalert2';
-import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, sendEmailVerification, signInWithRedirect } from "firebase/auth";
 import { FaGoogle } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
@@ -70,7 +70,7 @@ function Signup() {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'You must agree to receive emails to register.',
+        text: 'You must agree to the terms and conditions to register.',
       });
       return;
     }
@@ -174,7 +174,7 @@ function Signup() {
 
       
       const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithRedirect(auth, provider);
       const user = result.user;
 
       const userData = {

@@ -50,6 +50,32 @@ function Home() {
         }
     };
 
+
+
+    useEffect(() => {
+        const permissionStatus = localStorage.getItem('notificationPermission');
+        const nextAskDate = localStorage.getItem('nextAskDate');
+    
+        // If we've never asked for permission before, or it's time to ask again
+        if (!permissionStatus || !nextAskDate || new Date() > new Date(nextAskDate)) {
+          Notification.requestPermission().then(function(permission) {
+            // Store the user's permission status
+            localStorage.setItem('notificationPermission', permission);
+    
+            if (permission === 'granted') {
+              console.log('Notification permission granted.');
+              // You can show a notification here if permission was granted
+            } else {
+              console.log('Notification permission denied.');
+              // Set the next date to ask for permission to 1 week from now
+              const nextAskDate = new Date();
+              nextAskDate.setDate(nextAskDate.getDate() + 7);
+              localStorage.setItem('nextAskDate', nextAskDate.toString());
+            }
+          });
+        }
+      }, []);
+
     const handleLogout = async () => {
         try {
             const result = await Swal.fire({
