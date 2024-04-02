@@ -97,6 +97,16 @@ function SignIn() {
     });
   
       const result = await signInWithPopup(auth, provider);
+
+    if (!result) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        html: 'Popup blocked. Please allow popups for this site in your browser settings. <a href="https://www.google.com/search?q=how+to+allow+popups+in+my+browser" target="_blank">Learn More</a>',
+      });
+      return;
+    }
+  
       const { email, uid } = result.user;
       Swal.close();
     

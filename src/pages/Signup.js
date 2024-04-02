@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { auth } from '../firebase';
 import Swal from 'sweetalert2';
-import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, sendEmailVerification, signInWithRedirect } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { FaGoogle } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
@@ -174,7 +174,18 @@ function Signup() {
 
       
       const provider = new GoogleAuthProvider();
-      const result = await signInWithRedirect(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+
+
+      if (!result) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          html: 'Popup blocked. Please allow popups for this site in your browser settings. <a href="https://www.google.com/search?q=how+to+allow+popups+in+my+browser" target="_blank">Learn More</a>',
+        });
+        return;
+      }
+      
       const user = result.user;
 
       const userData = {
