@@ -45,10 +45,13 @@ const AudiobookListen = () => {
           `https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`
         );
         const { data } = response;
+        console.log("here is the data");
+        console.log(data);
         setAudiobook(data);
         setAudiobookId(id);
         logEvent(analytics, audiobook.title + '_listen_visited');
         setAudioDuration(data.audioDuration);
+       
         const savedProgress = localStorage.getItem(
           `audiobook_${audiobookId}_progress`
         );
@@ -82,7 +85,7 @@ const AudiobookListen = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1); // Navigate to the previous page
+    navigate(`/audiobooks/${id}`);  // Navigate to the previous page
   };
 
   const handleDarkMode = () => {
@@ -190,15 +193,13 @@ const AudiobookListen = () => {
 
         <AudioPlayer
           ref={playerRef}
-          playList={[
-            {
-              name: audiobook.title,
-              writer: audiobook.author,
-              img: audiobook.coverImage,
-              src: audiobook.audioUrl,
-              id: 1,
-            },
-          ]}
+          playList={audiobook.audio_files.map((file, index) => ({
+            name: `${audiobook.title} - Part ${index + 1}`,
+            writer: audiobook.author,
+            img: audiobook.coverImage,
+            src: file,
+            id: index + 1,
+          }))}
           audioInitialState={{
             isPlaying,
             volume,

@@ -49,6 +49,8 @@ const AudioChapterListen = () => {
           `https://yeeplatformbackend.azurewebsites.net/getAudioChapter/${id}`
         );
         setAudiobook(response.data);
+        console.log("my data");
+        console.log(response.data);
         logEvent(analytics, audiobook?.title + '_listen_visited');
         // Fetch saved progress for this chapter
         const savedProgress = localStorage.getItem(
@@ -100,11 +102,11 @@ const AudioChapterListen = () => {
   };
 
   const renderPlayer = () => {
-    if (!audiobook || !audiobook.content) {
+    if (!audiobook || !audiobook.audio_file) {
       return <p>No audio files available for this book.</p>;
     }
 
-    const audioFile = audiobook.content;
+    const audioFile = audiobook.audio_file;
 
     return (
       <Box>
@@ -126,7 +128,7 @@ const AudioChapterListen = () => {
               name: audiobook.title,
               writer: audiobook.author,
               img: audiobook.coverimage && audiobook.coverimage.endsWith("undefined") ? defaultCoverImage : audiobook.coverimage || defaultCoverImage,
-              src: audioFile,
+              src: audiobook.audio_file,
               id: 1,
             },
           ]}

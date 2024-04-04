@@ -69,7 +69,7 @@ import { Helmet } from 'react-helmet';
     
     
       const handleBack = () => {
-        navigate(-1);
+        navigate('/audiobooks');
         logEvent(analytics,'audiobook_detail_back_clicked', { audiobookId: id });
       };
     
@@ -118,6 +118,7 @@ console.log('ebook.categories:', ebook.categories);
                 
                 src={ebook.coverImage && ebook.coverImage.endsWith("undefined") ? defaultCoverImage : ebook.coverImage || defaultCoverImage}
                 alt={ebook.title}
+                onClick={handleReadBook} 
                 className="rounded-lg shadow-xl mx-auto"
                 style={{ maxWidth: '100%', height: 'auto' }}
               />

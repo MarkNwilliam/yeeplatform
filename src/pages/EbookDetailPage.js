@@ -112,6 +112,7 @@ console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or '
           <img
             src={ebook.coverImage || ebook.coverimage || defaultCoverImage}
             alt={ebook.title}
+            onClick={handleReadBook} 
             className="rounded-lg shadow-xl mx-auto"
             style={{ maxWidth: '100%', height: 'auto' }}
           />

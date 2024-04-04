@@ -16,7 +16,7 @@ export default function Scontent() {
   useEffect(() => {
     logEvent( analytics,'Ebooks visited');
     fetchData();
-  }, [currentPage, searchTerm]);
+  }, [currentPage]);
   
   const fetchData = async () => {
     setIsLoading(true);

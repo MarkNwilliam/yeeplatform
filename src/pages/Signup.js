@@ -6,9 +6,10 @@ import { FaGoogle } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
 import { countries } from '../constants/countries';
-import { debounce } from 'lodash';
+
 import { Helmet } from 'react-helmet';
 import { logFirebaseEvent } from '../firebase.js';
+import { fetchSignInMethodsForEmail } from "firebase/auth";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -20,7 +21,7 @@ function Signup() {
   const [isConsentGiven, setIsConsentGiven] = useState(false);
   const [country, setCountry] = useState("");
 
-  const debounceDelay = 1000; // 1 second
+
 
   
   useEffect(() => {
@@ -66,6 +67,8 @@ function Signup() {
       return;
     }
 
+
+
     if (!isConsentGiven) {
       Swal.fire({
         icon: 'error',
@@ -83,6 +86,18 @@ function Signup() {
       });
       return;
     }
+
+       // Check if the email is already in use
+       const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+       if (signInMethods.length > 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'This email address is already in use.',
+        });
+        return;
+
+       }
 
     try {
       Swal.fire({
@@ -160,6 +175,15 @@ function Signup() {
       return;
     }
 
+    if (!isConsentGiven) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'You must agree to the terms and conditions to sign up.',
+      });
+      return;
+    }
+
     try {
       Swal.fire({
         title: 'Signing up with Google...',
@@ -185,7 +209,7 @@ function Signup() {
         });
         return;
       }
-      
+
       const user = result.user;
 
       const userData = {
@@ -235,7 +259,7 @@ function Signup() {
     }
   };
 
-  const debouncedHandleSignUp = debounce(handleSignUp, debounceDelay);
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-200 p-4 md:p-0">
@@ -255,7 +279,7 @@ function Signup() {
       <div className="text-center">
         <IoArrowBack
           className="text-gray-700 text-2xl cursor-pointer mb-4"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/ebook')}
         />
        <img src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" alt="Platform logo" loading="lazy" className="mx-auto h-16 w-auto mb-2" />
 
@@ -280,7 +304,7 @@ function Signup() {
       </button>
 
       
-      <form onSubmit={debouncedHandleSignUp} className="space-y-4" autoComplete="off">
+      <form onSubmit={handleSignUp} className="space-y-4" autoComplete="off">
 
         <input
           type="text"

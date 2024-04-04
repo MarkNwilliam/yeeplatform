@@ -54,7 +54,7 @@
     }, [id, ebook]);
     
       const handleBack = () => {
-        navigate(-1);
+        navigate('/chapters');
       };
     
       const handleReadBook = () => {
@@ -96,6 +96,7 @@
 
                 src={ebook.coverimage && ebook.coverimage.endsWith("undefined") ? defaultCoverImage : ebook.coverimage || defaultCoverImage}
                 alt={ebook.title}
+                onClick={handleReadBook} 
                 className="rounded-lg shadow-xl mx-auto"
                 style={{ maxWidth: '100%', height: 'auto' }}
               />

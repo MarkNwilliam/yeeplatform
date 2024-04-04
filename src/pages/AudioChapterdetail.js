@@ -54,7 +54,7 @@ import { Helmet } from 'react-helmet';
       }, [id]);
     
       const handleBack = () => {
-        navigate(-1);
+        navigate('/audiochapters');
       };
     
       const handleReadBook = () => {
@@ -95,6 +95,7 @@ import { Helmet } from 'react-helmet';
               <img
                 src={ebook.coverimage && ebook.coverimage.endsWith("undefined") ? defaultCoverImage : ebook.coverimage || defaultCoverImage}
                 alt={ebook.title}
+                onClick={handleReadBook} 
                 className="rounded-lg shadow-xl mx-auto"
                 style={{ maxWidth: '100%', height: 'auto' }}
               />
@@ -120,7 +121,7 @@ import { Helmet } from 'react-helmet';
         </div>
         <div className="flex items-center text-center">
   <span className="font-semibold mr-2">Categories:</span>
-  <span>{ebook.categories ? ebook.categories.join(', ') : 'N/A'}</span>
+  <span>{ebook.categories || 'N/A'}</span>
 </div>
 
       </div>

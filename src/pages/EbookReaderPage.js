@@ -332,7 +332,7 @@ const EbookReaderPage = () => {
     };
   }, []);
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/ebook');
   };
 
   const handleZoomIn = () => {
@@ -530,7 +530,7 @@ const EbookReaderPage = () => {
       <div className="flex items-center mb-4">
         <button
           className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mr-2"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('ebook')}
         >
           <ArrowBackIcon />
         </button>

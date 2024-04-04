@@ -9,11 +9,9 @@ export default function Scontent() {
   const [searchTerm, setSearchTerm] = useState(""); 
   const [isLoading, setIsLoading] = useState(true); 
   useEffect(() => {
-  
-    
-  
     fetchData();
-  }, [currentPage, searchTerm]);
+  }, [currentPage]);
+
   
   const fetchData = async () => {
     setIsLoading(true); // Set loading state to true when fetching starts

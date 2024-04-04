@@ -141,7 +141,7 @@ function SignIn() {
 
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-start mb-6">
-          <FaArrowLeft className="text-gray-800 cursor-pointer" onClick={() => navigate(-1)} />
+          <FaArrowLeft className="text-gray-800 cursor-pointer" onClick={() => navigate('/ebook')} />
           <img src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" alt="Platform logo" loading="lazy" className="mx-auto h-16 w-auto mb-2" />
         </div>
         <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">Sign In</h1>
