@@ -100,7 +100,7 @@ const EbookViewer = () => {
     </button>
       <ReactReader
         title = {ebookContent?.title}
-        url={ebookContent?.ebookUrl}
+        url={ebookContent?.ebookepubImagesUrl}
         location={location}
         locationChanged={(epubcfi) => setLocation(epubcfi)}
         readerStyles={theme === 'dark' ? darkReaderTheme : lightReaderTheme}
