@@ -15,7 +15,7 @@ export default function AudioChapters() {
   useEffect(() => {
     logEvent(analytics, 'audiochapters_page_visited');
     fetchData();
-  }, [currentPage, searchTerm]);
+  }, [currentPage]);
   
   const fetchData = async () => {
     setIsLoading(true);

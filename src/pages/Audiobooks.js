@@ -14,7 +14,7 @@ export default function Audiobooks() {
   useEffect(() => {
     logEvent(analytics,'audiobooks_page_visited');
     fetchData();
-  }, [currentPage, searchTerm]);
+  }, [currentPage]);
   
   const fetchData = async () => {
     setIsLoading(true);
