@@ -6,17 +6,19 @@ import { analytics, logEvent } from '../firebase.js';
 import { FaSun, FaMoon, FaPlay, FaArrowLeft } from 'react-icons/fa';
 
 
-function updateTheme(rendition, theme) {
+function updateTheme(rendition, theme, font) {
   const themes = rendition.themes
   switch (theme) {
     case 'dark': {
       themes.override('color', '#fff')
-      themes.override('background', '#000')
+      themes.override('background-color', '#000') 
+      themes.override('font-family', font)
       break
     }
     case 'light': {
       themes.override('color', '#000')
       themes.override('background', '#fff')
+      themes.override('font-family', font)
       break
     }
   }
@@ -29,6 +31,66 @@ const EbookViewer = () => {
   const { id } = useParams();
   const [ebookContent, setEbookContent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [font, setFont] = useState(localStorage.getItem('font') || 'Georgia, serif');
+
+  const fonts = [
+    'Georgia, serif', 
+    'Arial, sans-serif', 
+    'Courier New, monospace',
+    'Times New Roman, Times, serif',
+    'Verdana, Geneva, sans-serif',
+    'Tahoma, Geneva, sans-serif',
+    'Trebuchet MS, Helvetica, sans-serif',
+    'Comic Sans MS, cursive, sans-serif',
+    'Lucida Sans Unicode, Lucida Grande, sans-serif',
+    'Lucida Sans Unicode',
+    'Lucida Grande, sans-serif',
+    'Palatino Linotype, Book Antiqua, Palatino, serif',
+    'Garamond, serif',
+    'Bookman Old Style, serif',
+    'Arial Black, Gadget, sans-serif',
+    'Comic Sans MS, cursive, sans-serif',
+    'Impact, Charcoal, sans-serif',
+    'Lucida Console, Monaco, monospace',
+    'Gill Sans, sans-serif',
+    'Franklin Gothic Medium, Arial, sans-serif',
+'Consolas, monaco, monospace',
+'Courier, monospace',
+'Lucida Console, Monaco, monospace',
+'Lucida Sans Typewriter, Lucida Console, monaco, Bitstream Vera Sans Mono, monospace',
+'American Typewriter, Georgia, serif',
+'Andale Mono, AndaleMono, monospace',
+'Futura, Century Gothic, AppleGothic, sans-serif',
+'Gill Sans, Calibri, Trebuchet MS, sans-serif',
+'Helvetica, Arial, sans-serif',
+'Impact, Haettenschweiler, Franklin Gothic Bold, Charcoal, Helvetica Inserat, sans-serif',
+'Lucida Grande, Lucida Sans, Lucida Sans Unicode, sans-serif',
+'Monaco, Consolas, Lucida Console, monospace',
+'Optima, Segoe, Candara, Calibri, Arial, sans-serif',
+'Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua, Georgia, serif',
+'Tahoma, Verdana, Segoe, sans-serif',
+'TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif',
+'Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif',
+'Verdana, Geneva, sans-serif',
+'Roboto, sans-serif',
+'Montserrat, sans-serif'
+  ];
+
+  useEffect(() => {
+    localStorage.setItem('font', font);
+    if (rendition.current) {
+      rendition.current.themes.override('font-family', font);
+    }
+  }, [font]);
+
+
+  useEffect(() => {
+    if (rendition.current) {
+      updateTheme(rendition.current, theme, font)
+    }
+  }, [font])
+
 
   useEffect(() => {
     const fetchEbookContent = async () => {
@@ -98,6 +160,18 @@ const EbookViewer = () => {
     <button style={buttonStyle} onClick={handlePlayClick}>
       <FaPlay /> {/*Play*/}
     </button>
+
+
+    <select value={font} onChange={(e) => setFont(e.target.value)}>
+        {fonts.map((fontOption) => (
+          <option key={fontOption} value={fontOption}>
+            {fontOption}
+          </option>
+        ))}
+      </select>
+
+
+      
       <ReactReader
         title = {ebookContent?.title}
         url={ebookContent?.ebookepubImagesUrl}
@@ -105,7 +179,7 @@ const EbookViewer = () => {
         locationChanged={(epubcfi) => setLocation(epubcfi)}
         readerStyles={theme === 'dark' ? darkReaderTheme : lightReaderTheme}
         getRendition={(_rendition) => {
-          updateTheme(_rendition, theme)
+          updateTheme(_rendition, theme, font)
           rendition.current = _rendition
         }}
       />
