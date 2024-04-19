@@ -52,7 +52,9 @@ const EbookReaderPage = () => {
   const [value, setValue] = useState('');
   const { speak, cancel } = useSpeechSynthesis();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [numPages, setNumPages] = useState(null);
   const [darkMode, setDarkMode] = useState(false); 
+  const [scale, setScale] = useState(1.0); 
   useEffect(() => {
     
     const fetchEbookContent = async () => {
@@ -63,6 +65,7 @@ const EbookReaderPage = () => {
         );
         const data = await response.json();
         setEbookContent(data);
+        console.log(data)
       } catch (error) {
         console.error('Error fetching eBook content:', error.message);
       } finally {
@@ -336,11 +339,13 @@ const EbookReaderPage = () => {
   };
 
   const handleZoomIn = () => {
-    setZoom((prevZoom) => prevZoom + 0.2);
+    setScale(scale + 0.1); // Increase scale state
   };
-
+  
   const handleZoomOut = () => {
-    setZoom((prevZoom) => Math.max(prevZoom - 0.2, 0.2));
+    if (scale > 0.1) {
+      setScale(scale - 0.1); // Decrease scale state
+    }
   };
 
   const handleTextSelection = () => {
@@ -471,8 +476,7 @@ const EbookReaderPage = () => {
 
   
   
-  const pageWidth = window.innerWidth * 1 * zoom;
-  const pageHeight = window.innerHeight * 1 * zoom;
+
 
   return (
     <div className={`p-4 flex flex-col ${containerClassName } ${fullScreenMode }`}>
@@ -534,7 +538,7 @@ const EbookReaderPage = () => {
         >
           <ArrowBackIcon />
         </button>
-        <h1 className="text-3xl font-bold text-yellow-800">{ebookContent?.title}</h1>
+        <h1 className="text-3xl  font-bold text-yellow-800">{ebookContent?.title}</h1>
       </div>
       <div className="w-full max-w-screen-md mx-auto bg-white rounded-lg shadow-md p-6 flex-1">
   <div className="flex flex-wrap justify-center mb-4">
@@ -573,19 +577,18 @@ const EbookReaderPage = () => {
     </button>
   </div>
 
-
-        <div className="w-full h-full overflow-auto mt-8" onMouseUp={handleTextSelection} ref={viewportRef}>
-          {isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="loader ease-linear rounded-full border-8 border-t-8 border-yellow-300 h-24 w-24"></div>
-            </div>
-          ) : (
-            <Document file={ebookContent?.ebookUrl} renderMode="webgl">
-              <Page pageNumber={currentPage} width={pageWidth} height={pageHeight} renderTextLayer={true} />
-              <Waypoint onEnter={() => console.log('Content section entered')} />
-            </Document>
-          )}
-        </div>
+  <div className="w-full h-full overflow-auto mt-8 flex justify-center align-center" onMouseUp={handleTextSelection} ref={viewportRef}>
+  {isLoading ? (
+    <div className="flex items-center justify-center h-full">
+      <div className="loader ease-linear rounded-full border-8 border-t-8 border-yellow-300 h-24 w-24"></div>
+    </div>
+  ) : (
+    <Document file={ebookContent?.ebookUrl} renderMode="webgl" onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
+      <Page pageNumber={currentPage} scale={scale} renderTextLayer={true} style={{ textAlign: 'center' }} />
+      <Waypoint onEnter={() => console.log('Content section entered')} />
+    </Document>
+  )}
+</div>
 
   <button
   className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full"
