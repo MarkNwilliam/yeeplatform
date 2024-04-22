@@ -207,7 +207,7 @@ const AudiobookListen = () => {
           }}
           activeUI={{
             all: true,
-            progress: 'bar',
+            progress: 'waveform',
           }}
           customIcons={{
             play: <FaPlay />,
