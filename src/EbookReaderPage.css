@@ -1,0 +1,7 @@
+.rpv-default-layout__toolbar-download-button,
+.rpv-default-layout__toolbar-print-button,
+.rpv-default-layout__toolbar-full-screen-button,
+.rpv-default-layout__toolbar-open-file-button,
+.rpv-default-layout__toolbar-bookmark-button {
+    display: none;
+}
