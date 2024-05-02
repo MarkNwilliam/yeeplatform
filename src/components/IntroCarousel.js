@@ -1,9 +1,13 @@
 import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useQuery } from 'react-query';
 
 export default function IntroCarousel() {
-  const carouselItems = [
+  const fetchCarouselItems = () =>
+  new Promise((resolve) =>
+    setTimeout(() => {
+      resolve([
     {
       id: 1,
       src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee3.jpg',
@@ -28,7 +32,12 @@ export default function IntroCarousel() {
       description: '',
       link: '' // Example link URL for the third item
     }
-  ];
+  ]);
+}, 5000)
+);
+
+const { data: carouselItems, isLoading } = useQuery('carouselItems', fetchCarouselItems);
+
 
   const handleClick = (event) => {
     if (!event.currentTarget.getAttribute('href')) {
@@ -38,7 +47,7 @@ export default function IntroCarousel() {
 
   return (
     <Carousel style={{ maxHeight: '500px', overflow: 'hidden' }}>
-      {carouselItems.map((item) => (
+     {carouselItems && carouselItems.map((item) => (
         <Carousel.Item key={item.id} interval={1500}>
           {item.link ? (
             <a href={item.link} target="_blank" rel="noopener noreferrer">

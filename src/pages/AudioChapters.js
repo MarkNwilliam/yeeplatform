@@ -63,6 +63,7 @@ export default function AudioChapters() {
   };
 
   const handleSearchClick = () => {
+    setCurrentPage(1)
     console.log('Search Term:', searchTerm); 
     fetchData();
   };

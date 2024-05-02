@@ -3,6 +3,7 @@ import './App.css';
 import OfflineStatus from './components/OfflineStatus';
 import LoadingScreen from "./components/loadingscreen";
 import { Helmet } from 'react-helmet';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import ProtectedRouteWrapper from "./contexts/ProtectedRoute";
 import ItemDetailPage from './pages/ItemDetailPage';
 import AudiobookDetailPage from './pages/AudiobookDetailPage';
@@ -67,6 +68,7 @@ function App() {
 
   const [loading, setLoading] = useState(false);
   const [onlineStatus, setOnlineStatus] = useState(navigator.onLine);
+  const queryClient = new QueryClient();
 
   const config = {
     custom: {
@@ -99,7 +101,7 @@ function App() {
 
   return (
 
-
+    <QueryClientProvider client={queryClient}>
     <div className="App">
 
 <Helmet>
@@ -179,6 +181,8 @@ function App() {
   )}
   </Suspense>
     </div>
+
+    </QueryClientProvider>
   );
 }
 

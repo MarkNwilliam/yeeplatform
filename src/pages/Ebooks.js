@@ -64,6 +64,7 @@ export default function Scontent() {
   };
 
   const handleSearchClick = () => {
+    setCurrentPage(1)
     console.log('Search Term:', searchTerm); 
     fetchData();
   };

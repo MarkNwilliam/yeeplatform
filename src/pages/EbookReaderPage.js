@@ -513,8 +513,12 @@ defaultScale={defaultScale}
 onPageChange={handlePageChange}
 onDocumentLoad={ebookviewed}
                     renderLoader={(percentages) => (
+                      <div>
+                        <h2 className="text-yellow-500 font-bold">Please wait, it&apos;s coming...</h2>
                       <div style={{ width: '240px' }}>
+                        
                           <ProgressBar progress={Math.round(percentages)} />
+                      </div>
                       </div>
                   )}
                         plugins={[
