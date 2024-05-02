@@ -9,6 +9,7 @@ import {
   FaMoon,
   FaSun,
 } from 'react-icons/fa';
+import LinearProgress from '@mui/material/LinearProgress';
 
 // Tailwind CSS
 import {
@@ -103,7 +104,7 @@ const AudiobookListen = () => {
   
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div><LinearProgress className="text-yellow-500 animate-pulse" color="secondary" /></div>;
   }
 
   if (error) {

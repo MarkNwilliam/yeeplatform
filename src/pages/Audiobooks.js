@@ -5,6 +5,10 @@ import { analytics, logEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
 import SearchIcon from '@mui/icons-material/Search';
 import { useQuery } from 'react-query';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import CircularProgress from '@mui/material/CircularProgress';
+
+
 
 export default function Audiobooks() {
   const [results, setResults] = useState([]);
@@ -12,6 +16,7 @@ export default function Audiobooks() {
   const [totalPages, setTotalPages] = useState(100);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     logEvent(analytics, 'audiobooks_page_visited');
@@ -47,6 +52,7 @@ export default function Audiobooks() {
 
     } catch (error) {
       console.error("Error fetching data:", error);
+      setError(error);
     }
 
     setIsLoading(false);
@@ -63,6 +69,11 @@ export default function Audiobooks() {
   const handleSearchClick = () => {
     setCurrentPage(1)
     console.log('Search Term:', searchTerm);
+    fetchData();
+  };
+
+  const handleRefreshClick = () => {
+    setCurrentPage(1);
     fetchData();
   };
 
@@ -97,14 +108,24 @@ export default function Audiobooks() {
         >
           <SearchIcon /> {/* Search icon */}
         </button>
+        </div>
+        {error && (
+          <button 
+            onClick={handleRefreshClick}
+            className="ml-0 sm:ml-2 p-3 border border-gray-300 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center justify-center"
+            style={{ minWidth: "100px" }}
+          >
+            <RefreshIcon /> {/* Refresh icon */}
+          </button>
+        )}
 
-      </div>
+      
 
       <CustomPagination totalPages={totalPages} currentPage={currentPage} onChange={handlePageChange} />
 
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {isLoading ? (
-          <p className="text-yellow-500 animate-pulse">Loading audiobooks...</p>
+         <CircularProgress className="text-yellow-500 animate-pulse" color="inherit" />
         ) : (
           results.map((audiobook, index) => (
             <ContentCard

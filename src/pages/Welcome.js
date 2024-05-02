@@ -8,6 +8,8 @@ import { auth } from '../firebase';
 import { debounce } from 'lodash';
 import { updatePassword } from 'firebase/auth';
 import Swal from 'sweetalert2';
+import LinearProgress from '@mui/material/LinearProgress';
+
 
 const Welcome = () => {
   const [isVerified, setIsVerified] = useState(() => JSON.parse(localStorage.getItem('isVerified')) || false);
@@ -257,7 +259,7 @@ const Welcome = () => {
             </button>
             <div className="aspect-w-16 aspect-h-9">
               {loading ? (
-                <p>Loading...</p>
+                 <LinearProgress className="text-yellow-500 animate-pulse" color="secondary" />
               ) : (
                 <Lottie 
                   animationData={isVerified ? animationData : notVerifiedAnimation} 

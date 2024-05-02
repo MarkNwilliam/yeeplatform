@@ -3,7 +3,8 @@ import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
 import { logEvent, analytics} from '../firebase.js'
 import { Helmet } from 'react-helmet';
-
+import CircularProgress from '@mui/material/CircularProgress';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
 
 export default function Scontent() {
@@ -12,6 +13,7 @@ export default function Scontent() {
   const [totalPages, setTotalPages] = useState(100);
   const [searchTerm, setSearchTerm] = useState(""); 
   const [isLoading, setIsLoading] = useState(true); 
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     logEvent( analytics,'Ebooks visited');
@@ -48,6 +50,7 @@ export default function Scontent() {
       
     } catch (error) {
       console.error("Error fetching data:", error);
+      setError(error);
     }
   
     setIsLoading(false);
@@ -66,6 +69,11 @@ export default function Scontent() {
   const handleSearchClick = () => {
     setCurrentPage(1)
     console.log('Search Term:', searchTerm); 
+    fetchData();
+  };
+
+  const handleRefreshClick = () => {
+    setCurrentPage(1);
     fetchData();
   };
 
@@ -102,13 +110,24 @@ export default function Scontent() {
           <SearchIcon /> {/* Search icon */}
         </button>
    
+        {error && (
+          <button 
+            onClick={handleRefreshClick}
+            className="ml-0 sm:ml-2 p-3 border border-gray-300 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center justify-center"
+            style={{ minWidth: "100px" }}
+          >
+            <RefreshIcon /> {/* Refresh icon */}
+          </button>
+        )}
       </div>
+
 
       <CustomPagination totalPages={totalPages} currentPage={currentPage} onChange={handlePageChange} />
 
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {isLoading ? (
-          <p className="text-yellow-500 animate-pulse">Loading ebooks...</p>
+
+          <CircularProgress className="text-yellow-500 animate-pulse" color="inherit" />
         ) : (
           items.map((item, index) => (
             <ContentCard

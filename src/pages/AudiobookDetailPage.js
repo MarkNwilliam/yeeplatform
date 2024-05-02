@@ -4,6 +4,7 @@ import Rating from '@mui/material/Rating'; // Ensure you have @mui/material inst
 import ContentCard from '../subcomponents/ContentCard';
 import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
+import LinearProgress from '@mui/material/LinearProgress';
     
     const AudiobookDetailPage = () => {
       const { id } = useParams();
@@ -80,7 +81,7 @@ import { Helmet } from 'react-helmet';
       
      
       if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+        return  <LinearProgress className="text-yellow-500 flex justify-center items-center h-screen" />;
       }
     
       if (error) {

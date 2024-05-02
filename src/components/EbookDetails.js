@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography, Grid, Paper, Button, Box } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
 
 function EbookDetails() {
   const { id } = useParams();
@@ -10,7 +11,7 @@ function EbookDetails() {
   console.log('This is the is '+id);
 
 
-  if (!ebook) return <div>Loading...</div>;
+  if (!ebook) return  <LinearProgress className="text-yellow-500 animate-pulse" color="secondary" />;
 
   return (
     <div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import IntroCarousel from "./IntroCarousel";
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
+import Skeleton from '@mui/material/Skeleton';
 export default function Intro() {
 
     const fetchCategories = () =>
@@ -62,11 +63,15 @@ export default function Intro() {
             {categories && categories.map((data) => (
                     <Link to={data.link} key={data.id} className="no-underline">
                         <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
-                            <img
-                                src={data.pic}
-                                alt={data.name}
-                                className="w-full h-36 object-cover"
-                            />
+                        {isLoading ? (
+                                <Skeleton variant="rectangular" width="100%" height={144} />
+                            ) : (
+                                <img
+                                    src={data.pic}
+                                    alt={data.name}
+                                    className="w-full h-36 object-cover"
+                                />
+                            )}
                             <div className="p-4">
                                 <h5 className="text-lg font-semibold mb-2">{data.name}</h5>
                                 <p className="text-sm text-gray-600">{data.description}</p>

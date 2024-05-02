@@ -5,6 +5,7 @@ import AudioPlayer from 'react-modern-audio-player';
 import { useParams, useNavigate } from 'react-router-dom';
 import { analytics, logEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
+import LinearProgress from '@mui/material/LinearProgress';
 import {
   FaPlay,
   FaPause,

@@ -21,7 +21,11 @@ import '../App.css';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
-
+import PropTypes from 'prop-types';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import { PdfJs } from '@react-pdf-viewer/core';
 
 function EbookReaderPage() {
     const { id } = useParams();
@@ -53,6 +57,33 @@ function EbookReaderPage() {
     const defaultScale = isScreenSmall ? 0.8 : 1; 
     const defaultWrap = isScreenSmaller ?  'wrap':'nowrap'; 
     const defaultTool = isScreenSmaller ? '100%': 'auto';
+
+    
+    
+
+    function CircularProgressWithLabel(props) {
+      return (
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+          <CircularProgress variant="determinate" {...props} />
+          <Box
+            sx={{
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              position: 'absolute',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography variant="caption" component="div" color="text.secondary">
+              {`${Math.round(props.value)}%`}
+            </Typography>
+          </Box>
+        </Box>
+      );
+    }
 
     useEffect(() => {
         const fetchEbookContent = async () => {
@@ -455,6 +486,20 @@ const recordEbookView = async () => {
       }
     };
 */
+
+function blobUrlToBase64(url) {
+  return fetch(url)
+    .then(response => response.blob())
+    .then(blob => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    });
+}
+
     return (
         <div style={{ height: '100vh' , width: '100%'}}>
 
@@ -500,6 +545,10 @@ const recordEbookView = async () => {
           height: auto;
         }
       }
+
+      .rpv-core__viewer--loading .rpv-core__viewer-document {
+        visibility: hidden;
+      }
     `}</style>
 
 
@@ -507,20 +556,34 @@ const recordEbookView = async () => {
                 <div>Loading...</div>
             ) : pdfUrl ? (
                 <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                    <Viewer fileUrl={pdfUrl}
+                    <Viewer 
+                    transformGetDocumentParams={(options) =>
+                      Object.assign({}, options, {
+                        url: pdfUrl,
+                          disableRange: false,
+                          disableStream: false,
+                          rangeChunkSize: 65536,
+                          disableAutoFetch: false, // Enable pre-fetching of PDF file data
+                          disableFontFace: true,
+        
+                      
+                      })
+                    }
   scrollMode={ScrollMode.Page}
 defaultScale={defaultScale}
 onPageChange={handlePageChange}
 onDocumentLoad={ebookviewed}
-                    renderLoader={(percentages) => (
-                      <div>
-                        <h2 className="text-yellow-500 font-bold">Please wait, it&apos;s coming...</h2>
-                      <div style={{ width: '240px' }}>
-                        
-                          <ProgressBar progress={Math.round(percentages)} />
-                      </div>
-                      </div>
-                  )}
+
+renderLoader={(percentages) => (
+  <div>
+    <h2 className="text-yellow-500 font-bold">Please wait, it&apos;s coming...</h2>
+  <div style={{ width: '100%' }}>
+    
+
+      <CircularProgressWithLabel value={Math.round(percentages)} />
+  </div>
+  </div>
+)}
                         plugins={[
                             // Register plugins
                             defaultLayoutPluginInstance, scrollModePluginInstance

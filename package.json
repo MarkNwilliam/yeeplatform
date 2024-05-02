@@ -68,6 +68,7 @@
     "recharts": "^2.8.0",
     "resumablejs": "^1.1.0",
     "sitemap": "^7.1.1",
+    "stream-browserify": "^3.0.0",
     "sweetalert2": "^11.7.28",
     "tesseract.js": "^5.0.4",
     "web-vitals": "^3.4.0"

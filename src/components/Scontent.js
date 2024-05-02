@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
 import SearchIcon from '@mui/icons-material/Search';
+import CircularProgress from '@mui/material/CircularProgress';
+
+
 export default function Scontent() {
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,7 +74,8 @@ export default function Scontent() {
 
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {isLoading ? (
-          <p className="text-yellow-500 animate-pulse">Loading content...</p> // Display loading message when there is no content
+         
+          <CircularProgress lassName="text-yellow-500 animate-pulse" color="inherit" />
         ) : (
           items.map((item, index) => (
             <ContentCard

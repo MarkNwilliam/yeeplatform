@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import LinearProgress from '@mui/material/LinearProgress';
 
 const ItemDetailPage = () => {
     const { id } = useParams(); // Get the item ID from the URL
@@ -24,7 +25,7 @@ const ItemDetailPage = () => {
     }, [id]);
 
     if (!itemDetails) {
-        return <div>Loading...</div>;
+        return  <LinearProgress className="text-yellow-500 animate-pulse" color="secondary" />;
     }
 
     return (

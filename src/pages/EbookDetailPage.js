@@ -4,7 +4,7 @@ import Rating from '@mui/material/Rating'; // Ensure you have @mui/material inst
 import ContentCard from '../subcomponents/ContentCard';
 import {analytics, logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
-
+import LinearProgress from '@mui/material/LinearProgress';
 
 const EbookDetailPage = () => {
   const { id } = useParams();
@@ -81,7 +81,7 @@ console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or '
   
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <LinearProgress className="text-yellow-500 animate-pulse flex justify-center items-center h-screen" color="secondary" />;
   }
 
   if (error) {
