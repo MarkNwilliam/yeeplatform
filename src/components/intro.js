@@ -4,6 +4,7 @@ import IntroCarousel from "./IntroCarousel";
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
 import Skeleton from '@mui/material/Skeleton';
+
 export default function Intro() {
 
     const fetchCategories = () =>
