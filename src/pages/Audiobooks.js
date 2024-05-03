@@ -7,8 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useQuery } from 'react-query';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CircularProgress from '@mui/material/CircularProgress';
-
-
+import Alert from '@mui/material/Alert';
 
 export default function Audiobooks() {
   const [results, setResults] = useState([]);
@@ -126,7 +125,7 @@ export default function Audiobooks() {
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {isLoading ? (
          <CircularProgress className="text-yellow-500 animate-pulse" color="inherit" />
-        ) : (
+        ) :  results.length > 0 ? (
           results.map((audiobook, index) => (
             <ContentCard
               key={index}
@@ -137,8 +136,14 @@ export default function Audiobooks() {
               rating={audiobook.rating}
             />
           ))
+        ): (
+         
+          <div className="flex justify-center items-center w-full">
+          <Alert severity="warning" className="w-full">No results were found for your search. Please check your spelling or search for another term</Alert>
+        </div>
         )}
       </div>
+     
 
       <CustomPagination
         totalPages={totalPages}

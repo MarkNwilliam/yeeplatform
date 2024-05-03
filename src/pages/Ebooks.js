@@ -6,6 +6,8 @@ import { Helmet } from 'react-helmet';
 import CircularProgress from '@mui/material/CircularProgress';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
+import Alert from '@mui/material/Alert';
+
 
 export default function Scontent() {
   const [items, setItems] = useState([]);
@@ -128,7 +130,7 @@ export default function Scontent() {
         {isLoading ? (
 
           <CircularProgress className="text-yellow-500 animate-pulse" color="inherit" />
-        ) : (
+        ) : items.length > 0 ? (
           items.map((item, index) => (
             <ContentCard
               key={index}
@@ -139,6 +141,11 @@ export default function Scontent() {
               rating={item.rating}
             />
           ))
+        ) : (
+         
+          <div className="flex justify-center items-center w-full">
+          <Alert severity="warning" className="w-full">No results were found for your search. Please check your spelling or search for another term</Alert>
+        </div>
         )}
       </div>
 

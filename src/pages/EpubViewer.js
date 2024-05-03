@@ -42,7 +42,6 @@ const EbookViewer = () => {
     'Verdana, Geneva, sans-serif',
     'Tahoma, Geneva, sans-serif',
     'Trebuchet MS, Helvetica, sans-serif',
-    'Comic Sans MS, cursive, sans-serif',
     'Lucida Sans Unicode, Lucida Grande, sans-serif',
     'Lucida Sans Unicode',
     'Lucida Grande, sans-serif',
@@ -52,7 +51,6 @@ const EbookViewer = () => {
     'Arial Black, Gadget, sans-serif',
     'Comic Sans MS, cursive, sans-serif',
     'Impact, Charcoal, sans-serif',
-    'Lucida Console, Monaco, monospace',
     'Gill Sans, sans-serif',
     'Franklin Gothic Medium, Arial, sans-serif',
 'Consolas, monaco, monospace',
@@ -72,7 +70,6 @@ const EbookViewer = () => {
 'Tahoma, Verdana, Segoe, sans-serif',
 'TimesNewRoman, Times New Roman, Times, Baskerville, Georgia, serif',
 'Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif',
-'Verdana, Geneva, sans-serif',
 'Roboto, sans-serif',
 'Montserrat, sans-serif'
   ];
@@ -101,6 +98,7 @@ const EbookViewer = () => {
         );
         const data = await response.json();
         setEbookContent(data);
+        console.log(data)
       } catch (error) {
         console.error('Error fetching eBook content:', error.message);
       } finally {
@@ -174,7 +172,7 @@ const EbookViewer = () => {
       
       <ReactReader
         title = {ebookContent?.title}
-        url={ebookContent?.ebookepubImagesUrl}
+        url={ebookContent?.ebookepubImagesUrl || ebookContent?.ebook_url || ebookContent?.ebookUrl}
         location={location}
         locationChanged={(epubcfi) => setLocation(epubcfi)}
         readerStyles={theme === 'dark' ? darkReaderTheme : lightReaderTheme}
