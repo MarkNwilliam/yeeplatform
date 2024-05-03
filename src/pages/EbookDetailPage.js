@@ -99,7 +99,7 @@ console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or '
         <Helmet>
           <title>{ebook.title || "Ebook Details - Yee FM"}</title>
           <meta name="description" content={ebook.description} />
-          <link rel="icon" href={ebook.coverImage || ebook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
+          <link rel="icon" href={ebook.coverImage || ebook.coverimage  || ebook.cover_url|| "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
           <meta property="og:image" content={ebook.coverImage || ebook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
         </Helmet>
       )}
@@ -110,7 +110,7 @@ console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or '
       <div className="flex flex-col lg:flex-row items-center lg:items-start bg-white rounded-lg shadow">
         <div className="w-full lg:w-1/4 p-4">
           <img
-            src={ebook.coverImage || ebook.coverimage || defaultCoverImage}
+            src={ebook.coverImage || ebook.coverimage || ebook.cover_url|| defaultCoverImage }
             alt={ebook.title}
             onClick={handleReadBook} 
             className="rounded-lg shadow-xl mx-auto"
