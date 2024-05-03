@@ -135,7 +135,7 @@ export default function Scontent() {
             <ContentCard
               key={index}
               title={item.title}
-              coverImage={item.coverImage || item.thumbnailUrl || item.coverImage || item.coverimage}
+              coverImage={item.coverImage || item.thumbnailUrl || item.coverImage || item.coverimage || item.cover_url}
               itemType="ebook"
               itemId={item._id}
               rating={item.rating}

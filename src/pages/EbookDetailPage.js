@@ -176,7 +176,7 @@ console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or '
             <ContentCard
               key={index}
               title={content.title}
-              coverImage={content.coverImage}
+              coverImage={content.coverImage || content.coverimage || content.cover_url}
               itemType={content.type} // Make sure 'type' is a valid prop as per your data
               itemId={content._id}
               rating={content.rating}
