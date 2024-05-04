@@ -4,6 +4,9 @@ import { YELLOW } from '../constants/colors';
 import { useParams, useNavigate } from 'react-router-dom';
 import { analytics, logEvent } from '../firebase.js';
 import { FaSun, FaMoon, FaPlay, FaArrowLeft } from 'react-icons/fa';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Alert from '@mui/material/Alert';
 
 
 function updateTheme(rendition, theme, font) {
@@ -33,6 +36,14 @@ const EbookViewer = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [font, setFont] = useState(localStorage.getItem('font') || 'Georgia, serif');
+
+  const [firstChapterLocation, setFirstChapterLocation] = useState(null);
+
+  const [searchQuery, setSearchQuery] = useState('');
+const [searchResults, setSearchResults] = useState([]);
+const [currentResultIndex, setCurrentResultIndex] = useState(0);
+const [isSearching, setIsSearching] = useState(false);
+const [searchError, setSearchError] = useState(null);
 
   const fonts = [
     'Georgia, serif', 
@@ -144,6 +155,76 @@ const EbookViewer = () => {
     margin: '10px',
   };
 
+
+  const handleSearch = async () => {
+    if (rendition.current && searchQuery) {
+      setIsSearching(true);
+      setSearchError(null);
+      try {
+        const results = await doSearch(searchQuery);
+        setSearchResults(results);
+      } catch (error) {
+        setSearchError(error.message);
+      } finally {
+        setIsSearching(false);
+      }
+    }
+  };
+
+  // After your search function
+function doSearch(q) {
+  return Promise.all(
+    rendition.current.book.spine.spineItems.map(item => 
+      item.load(rendition.current.book.load.bind(rendition.current.book))
+        .then(item.find.bind(item, q))
+        .finally(item.unload.bind(item))
+    )
+  ).then(results => {
+    // Clear any existing highlights
+    rendition.current.annotations.remove();
+
+    results.forEach(result => {
+      // Log the chapter
+      console.log(result.cfi);
+    
+      // Highlight the search result
+      rendition.current.annotations.highlight(result.cfi, {}, (e) => {
+        console.log("highlight clicked", e.target);
+      });
+    });
+
+    return Promise.resolve([].concat.apply([], results));
+  });
+}
+
+const handleNext = () => {
+  const nextIndex = (currentResultIndex + 1) % searchResults.length;
+  const nextResult = searchResults[nextIndex];
+  rendition.current.display(nextResult.cfi);
+  rendition.current.annotations.highlight(nextResult.cfi, {}, (e) => {
+    console.log("highlight clicked", e.target);
+  });
+  setCurrentResultIndex(nextIndex);
+};
+
+const handlePrevious = () => {
+  const prevIndex = (currentResultIndex - 1 + searchResults.length) % searchResults.length;
+  const prevResult = searchResults[prevIndex];
+  rendition.current.display(prevResult.cfi);
+  rendition.current.annotations.highlight(prevResult.cfi, {}, (e) => {
+    console.log("highlight clicked", e.target);
+  });
+  setCurrentResultIndex(prevIndex);
+};
+
+
+  const handleInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+
+  
+
   return (
     <div style={{ height: '100vh' }}>
       <button style={backButtonStyle} onClick={() => navigate(`/ebooks/${id}`)}>
@@ -168,19 +249,57 @@ const EbookViewer = () => {
         ))}
       </select>
 
+      <TextField 
+  id="outlined-basic" 
+  label="Search" 
+  variant="outlined" 
+  type="text" 
+  value={searchQuery} 
+  onChange={handleInputChange} 
+  style={{ marginTop: '1%', marginRight:  '1%' }} // added top margin and padding
+/>
 
-      
+<Button 
+  onClick={handleSearch} 
+  variant="outlined"
+  style={{ marginTop: '20px', padding: '10px' }} // added top margin and padding
+>
+  Search
+</Button>
+
+<div>
+  {isSearching ? (
+    <p>Searching...</p>
+  ) : searchError ? (
+    <Alert severity="error">Text not found please search for something else.</Alert>
+  ) : searchResults.length > 0 ? (
+    <>
+      <Button style={{ marginRight:  '1%' }} onClick={handlePrevious} variant="outlined">Previous</Button>
+      <Button style={{ marginRight:  '1%' }} onClick={handleNext} variant="outlined">Next</Button>
+    </>
+  ) : (
+    <p>No results found</p>
+  )}
+</div>
       <ReactReader
         title = {ebookContent?.title}
         url={ebookContent?.ebookepubImagesUrl || ebookContent?.ebook_url || ebookContent?.ebookUrl}
-        location={location}
+        showToc ={true}
+        location={firstChapterLocation || location}
         locationChanged={(epubcfi) => setLocation(epubcfi)}
+        tocChanged={(toc) => {
+          const firstChapter = toc.find(chapter => chapter.label !== 'Cover');
+          if (firstChapter) {
+            setFirstChapterLocation(firstChapter.href);
+          }
+        }}
         readerStyles={theme === 'dark' ? darkReaderTheme : lightReaderTheme}
         getRendition={(_rendition) => {
           updateTheme(_rendition, theme, font)
           rendition.current = _rendition
         }}
       />
+      
     </div>
   )
 }
