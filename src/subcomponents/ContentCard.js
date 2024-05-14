@@ -33,6 +33,42 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
             Chapter
           </Link>
         );
+        case 'Chapters':
+          return (
+            <Link to={`/chapters/${itemId}`} className={buttonStyle}>
+              Chapter
+            </Link>
+          );
+          case 'chapter':
+            return (
+              <Link to={`/chapters/${itemId}`} className={buttonStyle}>
+                Chapter
+              </Link>
+            );
+            case 'chapters':
+            return (
+              <Link to={`/chapters/${itemId}`} className={buttonStyle}>
+                Chapter
+              </Link>
+            );
+            case 'Chapter':
+            return (
+              <Link to={`/chapters/${itemId}`} className={buttonStyle}>
+                Chapter
+              </Link>
+            );
+        case 'notes':
+          return (
+            <Link to={`/notespdf/${itemId}`} className={buttonStyle}>
+              read
+            </Link>
+          );
+          case 'PDF':
+            return (
+              <Link to={`/notespdf/${itemId}`} className={buttonStyle}>
+                read
+              </Link>
+            );
       case 'ebook':
         return (
           <Link to={`/ebooks/${itemId}`} className={`no-underline ${buttonStyle}`}>
@@ -84,6 +120,30 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
             />
           </Link>
         );
+        case 'notes':
+          return (
+            <Link to={`/chapters/${itemId}`}>
+              <img 
+                className="object-cover w-full h-full"
+                src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
+                alt={title}
+                loading="lazy"
+                onError={handleImageError}
+              />
+            </Link>
+          );
+          case 'chapters':
+            return (
+              <Link to={`/chapters/${itemId}`}>
+                <img 
+                  className="object-cover w-full h-full"
+                  src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
+                  alt={title}
+                  loading="lazy"
+                  onError={handleImageError}
+                />
+              </Link>
+            );
       case 'ebook':
         return (
           <Link to={`/ebooks/${itemId}`}>

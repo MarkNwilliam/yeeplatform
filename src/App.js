@@ -16,6 +16,7 @@ import AudioChapterListen from './pages/Audiochapterlisten';
 import AudiobookListen from './pages/Audiobooklisten';
 import AudioChapters from './pages/AudioChapters';
 import EbookViewer from './pages/EpubViewer';
+import Notespdf from './pages/notespdf';
 //import ProtectedAuthorRouteWrapper from './contexts/ProtectedAuthor';
 
 
@@ -123,16 +124,21 @@ function App() {
           <Route path="chapters" element={<Chapters />} />
           <Route path="audiochapters" element={<AudioChapters />} />
          
+         
         </Route>
 
         <Route path="ebooks/:id" element={<EbookDetailPage />} />
         <Route path="ebooks/:id/read" element={<ProtectedRouteWrapper> <EbookReaderPage /> </ProtectedRouteWrapper>} />
         <Route path="/ebooks/epub/:id" element={<ProtectedRouteWrapper> <EbookViewer /> </ProtectedRouteWrapper>} />
         <Route path="audiochapterlisten/:id/listen" element={<ProtectedRouteWrapper> <AudioChapterListen /> </ProtectedRouteWrapper>} />
+
        
         <Route path="/audiobooklisten/:id/listen" element={<ProtectedRouteWrapper> <AudiobookListen /> </ProtectedRouteWrapper>} />
 
         <Route path="chapters/:id/read" element={<ProtectedRouteWrapper> <Chapterreader /> </ProtectedRouteWrapper>} />
+
+
+        <Route path="/notespdf/:id" element={<Notespdf />} />
 
 
         <Route path="/audiobooks/:id" element={<AudiobookDetailPage />} />

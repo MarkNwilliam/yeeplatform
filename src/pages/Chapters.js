@@ -37,7 +37,9 @@ export default function Chapters() {
   
       if (data && data.data) {
         if (Array.isArray(data.data)) {
+          console.log(data)
           setItems(data.data);
+          
           setTotalPages(Math.ceil(data.totalItems / 15));
         } else {
           setItems([data.data]); // Wrap the object in an array
@@ -118,7 +120,7 @@ export default function Chapters() {
               key={index}
               title={item.title}
               coverImage={item.thumbnailUrl || item.coverImage || item.coverimage}
-              itemType="Text"
+              itemType={item.doc_location.endsWith('.pdf') ? 'PDF' : item.type}
               itemId={item._id}
               rating={item.rating}
             />

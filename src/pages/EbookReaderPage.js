@@ -26,6 +26,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { PdfJs } from '@react-pdf-viewer/core';
+import Alert from '@mui/material/Alert';
 
 function EbookReaderPage() {
     const { id } = useParams();
@@ -555,7 +556,7 @@ function blobUrlToBase64(url) {
             {isLoading ? (
                 <div>Loading...</div>
             ) : pdfUrl ? (
-                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
                     <Viewer 
                     transformGetDocumentParams={(options) =>
                       Object.assign({}, options, {
@@ -591,7 +592,11 @@ renderLoader={(percentages) => (
                     />
                 </Worker>
             ) : (
-                <div>No PDF found</div>
+              <>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+              <Alert severity="error">No PDF found.</Alert>
+          </div>
+</>
             )}
         </div>
     );
