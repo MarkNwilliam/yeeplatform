@@ -9,16 +9,22 @@ import { AuthContext } from '../contexts/AuthContext';
 import { Helmet } from 'react-helmet';
 import queryString from 'query-string';
 import { logFirebaseEvent } from '../firebase.js';
+import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import { getErrorMessage }   from '../functions/getFirebaseErrorMessage';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captcha, setCaptcha] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   
   const { login, loginWithGoogle } = useContext(AuthContext);
 
   useEffect(() => {
+    loadCaptchaEnginge(6);
     logFirebaseEvent('page_view', { page_path: '/Signin' });
   }, []);
 
@@ -31,6 +37,17 @@ function SignIn() {
         title: "Error",
         text: "Please fill in all fields",
       });
+      loadCaptchaEnginge(6);
+      return;
+    }
+
+    if (!validateCaptcha(captcha)) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Invalid CAPTCHA",
+      });
+      loadCaptchaEnginge(6);
       return;
     }
 
@@ -60,12 +77,14 @@ function SignIn() {
       await login(email, password);
       navigate(location.state?.from || "/home");
     } catch (error) {
+      const message = getErrorMessage(error.code);
       console.error("Error signing in:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: error.message,
+        text: message,
       });
+      loadCaptchaEnginge(6);
     }
   };
   
@@ -116,15 +135,25 @@ function SignIn() {
       
     } catch (error) {
       console.error("Error signing in with Google:", error);
+      const message = getErrorMessage(error.code);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: error.message,
+        text: message,
       });
+      loadCaptchaEnginge(6);
     }
   };
 
-  
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-200 p-4 sm:p-0">
   <Helmet>
@@ -141,7 +170,7 @@ function SignIn() {
 
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-start mb-6">
-          <FaArrowLeft className="text-gray-800 cursor-pointer" onClick={() => navigate('/ebook')} />
+          <FaArrowLeft className="text-gray-800 cursor-pointer" onClick={() => navigate('/ebooks')} />
           <img src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" alt="Platform logo" loading="lazy" className="mx-auto h-16 w-auto mb-2" />
         </div>
         <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">Sign In</h1>
@@ -162,16 +191,35 @@ function SignIn() {
             className="mb-4 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-gray-700 focus:outline-none"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Password"
-            minLength="6"
-            required
-            className="mb-4 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-gray-700 focus:outline-none"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+   <div className="flex w-full">
+  <input
+    type={showPassword ? 'text' : 'password'}
+    id="password"
+    name="password"
+    placeholder="Password"
+    minLength="6"
+    required
+    className="mb-4 flex-grow px-3 py-2 border rounded-l-lg focus:ring-2 focus:ring-gray-700 focus:outline-none text-base"
+    onChange={(e) => setPassword(e.target.value)}
+  />
+  <button onClick={togglePasswordVisibility} className="h-12 bg-gray-200 rounded-r-lg p-2 hover:bg-gray-300">
+    {showPassword ? <EyeIcon className="h-5 w-5 text-gray-500" /> : <EyeSlashIcon className="h-5 w-5 text-gray-500" />}
+  </button>
+</div>
+
+<LoadCanvasTemplate />
+
+<input
+  type="text"
+  id="captcha"
+  name="captcha"
+  placeholder="Enter CAPTCHA"
+  required
+  className="mb-4 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-gray-700 focus:outline-none"
+  onChange={(e) => setCaptcha(e.target.value)}
+/>
+
+
           <button
             type="submit"
             className="w-full py-2 px-4 bg-gray-700 text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-800"

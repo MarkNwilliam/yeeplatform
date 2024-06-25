@@ -6,10 +6,12 @@ import { FaGoogle } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
 import { countries } from '../constants/countries';
-
+import { getErrorMessage }   from '../functions/getFirebaseErrorMessage';
 import { Helmet } from 'react-helmet';
 import { logFirebaseEvent } from '../firebase.js';
 import { fetchSignInMethodsForEmail } from "firebase/auth";
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+
 
 function Signup() {
   const [name, setName] = useState("");
@@ -20,8 +22,8 @@ function Signup() {
   const navigate = useNavigate();
   const [isConsentGiven, setIsConsentGiven] = useState(false);
   const [country, setCountry] = useState("");
-
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   
   useEffect(() => {
@@ -153,14 +155,11 @@ function Signup() {
 
     } catch (error) {
       console.error('Error signing up:', error);
-      let errorMessage = error.message;
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'This email address is already in use.';
-      }
+      const message = getErrorMessage(error.code);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: errorMessage,
+        text: message,
       });
     }
   };
@@ -251,16 +250,33 @@ function Signup() {
 
     } catch (error) {
       console.error('Error signing in with Google:', error);
+      const message = getErrorMessage(error.code);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: error.message,
+        text: message,
       });
     }
   };
 
-  
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
 
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-200 p-4 md:p-0">
     <Helmet>
@@ -279,7 +295,7 @@ function Signup() {
       <div className="text-center">
         <IoArrowBack
           className="text-gray-700 text-2xl cursor-pointer mb-4"
-          onClick={() => navigate('/ebook')}
+          onClick={() => navigate('/ebooks')}
         />
        <img src="https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp" alt="Platform logo" loading="lazy" className="mx-auto h-16 w-auto mb-2" />
 
@@ -352,26 +368,39 @@ function Signup() {
  
 </select>
 
+<div className="flex w-full">
+      <input
+        type={showPassword ? 'text' : 'password'}
+        id="password"
+        name="password"
+        placeholder="Password"
+        minLength="6"
+        required
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        onChange={handlePasswordChange}
+      />
+      <button onClick={togglePasswordVisibility} className="bg-gray-200 rounded-r-lg p-2 hover:bg-gray-300">
+        {showPassword ? <EyeIcon className="h-5 w-5 text-gray-500" /> : <EyeSlashIcon className="h-5 w-5 text-gray-500" />}
+      </button>
+    </div>
+
+    <div className="flex w-full">
         <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          minLength="6"
-          required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          type="password"
+          type={showConfirmPassword ? 'text' : 'password'}
           id="confirmPassword"
           name="confirmPassword"
           placeholder="Confirm Password"
           minLength="6"
           required
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={handleConfirmPasswordChange}
         />
+        <button onClick={toggleConfirmPasswordVisibility} className="bg-gray-200 rounded-r-lg p-2 hover:bg-gray-300">
+        {showConfirmPassword ? <EyeIcon className="h-5 w-5 text-gray-500" /> : <EyeSlashIcon className="h-5 w-5 text-gray-500" />}
+      </button>
+
+      </div>
+
         <button
           type="submit"
           className="w-full py-2 px-4 bg-indigo-500 text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-700"

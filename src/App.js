@@ -20,7 +20,7 @@ import Notespdf from './pages/notespdf';
 //import ProtectedAuthorRouteWrapper from './contexts/ProtectedAuthor';
 
 
-
+/*
 // Lazy-load the components
 const Home = lazy(() => import('./pages/home'));
 const Chapters = lazy(() => import('./pages/Chapters'));
@@ -52,6 +52,38 @@ const DAudioChapter = lazy(() => import('./components/DAudioChapter'));
 const ChapterDetail = lazy(() => import('./components/ChapterDetail'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const Welcome = lazy(() => import('./pages/Welcome'));
+*/
+
+import Home from './pages/home';
+import Chapters from './pages/Chapters';
+import Audiobooks from './pages/Audiobooks';
+import Ebooks from './pages/Ebooks';
+import Dashboard from './pages/Dashboard';
+import Signin from './pages/Signin';
+import Signup from './pages/Signup';
+import VerifyEmail from './pages/VerifyEmail';
+import Scontent from './components/Scontent';
+import Intro from './components/intro';
+import News from './components/DNews';
+import DNft from './components/DNft';
+import Upload from './components/DUpload';
+import DStats from './components/DStats';
+import DSupport from './components/DSupport';
+import DWrite from './components/DWrite';
+import DAudio from './components/DAudio';
+import DProfile from './components/DProfile';
+import Support from './pages/Support';
+import Premium from './pages/Premium';
+import AccountPage from './pages/AccountPage';
+import Mybooks from './components/Mybooks';
+import MyAudios from './components/MyAudios';
+import MyChapters from './components/MyChapters';
+import AudiobookDetail from './components/AudiobookDetail';
+import DAudioChapter from './components/DAudioChapter';
+import ChapterDetail from './components/ChapterDetail';
+import ForgotPassword from './pages/ForgotPassword';
+import Welcome from './pages/Welcome';
+
 import { elb } from '@elbwalker/walker.js';
 import destinationAPI from '@elbwalker/destination-web-api';
 
