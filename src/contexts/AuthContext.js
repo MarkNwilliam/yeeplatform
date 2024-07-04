@@ -70,6 +70,7 @@ export function AuthProvider({ children }) {
     }
   };
 
+
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
 

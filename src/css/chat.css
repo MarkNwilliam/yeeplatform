@@ -1,0 +1,34 @@
+/* chat */
+
+  
+  .rcw-launcher {
+    background-color: #FFA500; /* This is orange */
+  }
+
+  .rcw-conversation-container > .rcw-header {
+    /*background-color: #ffde5a;*/
+    background-color: #FFA500;
+  }
+  
+  .rcw-message > .rcw-client >.rcw-message-text{
+    background-color: #FFA500;
+    color: #ffffff; 
+  }
+  .rcw-close-launcher {
+    width: 50%;
+    margin: auto;
+  }
+  
+  .rcw-open-launcher {
+    width: 50%;
+    margin: auto;
+  }
+  .rcw-conversation-container .rcw-close-button{
+    background-color: #FFA500;
+    border:0;
+    display:block;
+    position:absolute;
+    right:10px;
+    top:20px;
+    width:40px
+}

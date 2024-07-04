@@ -11,6 +11,7 @@ export default function Chapters() {
   const [totalPages, setTotalPages] = useState(100);
   const [searchTerm, setSearchTerm] = useState(""); 
   const [isLoading, setIsLoading] = useState(true); 
+  
 
   useEffect(() => {
     logEvent(analytics,'chapters_page_visited');

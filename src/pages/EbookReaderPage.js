@@ -27,6 +27,13 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { PdfJs } from '@react-pdf-viewer/core';
 import Alert from '@mui/material/Alert';
+import ChatWidget from '../components/ChatWidget.js';
+import { Widget, addResponseMessage, toggleMsgLoader } from '@ryaneewx/react-chat-widget';
+import axios from 'axios';
+import ReactPlayer from 'react-player';
+
+
+import Draggable from 'react-draggable';
 
 function EbookReaderPage() {
     const { id } = useParams();
@@ -41,6 +48,7 @@ function EbookReaderPage() {
     const [showShareBox, setShowShareBox] = useState(false);
     const [currentPages, setCurrentPages] = useState(1);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
+    const [audioUrl, setAudioUrl] = useState(null);
  
     const openDrawer = () => {
       setDrawerOpen(true);
@@ -58,9 +66,41 @@ function EbookReaderPage() {
     const defaultScale = isScreenSmall ? 0.8 : 1; 
     const defaultWrap = isScreenSmaller ?  'wrap':'nowrap'; 
     const defaultTool = isScreenSmaller ? '100%': 'auto';
-
+    const email = auth.currentUser?.email;
     
-    
+    const handleNewUserMessage = (newMessage) => {
+      console.log(`New message incoming! ${newMessage}`);
+      
+      // Show the loading indicator
+      toggleMsgLoader();
+  
+      fetch('https://yeeplatform.com/server/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ebook_id: ebookContent._id,
+          query: newMessage,
+          user_id: email || 'guest',
+          title: ebookContent.title ||  'test',
+          Description: ebookContent.Description || 'test'
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response from backend:', data);
+        addResponseMessage(data.response);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        addResponseMessage('Sorry, something went wrong.');
+      })
+      .finally(() => {
+        // Hide the loading indicator
+        toggleMsgLoader();
+      });
+    };
 
     function CircularProgressWithLabel(props) {
       return (
@@ -121,7 +161,7 @@ function EbookReaderPage() {
       console.log('Text:', text);
       return text;
     };
-
+/*
     const handleSpeak = async () => {
       if (!isLoading && ebookContent) {
         try {
@@ -146,6 +186,84 @@ function EbookReaderPage() {
         }
       }
     };
+*/
+    const handleTTSClick = async () => {
+      const pageText = await handlePlayClick();
+      // Cancel the currently playing audio
+      setAudioUrl(null);
+    
+      // Ask for language selection
+      const { value: language } = await Swal.fire({
+        title: 'Select language',
+        html: `
+        <form id="languageForm" style="display: flex; flex-direction: column; align-items: start;">
+            <label><input type="radio" name="language" value="eng"> English</label><br>
+            <label><input type="radio" name="language" value="swh"> Swahili</label><br>
+            <label><input type="radio" name="language" value="spa"> Spanish</label><br>
+            <label><input type="radio" name="language" value="arz"> Arabic</label><br>
+            <label><input type="radio" name="language" value="fra"> French</label><br>
+            
+          </form>
+        `,
+        focusConfirm: false,
+        preConfirm: () => {
+          const radios = document.getElementById('languageForm').elements['language'];
+          let selectedLanguage;
+          for (let i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+              selectedLanguage = radios[i].value;
+              break;
+            }
+          }
+          return selectedLanguage;
+        }
+      });
+    
+      if (language) {
+        // Show loading Swal
+        Swal.fire({
+          title: 'Loading...',
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading()
+          }
+        });
+    
+        const book_title = ebookContent.title; // Replace with actual book title
+        let processedBookTitle = book_title.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+       
+        try {
+          // Make a POST request to the Flask API
+          const response = await axios.post('https://yeeplatform.com/server/synthesize', {
+            text: pageText,
+            book_title: processedBookTitle,
+            page_number: currentPages.toString(),
+            language: language
+          }, {
+            timeout: 6000000 // Wait for 60 seconds
+          });
+    
+          // Assuming the Flask API returns the audio file URL
+          const audioUrl = response.data.audio_url; // Adjust based on your API response structure
+    
+          // Play the audio
+          setAudioUrl("https://yeeplatform.com/server/"+audioUrl);
+    
+          // Close loading Swal
+          Swal.close();
+        } catch (error) {
+          // Close loading Swal and show error Swal
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+            footer: '<a href>Why do I have this issue?</a>'
+          });
+          console.error('Error playing audio:', error);
+        }
+      }
+    };
+  
 
     const handlePageChange = async ({ currentPage }) => {
 
@@ -281,7 +399,7 @@ const { SwitchScrollModeButton } = scrollModePluginInstance;
                     </div>
 
                     <div style={{ padding: '0px 2px' }}>
-    <button onClick={handleSpeak}><FaPlay /></button>
+    <button onClick={handleTTSClick}><FaPlay /></button>
   </div>
 
   {!isScreenSmall && (
@@ -504,6 +622,8 @@ function blobUrlToBase64(url) {
     return (
         <div style={{ height: '100vh' , width: '100%'}}>
 
+          
+
 {ebookContent && (
         <Helmet>
           <title>{ebookContent?.title || 'Ebook Reader - Yee FM'}</title>
@@ -552,6 +672,33 @@ function blobUrlToBase64(url) {
       }
     `}</style>
 
+{audioUrl && (
+  <Draggable>
+    <div style={{
+      position: 'absolute',
+      bottom: '10px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: 1000,
+      backgroundColor: 'transparent',
+      padding: '10px',
+      borderRadius: '10px',
+      boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+    }}>
+      <ReactPlayer url={audioUrl} controls playing />
+      <button onClick={() => setAudioUrl(null)} style={{
+        marginTop: '10px',
+        backgroundColor: '#f44336',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '5px',
+        padding: '5px 10px',
+        cursor: 'pointer'
+      }}>Cancel</button>
+    </div>
+  </Draggable>
+)}
+
 
             {isLoading ? (
                 <div>Loading...</div>
@@ -598,6 +745,8 @@ renderLoader={(percentages) => (
           </div>
 </>
             )}
+
+<ChatWidget handleNewUserMessage={handleNewUserMessage} />
         </div>
     );
 }
