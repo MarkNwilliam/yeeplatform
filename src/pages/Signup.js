@@ -229,7 +229,7 @@ function Signup() {
         isAuthor: false // or ask the user during signup if they are an author
       };
       
-      console.log("Sending this user data to the backend:", userData);
+      //console.log("Sending this user data to the backend:", userData);
 
          // Save to localStorage (if needed)
     localStorage.setItem('tempUserData', JSON.stringify(userData));

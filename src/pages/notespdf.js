@@ -97,7 +97,7 @@ function Notespdf() {
                 }
                 const data = await response.json();
                 setEbookContent(data);
-                console.log('Data:', data);
+                //console.log('Data:', data);
 
                 // Set the PDF URL
                 setPdfUrl(data?.doc_location);
@@ -113,12 +113,12 @@ function Notespdf() {
     
     const handlePlayClick = async () => {
       const pdf = await getDocument(pdfUrl).promise;
-      console.log(currentPages)
+      //console.log(currentPages)
       const page = await pdf.getPage(currentPages+1);
       const textContent = await page.getTextContent();
       const strings = textContent.items.map(item => item.str);
       const text = strings.join(' ');
-      console.log('Text:', text);
+      //console.log('Text:', text);
       return text;
     };
 
@@ -151,8 +151,8 @@ function Notespdf() {
 
       setCurrentPages(currentPage);
       
-      console.log('Current pages number:', currentPages);
-      console.log('Current page number:', currentPage);
+      //console.log('Current pages number:', currentPages);
+      //console.log('Current page number:', currentPage);
   
       // Add the current page number to the array
       setPageNumbers([...pageNumbers, currentPage]);
@@ -160,11 +160,11 @@ function Notespdf() {
       // Calculate the percentage of pages visited
       const uniquePageCount = new Set(pageNumbers).size;
       const percentageVisited = (uniquePageCount / totalPages) * 100;
-      console.log('Percentage of pages visited:', percentageVisited);
+      //console.log('Percentage of pages visited:', percentageVisited);
   
       // Check if the eBook has been read
   if (percentageVisited >= 30) {
-    console.log('The eBook has been read.');
+    //console.log('The eBook has been read.');
 
     // Call the functions to update viewed books and ebook scores
     await updateViewedBooks();
@@ -184,13 +184,13 @@ function Notespdf() {
   
       // Retrieve and print the eBook data from local storage
       const storedEbookData = JSON.parse(localStorage.getItem('ebookData'));
-      console.log('Stored eBook Data:', storedEbookData);
+      //console.log('Stored eBook Data:', storedEbookData);
 
   
   };
 
   const ebookviewed = ({ doc }) => {
-    console.log('Number of pages:', doc.numPages);
+    //console.log('Number of pages:', doc.numPages);
   
     // Store the total number of pages
     setTotalPages(doc.numPages);
@@ -206,8 +206,8 @@ function Notespdf() {
     }
   
     // Retrieve and print the eBook ID and viewed status from local storage
-    console.log('eBook ID:', localStorage.getItem('ebookID'));
-    console.log('Viewed:', localStorage.getItem('viewed'));
+    //console.log('eBook ID:', localStorage.getItem('ebookID'));
+    //console.log('Viewed:', localStorage.getItem('viewed'));
   }
 
     const scrollModePluginInstance = scrollModePlugin();
@@ -405,7 +405,7 @@ const updateViewedBooks = async () => {
         }),
       });
       const data = await response.json();
-      console.log(data); // Log the response from the backend
+      //console.log(data); // Log the response from the backend
     } catch (error) {
       console.error('Error updating viewed books:', error);
     }
@@ -430,7 +430,7 @@ const updateEbookScores = async () => {
         }),
       });
       const data = await response.json();
-      console.log(data); // Log the response from the backend
+      //console.log(data); // Log the response from the backend
     } catch (error) {
       console.error('Error updating ebook scores:', error);
     }
@@ -455,7 +455,7 @@ const recordEbookView = async () => {
       }),
     });
     const data = await response.json();
-    console.log(data); // Log the response from the backend
+    //console.log(data); // Log the response from the backend
   } catch (error) {
     console.error('Error recording ebook view:', error);
   }

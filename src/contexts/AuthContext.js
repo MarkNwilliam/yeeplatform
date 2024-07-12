@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log("AuthContext: isAuthor state changed to", isAuthor);
+    //console.log("AuthContext: isAuthor state changed to", isAuthor);
   }, [isAuthor]);
 
   const login = async (email, password) => {

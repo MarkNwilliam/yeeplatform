@@ -99,7 +99,7 @@ const [selections, setSelections] = useState([])
 
   const email = auth.currentUser?.email;
 
-  //console.log('Current user email:', email);
+  ////console.log('Current user email:', email);
   function setDisplayedText(location) {
     //const cfiRange = `${location.start.cfi},${location.end.cfi}`;
     const splitCfi = location.start.cfi.split('/');
@@ -108,15 +108,15 @@ const [selections, setSelections] = useState([])
     const endCfi = location.end.cfi.replace(baseCfi, '');
     const cfiRange = [baseCfi, startCfi, endCfi].join(',');
     const text = renditionRef.current.getRange(cfiRange).toString();
-    console.log('Visible Page CFI Range:', cfiRange);
-    console.log('Visible Page Text:', text);
+    //console.log('Visible Page CFI Range:', cfiRange);
+    //console.log('Visible Page Text:', text);
     setLargeText(text);
   }
   function setRenderSelection(cfiRange, contents) {
-    //console.log(cfiRange)
+    ////console.log(cfiRange)
     const text = renditionRef.current.getRange(cfiRange).toString();
-    console.log('CFI Range:', cfiRange);
-    console.log('Selected Text:', text);
+    //console.log('CFI Range:', cfiRange);
+    //console.log('Selected Text:', text);
   
     setSelections(
       selections.concat({
@@ -172,7 +172,7 @@ const [selections, setSelections] = useState([])
         );
         const data = await response.json();
         setEbookContent(data);
-        console.log(data)
+        //console.log(data)
       } catch (error) {
         console.error('Error fetching eBook content:', error.message);
       } finally {
@@ -196,7 +196,7 @@ const [selections, setSelections] = useState([])
   /*const handlePlayClick = () => {
     const contents = rendition.current.getContents();
     const text = contents.map(content => content.document.body.textContent).join('\n');
-    console.log(text);
+    //console.log(text);
   };*/
   const selectLanguage = async () => {
     const { value: language } = await Swal.fire({
@@ -355,11 +355,11 @@ function doSearch(q) {
 
     results.forEach(result => {
       // Log the chapter
-      console.log(result.cfi);
+      //console.log(result.cfi);
     
       // Highlight the search result
       rendition.current.annotations.highlight(result.cfi, {}, (e) => {
-        console.log("highlight clicked", e.target);
+        //console.log("highlight clicked", e.target);
       });
     });
 
@@ -372,7 +372,7 @@ const handleNext = () => {
   const nextResult = searchResults[nextIndex];
   rendition.current.display(nextResult.cfi);
   rendition.current.annotations.highlight(nextResult.cfi, {}, (e) => {
-    console.log("highlight clicked", e.target);
+    //console.log("highlight clicked", e.target);
   });
   setCurrentResultIndex(nextIndex);
 };
@@ -382,7 +382,7 @@ const handlePrevious = () => {
   const prevResult = searchResults[prevIndex];
   rendition.current.display(prevResult.cfi);
   rendition.current.annotations.highlight(prevResult.cfi, {}, (e) => {
-    console.log("highlight clicked", e.target);
+    //console.log("highlight clicked", e.target);
   });
   setCurrentResultIndex(prevIndex);
 };
@@ -394,7 +394,7 @@ const handlePrevious = () => {
 
 
   const handleNewUserMessage = (newMessage) => {
-    console.log(`New message incoming! ${newMessage}`);
+    //console.log(`New message incoming! ${newMessage}`);
     
     // Show the loading indicator
     toggleMsgLoader();
@@ -414,7 +414,7 @@ const handlePrevious = () => {
     })
     .then(response => response.json())
     .then(data => {
-      console.log('Response from backend:', data);
+      //console.log('Response from backend:', data);
       addResponseMessage(data.response);
     })
     .catch(error => {
@@ -437,7 +437,7 @@ const handlePrevious = () => {
           chapter ? chapter.label : 'n/a'
         }`
       )
-      console.log(page)
+      //console.log(page)
     }
   }
 

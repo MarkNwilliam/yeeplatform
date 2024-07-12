@@ -31,7 +31,7 @@ const EbookDetailPage = () => {
         }
         const data = await response.json();
         setEbook(data);
-        console.log(data)
+        //console.log(data)
       } catch (err) {
         setError(err.message);
       } finally {
@@ -65,7 +65,7 @@ fetchData();
   const handleReadBook = () => {
 
     const fileType = getFileType(ebook.ebookUrl || ebook.ebookurl || ebook.ebook_url ||'');
-console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or 'docx' or 'txt' or 'rtf' or 'fb2' or 'djvu' or 'azw' or 'lit' or 'prc' or 'pdb' or 'oxps' or 'xps' or 'cbz' or 'cbr' or 'cb7' or 'cbt' or 'cba' or 'chm' or 'html' or 'htm' or 'xhtml' or 'mht' or 'mhtml' or 'webarchive' or 'webarchivexml' or 'webarchivezip' or 'webarchivexmlzip' or 'opf' or 'ibooks' or 'ibook' or 'azw1' or 'azw4' or 'azw8' or 'azw6' or 'azw7' or 'azw8' or 'azw9' or 'azw10' or 'azw11' or 'azw12' or 'azw13' or 'azw14' or 'azw15' or 'azw16' or 'azw17' or 'azw18' or 'azw19' or 'azw20' or 'azw21' or 'azw22' or 'azw23' or 'azw24' or 'azw25' or 'azw26' or 'azw27' or 'azw28' or 'azw29' or 'azw30' or 'azw31' or 'azw32' or 'azw33' or 'azw34' or 'azw35' or 'azw36' or 'azw37' or 'azw38' or 'azw39' or 'azw40' or 'azw41' or 'azw42' or 'azw43' or 'azw44' or 'azw45' or 'azw46' or 'azw47' or 'azw48' or 'azw49' or 'azw50' or 'azw51' or 'azw52' or 'azw53' or 'azw54' or 'azw55' or 'azw56' or 'azw57' or
+//console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or 'docx' or 'txt' or 'rtf' or 'fb2' or 'djvu' or 'azw' or 'lit' or 'prc' or 'pdb' or 'oxps' or 'xps' or 'cbz' or 'cbr' or 'cb7' or 'cbt' or 'cba' or 'chm' or 'html' or 'htm' or 'xhtml' or 'mht' or 'mhtml' or 'webarchive' or 'webarchivexml' or 'webarchivezip' or 'webarchivexmlzip' or 'opf' or 'ibooks' or 'ibook' or 'azw1' or 'azw4' or 'azw8' or 'azw6' or 'azw7' or 'azw8' or 'azw9' or 'azw10' or 'azw11' or 'azw12' or 'azw13' or 'azw14' or 'azw15' or 'azw16' or 'azw17' or 'azw18' or 'azw19' or 'azw20' or 'azw21' or 'azw22' or 'azw23' or 'azw24' or 'azw25' or 'azw26' or 'azw27' or 'azw28' or 'azw29' or 'azw30' or 'azw31' or 'azw32' or 'azw33' or 'azw34' or 'azw35' or 'azw36' or 'azw37' or 'azw38' or 'azw39' or 'azw40' or 'azw41' or 'azw42' or 'azw43' or 'azw44' or 'azw45' or 'azw46' or 'azw47' or 'azw48' or 'azw49' or 'azw50' or 'azw51' or 'azw52' or 'azw53' or 'azw54' or 'azw55' or 'azw56' or 'azw57' or
 
 
    
@@ -86,7 +86,7 @@ console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or '
 
   if (error) {
     //return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
-    console.log(error.message);
+    //console.log(error.message);
   }
 
 

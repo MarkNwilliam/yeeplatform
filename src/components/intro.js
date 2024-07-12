@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import { Link } from 'react-router-dom';
 import IntroCarousel from "./IntroCarousel";
 import { Helmet } from 'react-helmet';
@@ -59,6 +59,7 @@ export default function Intro() {
   <meta property="og:description" content="Explore a wide range of content on Yee FM, including music, audiobooks, ebooks, magazines, comics, and more. Enjoy personalized recommendations and curated playlists." />
   <meta property="og:url" content="https://www.yeefm.com/home" />
 </Helmet>
+<Suspense fallback={<div>Loading...</div>}>
             <IntroCarousel />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
             {categories && categories.map((data) => (
@@ -82,7 +83,7 @@ export default function Intro() {
                 ))}
             </div>
 
-
+</Suspense>
         </div>
     );
 }

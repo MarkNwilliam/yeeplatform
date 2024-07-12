@@ -67,7 +67,7 @@ function SignIn() {
         willClose: (dismiss) => {
             if (dismiss === Swal.DismissReason.cancel) {
                 // Handle cancel action
-                console.log("Sign in canceled");
+                //console.log("Sign in canceled");
             }
         },
     });
@@ -110,7 +110,7 @@ function SignIn() {
         willClose: (dismiss) => {
             if (dismiss === Swal.DismissReason.cancel) {
                 // Handle cancel action
-                console.log("Sign in canceled");
+                //console.log("Sign in canceled");
             }
         },
     });

@@ -30,17 +30,17 @@ const Welcome = () => {
   const actionCode = urlParams.get('oobCode');
   const action_mode = urlParams.get('mode');
   const auth = getAuth();
-  console.log('oobCode:', actionCode);
-  console.log('mode:', action_mode);
+  //console.log('oobCode:', actionCode);
+  //console.log('mode:', action_mode);
 
   useEffect(() => {
     const user = auth.currentUser;
 
-    console.log('action_mode:', action_mode);
-  console.log('actionCode:', actionCode);
+    //console.log('action_mode:', action_mode);
+  //console.log('actionCode:', actionCode);
 
     if (user && user.emailVerified && action_mode === 'verifyEmail') {
-      console.log('User is already verified');
+      //console.log('User is already verified');
       setIsVerified(true);
       localStorage.setItem('isVerified', true);
       navigate('/');
@@ -52,7 +52,7 @@ const Welcome = () => {
 
     try {
       if (isVerified && action_mode === 'verifyEmail') {
-        console.log('Already verified');
+        //console.log('Already verified');
         setLoading(false);
         return;
       }
@@ -62,11 +62,11 @@ const Welcome = () => {
         const auth = getAuth();
         checkActionCode(auth, actionCode)
           .then(() => {
-            console.log('Action code is valid, applying it now...');
+            //console.log('Action code is valid, applying it now...');
             return applyActionCode(auth, actionCode);
           })
           .then(() => {
-            console.log('Email verification successful');
+            //console.log('Email verification successful');
             setIsVerified(true);
             localStorage.setItem('isVerified', true);
       
@@ -77,27 +77,27 @@ const Welcome = () => {
             })
               .then(response => response.json())
               .then(data => {
-                console.log("Email verification status updated in MongoDB:", data);
+                //console.log("Email verification status updated in MongoDB:", data);
               })
               .catch(err => {
                 console.error("Error updating email verification status in MongoDB:", err);
               });
           })
           .catch(async (error) => {
-            console.log('Error occurred:', error);
+            //console.log('Error occurred:', error);
             setError(true);
             setErrorMessage('An error occurred while verifying the code. Please try again.');
             setIsVerified(false);
             localStorage.setItem('isVerified', false);
       
-            console.log('Showing Swal error dialog');
+            //console.log('Showing Swal error dialog');
             await Swal.fire({
               icon: 'error',
               title: 'Error',
               text: 'An error occurred while verifying the code. Please try again.'
             });
       
-            console.log('Navigating to home page after delay');
+            //console.log('Navigating to home page after delay');
             setTimeout(() => {
               navigate('/home');
             }, 3000); // navigate to home page after 3 seconds
@@ -109,24 +109,24 @@ const Welcome = () => {
       } else if (actionCode && action_mode === 'resetPassword') {
         hasCheckedActionCode.current = true;
        
-        console.log('Action code is valid, applying it now for password ...');
+        //console.log('Action code is valid, applying it now for password ...');
         verifyPasswordResetCode(auth, actionCode)
           .then((email) => {
-            console.log('Action code is valid, user email:', email);
+            //console.log('Action code is valid, user email:', email);
           })
           .catch(async (error) => {
-            console.log('Error occurred:', error);
+            //console.log('Error occurred:', error);
             setError(true);
             setErrorMessage('An error occurred while resetting the password. Please try again.');
           
-            console.log('Showing Swal error dialog');
+            //console.log('Showing Swal error dialog');
             await Swal.fire({
               icon: 'error',
               title: 'Error',
               text: 'An error occurred while updating the password. Please try again.'
             });
           
-            console.log('Navigating to home page after delay');
+            //console.log('Navigating to home page after delay');
             setTimeout(() => {
               navigate('/home');
             }, 3000); // navigate to home page after 3 seconds
@@ -135,11 +135,11 @@ const Welcome = () => {
             setLoading(false);
           });
       } else {
-        console.log('No oobCode found, setting loading to false');
+        //console.log('No oobCode found, setting loading to false');
         setLoading(false);
       }
     } catch (error) {
-      console.log('An error occurred in useEffect:', error);
+      //console.log('An error occurred in useEffect:', error);
       setError(true);
       setErrorMessage('An unexpected error occurred. Please try again later.');
       setLoading(false);
@@ -149,23 +149,23 @@ const Welcome = () => {
   const handleUserPasswordChange = async (e) => {
     e.preventDefault();
   
-    console.log('handlePasswordChange called');
+    //console.log('handlePasswordChange called');
   
     if (!password || !confirmPassword) {
-      console.log('Error: Missing password or confirmPassword');
+      //console.log('Error: Missing password or confirmPassword');
       setError(true);
       setErrorMessage('Please fill in all fields');
       return;
     }
     if (password !== confirmPassword) {
-      console.log('Error: Passwords do not match');
+      //console.log('Error: Passwords do not match');
       setError(true);
       setErrorMessage('Passwords do not match');
       return;
     }
   
     try {
-      console.log('Showing Swal loading dialog');
+      //console.log('Showing Swal loading dialog');
       const swalLoading = Swal.fire({
         title: 'Updating Password',
         text: 'Please wait...',
@@ -175,20 +175,20 @@ const Welcome = () => {
         }
       });
   
-      console.log('Calling confirmPasswordReset');
+      //console.log('Calling confirmPasswordReset');
       await confirmPasswordReset( auth, actionCode, password);
   
-      console.log('Closing Swal loading dialog');
+      //console.log('Closing Swal loading dialog');
       await swalLoading.close();
   
-      console.log('Showing Swal success dialog');
+      //console.log('Showing Swal success dialog');
       await Swal.fire({
         icon: 'success',
         title: 'Password Updated',
         text: 'Your password has been updated successfully.'
       });
   
-      console.log('Navigating to home page after delay');
+      //console.log('Navigating to home page after delay');
       setTimeout(() => {
         navigate('/home');
       }, 3000); // navigate to home page after 3 seconds
@@ -197,14 +197,14 @@ const Welcome = () => {
       setError(true);
       setErrorMessage('An error occurred while resetting the password. Please try again.');
   
-      console.log('Showing Swal error dialog');
+      //console.log('Showing Swal error dialog');
       await Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'An error occurred while updating the password. Please try again.'
       });
   
-      console.log('Navigating to home page after delay');
+      //console.log('Navigating to home page after delay');
       setTimeout(() => {
         navigate('/home');
       }, 3000); // navigate to home page after 3 seconds
@@ -230,10 +230,10 @@ const Welcome = () => {
   };
   //const debouncedHandleSignUp = debounce(handlePasswordChange, debounceDelay);
   const renderUI = () => {
-    console.log('renderUI called');
-    console.log('loading:', loading);
-    console.log('error:', error);
-    console.log('mode:', action_mode);
+    //console.log('renderUI called');
+    //console.log('loading:', loading);
+    //console.log('error:', error);
+    //console.log('mode:', action_mode);
 
     if (loading) {
       return (
@@ -244,7 +244,7 @@ const Welcome = () => {
     }
 
     if (action_mode === 'resetPassword') {
-      console.log('Rendering resetPassword UI');
+      //console.log('Rendering resetPassword UI');
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
           <div className="w-full max-w-lg mx-auto mb-4">

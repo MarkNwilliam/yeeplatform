@@ -5,55 +5,8 @@ import LoadingScreen from "./components/loadingscreen";
 import { Helmet } from 'react-helmet';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import ProtectedRouteWrapper from "./contexts/ProtectedRoute";
-import ItemDetailPage from './pages/ItemDetailPage';
-import AudiobookDetailPage from './pages/AudiobookDetailPage';
-import AudioChapterdetail from './pages/AudioChapterdetail';
-import ChapterDetailPage from './pages/ChapterDetailPage';
-import EbookDetailPage from './pages/EbookDetailPage';
-import EbookReaderPage from './pages/EbookReaderPage';
-import Chapterreader from './pages/Chapterreader';
-import AudioChapterListen from './pages/Audiochapterlisten';
-import AudiobookListen from './pages/Audiobooklisten';
-import AudioChapters from './pages/AudioChapters';
-import EbookViewer from './pages/EpubViewer';
-import Notespdf from './pages/notespdf';
-//import ProtectedAuthorRouteWrapper from './contexts/ProtectedAuthor';
-
 
 /*
-// Lazy-load the components
-const Home = lazy(() => import('./pages/home'));
-const Chapters = lazy(() => import('./pages/Chapters'));
-const Audiobooks = lazy(() => import('./pages/Audiobooks'));
-const Ebooks = lazy(() => import('./pages/Ebooks'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Signin = lazy(() => import('./pages/Signin'));
-const Signup = lazy(() => import('./pages/Signup'));
-const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
-const Scontent = lazy(() => import('./components/Scontent'));
-const Intro = lazy(() => import('./components/intro'));
-const News = lazy(() => import('./components/DNews'));
-const DNft = lazy(() => import('./components/DNft'));
-const Upload = lazy(() => import('./components/DUpload'));
-const DStats = lazy(() => import('./components/DStats'));
-const DSupport = lazy(() => import('./components/DSupport'));
-const DWrite = lazy(() => import('./components/DWrite'));
-const DAudio = lazy(() => import('./components/DAudio'));
-const DProfile = lazy(() => import('./components/DProfile'));
-const Support = lazy(() => import('./pages/Support'));
-const Premium = lazy(() => import('./pages/Premium'));
-const AccountPage = lazy(() => import('./pages/AccountPage'));
-const Mybooks = lazy(() => import('./components/Mybooks'));
-const MyAudios = lazy(() => import('./components/MyAudios'));
-const MyChapters = lazy(() => import('./components/MyChapters'));
-const AudiobookDetail = lazy(() => import('./components/AudiobookDetail'));
-const DAudioChapter = lazy(() => import('./components/DAudioChapter'));
-
-const ChapterDetail = lazy(() => import('./components/ChapterDetail'));
-const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
-const Welcome = lazy(() => import('./pages/Welcome'));
-*/
-
 import Home from './pages/home';
 import Chapters from './pages/Chapters';
 import Audiobooks from './pages/Audiobooks';
@@ -83,6 +36,64 @@ import DAudioChapter from './components/DAudioChapter';
 import ChapterDetail from './components/ChapterDetail';
 import ForgotPassword from './pages/ForgotPassword';
 import Welcome from './pages/Welcome';
+import ItemDetailPage from './pages/ItemDetailPage';
+import AudiobookDetailPage from './pages/AudiobookDetailPage';
+import AudioChapterdetail from './pages/AudioChapterdetail';
+import ChapterDetailPage from './pages/ChapterDetailPage';
+import EbookDetailPage from './pages/EbookDetailPage';
+import EbookReaderPage from './pages/EbookReaderPage';
+import Chapterreader from './pages/Chapterreader';
+import AudioChapterListen from './pages/Audiochapterlisten';
+import AudiobookListen from './pages/Audiobooklisten';
+import AudioChapters from './pages/AudioChapters';
+import EbookViewer from './pages/EpubViewer';
+import Notespdf from './pages/notespdf';
+*/
+
+
+
+
+const Home = lazy(() => import('./pages/home'));
+const Chapters = lazy(() => import('./pages/Chapters'));
+const Audiobooks = lazy(() => import('./pages/Audiobooks'));
+const Ebooks = lazy(() => import('./pages/Ebooks'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Signin = lazy(() => import('./pages/Signin'));
+const Signup = lazy(() => import('./pages/Signup'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const Scontent = lazy(() => import('./components/Scontent'));
+const Intro = lazy(() => import('./components/intro'));
+const News = lazy(() => import('./components/DNews'));
+const DNft = lazy(() => import('./components/DNft'));
+const Upload = lazy(() => import('./components/DUpload'));
+const DStats = lazy(() => import('./components/DStats'));
+const DSupport = lazy(() => import('./components/DSupport'));
+const DWrite = lazy(() => import('./components/DWrite'));
+const DAudio = lazy(() => import('./components/DAudio'));
+const DProfile = lazy(() => import('./components/DProfile'));
+const Support = lazy(() => import('./pages/Support'));
+const Premium = lazy(() => import('./pages/Premium'));
+const AccountPage = lazy(() => import('./pages/AccountPage'));
+const Mybooks = lazy(() => import('./components/Mybooks'));
+const MyAudios = lazy(() => import('./components/MyAudios'));
+const MyChapters = lazy(() => import('./components/MyChapters'));
+const AudiobookDetail = lazy(() => import('./components/AudiobookDetail'));
+const DAudioChapter = lazy(() => import('./components/DAudioChapter'));
+const ChapterDetail = lazy(() => import('./components/ChapterDetail'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const Welcome = lazy(() => import('./pages/Welcome'));
+const ItemDetailPage = lazy(() => import('./pages/ItemDetailPage'));
+const AudiobookDetailPage = lazy(() => import('./pages/AudiobookDetailPage'));
+const AudioChapterdetail = lazy(() => import('./pages/AudioChapterdetail'));
+const ChapterDetailPage = lazy(() => import('./pages/ChapterDetailPage'));
+const EbookDetailPage = lazy(() => import('./pages/EbookDetailPage'));
+const EbookReaderPage = lazy(() => import('./pages/EbookReaderPage'));
+const Chapterreader = lazy(() => import('./pages/Chapterreader'));
+const AudioChapterListen = lazy(() => import('./pages/Audiochapterlisten'));
+const AudiobookListen = lazy(() => import('./pages/Audiobooklisten'));
+const AudioChapters = lazy(() => import('./pages/AudioChapters'));
+const EbookViewer = lazy(() => import('./pages/EpubViewer'));
+const Notespdf = lazy(() => import('./pages/notespdf'));
 
 import { elb } from '@elbwalker/walker.js';
 import destinationAPI from '@elbwalker/destination-web-api';
