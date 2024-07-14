@@ -4,55 +4,8 @@ import OfflineStatus from './components/OfflineStatus';
 import LoadingScreen from "./components/loadingscreen";
 import { Helmet } from 'react-helmet';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import ProtectedRouteWrapper from "./contexts/ProtectedRoute";
 
-/*
-import Home from './pages/home';
-import Chapters from './pages/Chapters';
-import Audiobooks from './pages/Audiobooks';
-import Ebooks from './pages/Ebooks';
-import Dashboard from './pages/Dashboard';
-import Signin from './pages/Signin';
-import Signup from './pages/Signup';
-import VerifyEmail from './pages/VerifyEmail';
-import Scontent from './components/Scontent';
-import Intro from './components/intro';
-import News from './components/DNews';
-import DNft from './components/DNft';
-import Upload from './components/DUpload';
-import DStats from './components/DStats';
-import DSupport from './components/DSupport';
-import DWrite from './components/DWrite';
-import DAudio from './components/DAudio';
-import DProfile from './components/DProfile';
-import Support from './pages/Support';
-import Premium from './pages/Premium';
-import AccountPage from './pages/AccountPage';
-import Mybooks from './components/Mybooks';
-import MyAudios from './components/MyAudios';
-import MyChapters from './components/MyChapters';
-import AudiobookDetail from './components/AudiobookDetail';
-import DAudioChapter from './components/DAudioChapter';
-import ChapterDetail from './components/ChapterDetail';
-import ForgotPassword from './pages/ForgotPassword';
-import Welcome from './pages/Welcome';
-import ItemDetailPage from './pages/ItemDetailPage';
-import AudiobookDetailPage from './pages/AudiobookDetailPage';
-import AudioChapterdetail from './pages/AudioChapterdetail';
-import ChapterDetailPage from './pages/ChapterDetailPage';
-import EbookDetailPage from './pages/EbookDetailPage';
-import EbookReaderPage from './pages/EbookReaderPage';
-import Chapterreader from './pages/Chapterreader';
-import AudioChapterListen from './pages/Audiochapterlisten';
-import AudiobookListen from './pages/Audiobooklisten';
-import AudioChapters from './pages/AudioChapters';
-import EbookViewer from './pages/EpubViewer';
-import Notespdf from './pages/notespdf';
-*/
-
-
-
-
+const ProtectedRouteWrapper = lazy(() => import('./contexts/ProtectedRoute'));
 const Home = lazy(() => import('./pages/home'));
 const Chapters = lazy(() => import('./pages/Chapters'));
 const Audiobooks = lazy(() => import('./pages/Audiobooks'));
@@ -154,7 +107,7 @@ function App() {
 
       <Suspense fallback={<LoadingScreen />}>
 
-{loading ? (
+
         <BrowserRouter>
     <Routes>
     
@@ -225,9 +178,7 @@ function App() {
       <Route path="/Permium" element={<Premium />}/>
     </Routes>
   </BrowserRouter>
-): (
-    <LoadingScreen />
-  )}
+
   </Suspense>
     </div>
 

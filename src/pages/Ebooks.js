@@ -7,7 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
-
+import Skeleton from '@mui/material/Skeleton';
 
 export default function Scontent() {
   const [items, setItems] = useState([]);
@@ -129,7 +129,15 @@ export default function Scontent() {
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {isLoading ? (
 
-          <CircularProgress className="text-yellow-500 animate-pulse" color="inherit" />
+Array.from({ length: 10 }).map((_, index) => (
+  <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+    <Skeleton variant="rectangular" width="200px" height="144px" />
+    <div className="p-4">
+      <Skeleton variant="text" />
+      <Skeleton variant="text" />
+    </div>
+  </div>
+))
         ) : items.length > 0 ? (
           items.map((item, index) => (
             <ContentCard

@@ -1,55 +1,69 @@
-import React from 'react';
+import React, { lazy, Suspense, useCallback } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useQuery } from 'react-query';
+import { useMediaQuery } from 'react-responsive';
 import Skeleton from '@mui/material/Skeleton';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
-export default function IntroCarousel() {
-  
-  const fetchCarouselItems = () =>
+const fetchCarouselItems = () =>
   new Promise((resolve) =>
     setTimeout(() => {
       resolve([
-    {
-      id: 1,
-      src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee3.jpg',
-      alt: '',
-      caption: '',
-      description: '',
-      link: '' // Example link URL for the first item
-    },
-    {
-      id: 2,
-      src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee2.jpg',
-      alt: '',
-      caption: '',
-      description: '',
-      link: '' // No link for the second item
-    },
-    {
-      id: 3,
-      src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee1.png',
-      alt: '',
-      caption: '',
-      description: '',
-      link: '' // Example link URL for the third item
-    }
-  ]);
-}, 5000)
-);
+        {
+          id: 1,
+          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee3.jpg',
+          alt: 'Slide 1',
+          caption: 'First Slide',
+          description: '',
+          link: '' 
+        },
+        {
+          id: 2,
+          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee2.jpg',
+          alt: 'Slide 2',
+          caption: 'Second Slide',
+          description: '',
+          link: '' 
+        },
+        {
+          id: 3,
+          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee1.png',
+          alt: 'Slide 3',
+          caption: 'Third Slide',
+          description: '',
+          link: '' 
+        }
+      ]);
+    }, 5000)
+  );
 
-const { data: carouselItems, isLoading } = useQuery('carouselItems', fetchCarouselItems);
+export default function IntroCarousel() {
+  const { data: carouselItems, isLoading } = useQuery('carouselItems', fetchCarouselItems);
 
+  const isDesktopOrLaptop = useMediaQuery({
+    query: '(min-device-width: 1224px)'
+  });
+  const isTablet = useMediaQuery({
+    query: '(min-device-width: 768px) and (max-device-width: 1224px)'
+  });
+  const isMobile = useMediaQuery({
+    query: '(max-device-width: 767px)'
+  });
 
-  const handleClick = (event) => {
+  const maxHeight = isDesktopOrLaptop ? '500px' : (isTablet ? '350px' : '200px');
+
+  const handleClick = useCallback((event) => {
     if (!event.currentTarget.getAttribute('href')) {
       event.preventDefault();
     }
-  };
+  }, []);
 
   return (
-    <Carousel style={{ maxHeight: '500px', overflow: 'hidden' }}>
-     {isLoading ? (
+    <Suspense fallback={<div>Loading...</div>}>
+    <Carousel style={{ maxHeight, overflow: 'hidden' }}>
+      {isLoading ? (
         <Carousel.Item interval={1500}>
           <Skeleton variant="rectangular" width="100%" height={500} />
         </Carousel.Item>
@@ -58,21 +72,27 @@ const { data: carouselItems, isLoading } = useQuery('carouselItems', fetchCarous
           <Carousel.Item key={item.id} interval={1500}>
             {item.link ? (
               <a href={item.link} target="_blank" rel="noopener noreferrer">
-                <img
+                <LazyLoadImage
                   className="d-block w-100"
                   src={item.src}
                   alt={item.alt}
-                  style={{ maxHeight: '500px', objectFit: 'cover' }}
                   onClick={handleClick}
+                  style={{ maxHeight: '500px', objectFit: 'contain' }}
+                  width="100%"
+                  height={500} 
+                  effect="blur"
                 />
               </a>
             ) : (
-              <img
+              <LazyLoadImage
                 className="d-block w-100"
                 src={item.src}
                 alt={item.alt}
-                style={{ maxHeight: '500px', objectFit: 'cover' }}
+                style={{ maxHeight: '500px', objectFit: 'contain' }}
                 onClick={handleClick}
+                width="100%"
+                height={500} // Add fixed height
+                effect="blur"
               />
             )}
             <Carousel.Caption className="d-none d-md-block">
@@ -83,5 +103,6 @@ const { data: carouselItems, isLoading } = useQuery('carouselItems', fetchCarous
         ))
       )}
     </Carousel>
+    </Suspense>
   );
 }

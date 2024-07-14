@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Rating from '@mui/material/Rating';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 function ContentCard({ title, coverImage, itemType, itemId, rating }) {
   const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
@@ -85,11 +87,12 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
       case 'audiobook':
         return (
           <a href={`/audiobooks/${itemId}`}>
-            <img 
+            <LazyLoadImage 
               className="object-cover w-full h-full"
               src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
               alt={title}
               loading="lazy"
+              effect="blur"
               onError={handleImageError}
             />
           </a>
@@ -98,11 +101,12 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
       case 'audiochapter':
         return (
           <a href={`/audiochapters/${itemId}`}>
-            <img 
+            <LazyLoadImage 
               className="object-cover w-full h-full"
               src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
               alt={title}
               loading="lazy"
+              effect="blur"
               onError={handleImageError}
             />
           </a>
@@ -111,11 +115,12 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
       case 'Text':
         return (
           <Link to={`/chapters/${itemId}`}>
-            <img 
+            <LazyLoadImage 
               className="object-cover w-full h-full"
               src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
               alt={title}
               loading="lazy"
+              effect="blur"
               onError={handleImageError}
             />
           </Link>
@@ -123,11 +128,12 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
         case 'notes':
           return (
             <Link to={`/chapters/${itemId}`}>
-              <img 
+              <LazyLoadImage 
                 className="object-cover w-full h-full"
                 src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
                 alt={title}
                 loading="lazy"
+                effect="blur"
                 onError={handleImageError}
               />
             </Link>
@@ -135,11 +141,12 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
           case 'chapters':
             return (
               <Link to={`/chapters/${itemId}`}>
-                <img 
+                <LazyLoadImage 
                   className="object-cover w-full h-full"
                   src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
                   alt={title}
                   loading="lazy"
+                  effect="blur"
                   onError={handleImageError}
                 />
               </Link>
@@ -147,22 +154,24 @@ function ContentCard({ title, coverImage, itemType, itemId, rating }) {
       case 'ebook':
         return (
           <Link to={`/ebooks/${itemId}`}>
-            <img 
+            <LazyLoadImage 
               className="object-cover w-full h-full"
               src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
               alt={title}
               loading="lazy"
+              effect="blur"
               onError={handleImageError}
             />
           </Link>
         );
       default:
         return (
-          <img 
+          <LazyLoadImage 
             className="object-cover w-full h-full"
             src={coverImage || defaultCoverImage || 'https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png'} 
             alt={title}
             loading="lazy"
+            effect="blur"
             onError={handleImageError}
           />
         );
