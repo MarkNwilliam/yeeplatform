@@ -64,7 +64,7 @@ export default function IntroCarousel() {
     <Suspense fallback={<div>Loading...</div>}>
     <Carousel style={{ maxHeight, overflow: 'hidden' }}>
       {isLoading ? (
-        <Carousel.Item interval={1500}>
+        <Carousel.Item interval={3000}>
           <Skeleton variant="rectangular" width="100%" height={500} />
         </Carousel.Item>
       ) : (

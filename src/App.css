@@ -1,71 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('bulma/css/bulma.css');
-@import url('material-design-icons/iconfont/material-icons.css');
-
-
 
 .App {
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-.yellow-button {
-  background-color: #ffff00;
-  /* Add any additional styles you need */
-}
-
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* in your tailwind.css or global CSS file */
-@keyframes flashBorder {
-  0%, 50%, 100% {
-    border-color: transparent;
-  }
-  25%, 75% {
-    border-color: #fff;
-  }
-}
-
-@media (min-width: 768px) {
-  .dark-mode-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 1rem;
-  }
-}
-

@@ -132,12 +132,12 @@ function Notespdf() {
           } else {
             showLoadingDialog(); // Show loading dialog before starting text extraction
             const voices = window.speechSynthesis.getVoices();
-            const pageText = await handlePlayClick(); // Extract text from the current page
+            const pageText = await handlePlayClick(); 
             speak({ text: pageText, rate: 0.9 });
             setSpeechText(pageText);
-            Swal.close(); // Close loading dialog after text extraction is done
-            showPlayingDialog(); // Show playing dialog
-            setIsPlaying(true); // Update the state to indicate that speech synthesis is playing
+            Swal.close(); 
+            showPlayingDialog(); 
+            setIsPlaying(true);
           }
         } catch (error) {
           Swal.close(); // Close loading dialog in case of error
@@ -151,8 +151,7 @@ function Notespdf() {
 
       setCurrentPages(currentPage);
       
-      //console.log('Current pages number:', currentPages);
-      //console.log('Current page number:', currentPage);
+
   
       // Add the current page number to the array
       setPageNumbers([...pageNumbers, currentPage]);
@@ -205,9 +204,7 @@ function Notespdf() {
       recordEbookView();
     }
   
-    // Retrieve and print the eBook ID and viewed status from local storage
-    //console.log('eBook ID:', localStorage.getItem('ebookID'));
-    //console.log('Viewed:', localStorage.getItem('viewed'));
+
   }
 
     const scrollModePluginInstance = scrollModePlugin();
@@ -460,46 +457,7 @@ const recordEbookView = async () => {
     console.error('Error recording ebook view:', error);
   }
 };
-    /*
-
-    const handleSpeak = async () => {
-      if (!isLoading && ebookContent) {
-        try {
-          // If speech synthesis is currently playing, pause it
-          if (isPlaying) {
-            cancel(); // Stop the speech synthesis
-            setIsPlaying(false); // Update the state to indicate that speech synthesis is paused
-          } else {
-            showLoadingDialog(); // Show loading dialog before starting text extraction
-            const voices = window.speechSynthesis.getVoices();
-            const pageText = await extractPageText(currentPage); // Extract text from the current page
-            speak({ text: pageText, rate: 0.9 });
-            setSpeechText(pageText);
-            Swal.close(); // Close loading dialog after text extraction is done
-            showPlayingDialog(); // Show playing dialog
-            setIsPlaying(true); // Update the state to indicate that speech synthesis is playing
-          }
-        } catch (error) {
-          Swal.close(); // Close loading dialog in case of error
-          console.error('Error extracting page text:', error);
-          // Handle error
-        }
-      }
-    };
-*/
-
-function blobUrlToBase64(url) {
-  return fetch(url)
-    .then(response => response.blob())
-    .then(blob => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    });
-}
+ 
 
     return (
         <div style={{ height: '100vh' , width: '100%'}}>

@@ -1,7 +1,6 @@
 import React,  {  useState, useEffect, Suspense, lazy} from 'react';
 import './App.css';
 import OfflineStatus from './components/OfflineStatus';
-import LoadingScreen from "./components/loadingscreen";
 import { Helmet } from 'react-helmet';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -105,7 +104,7 @@ function App() {
         <link rel="icon"  href="Y.webp" />
       </Helmet>
 
-      <Suspense fallback={<LoadingScreen />}>
+      <Suspense fallback={<p>Loading...</p>}>
 
 
         <BrowserRouter>

@@ -1,29 +1,31 @@
-import React, { useState, useRef , useEffect } from 'react';
+import React, { useState, useRef , useEffect,Suspense, lazy } from 'react';
 import { Routes, Route, Link, useNavigate , useLocation } from 'react-router-dom';
 import { Bars3Icon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import Sidebar from '../components/Sidebar';
 import Intro from "../components/intro";
 import Scontent from "../components/Scontent";
-
-import AudiobookDetail from "../components/AudiobookDetail";
-import ChapterDetail from "../components/ChapterDetail";
-import Ebooks from "./Ebooks";
-import Audiobooks from "./Audiobooks";
-import Chapters from "./Chapters";
-import Footer from '../components/Footer';
-import Dbarlist from '../subcomponents/Dbarlist';
-import MPopper from '../components/MPopper';
-import { useAuth } from '../contexts/AuthContext'; // Import useAuth
-import AudioChapters from './AudioChapters';
+import { useAuth } from '../contexts/AuthContext';
 import { logFirebaseEvent } from '../firebase.js';
 import PointsTourGuide from '../constants/PointsTourGuide.js';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
+// Lazy load components
+const AudiobookDetail = lazy(() => import("../components/AudiobookDetail"));
+const ChapterDetail = lazy(() => import("../components/ChapterDetail"));
+const Ebooks = lazy(() => import("./Ebooks"));
+const Audiobooks = lazy(() => import("./Audiobooks"));
+const Chapters = lazy(() => import("./Chapters"));
+const Footer = lazy(() => import('../components/Footer'));
+const Dbarlist = lazy(() => import('../subcomponents/Dbarlist'));
+const MPopper = lazy(() => import('../components/MPopper'));
+const AudioChapters = lazy(() => import('./AudioChapters'));
+
+
 function Home() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [selectedSection, setSelectedSection] = useState(''); // New state variable
+    const [selectedSection, setSelectedSection] = useState(''); 
     const [runTour, setRunTour] = useState(true);
     const [userPoints, setUserPoints] = useState(0);
     const menuIconRef = useRef(null);
@@ -146,10 +148,6 @@ function Home() {
         setSidebarOpen(false); // Close the sidebar when a new section is selected
     };
 
-    // Function to toggle menu popup
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-    };
 
     return (
         <div className="flex h-screen bg-gray-100">
@@ -197,6 +195,7 @@ function Home() {
                 {menuOpen && <MPopper open={menuOpen} anchorRef={menuIconRef.current} handleClose={() => setMenuOpen(false)} handleListKeyDown={() => { }} />}
 
                 <main className="flex-1 overflow-y-auto p-2">
+                <Suspense fallback={<div>Loading...</div>}>
                     <Routes>
                         <Route path="/" index element={<Intro />} />
                         <Route path="home" index element={<Intro />} />
@@ -209,6 +208,7 @@ function Home() {
                         <Route path="chapters" element={<Chapters />} />
                         <Route path="audiochapters" element={<AudioChapters />} />
                     </Routes>
+                    </Suspense>
                     <Footer />
                 </main>
 
