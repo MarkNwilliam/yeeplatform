@@ -14,28 +14,28 @@ export default function Intro() {
                 resolve([
                     {
                         name: "Ebooks and Magazines",
-                        pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/stories.jpg',
+                        pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/stories.jpeg',
                         description: "Ordinary ebooks and magazines 📚",
                         id: 1,
                         link: "/ebooks"
                     },
                     {
                         name: "Audio books",
-                        pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/life.jpg',
+                        pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/life.jpeg',
                         description: "Just audiobooks 🎧",
                         id: 2,
                         link: "/audiobooks"
                     },
                     {
                         name: "Audio chapters",
-                        pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/roma.jpg',
+                        pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/roma.jpeg',
                         description: "Chapters in audio form 🎵",
                         id: 3,
                         link: "/audiochapters"
                     },
                     {
                         name: "Chapters",
-                        pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/others.jpg',
+                        pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/others.jpeg',
                         description: "Chapters written to the whole book 📖",
                         id: 4,
                         link: "/chapters"

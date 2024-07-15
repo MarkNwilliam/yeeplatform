@@ -13,7 +13,7 @@ const fetchCarouselItems = () =>
       resolve([
         {
           id: 1,
-          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee3.jpg',
+          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee3.jpeg',
           alt: 'Slide 1',
           caption: 'First Slide',
           description: '',
@@ -21,7 +21,7 @@ const fetchCarouselItems = () =>
         },
         {
           id: 2,
-          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee2.jpg',
+          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee2.jpeg',
           alt: 'Slide 2',
           caption: 'Second Slide',
           description: '',
@@ -29,7 +29,7 @@ const fetchCarouselItems = () =>
         },
         {
           id: 3,
-          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee1.png',
+          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee1.jpeg',
           alt: 'Slide 3',
           caption: 'Third Slide',
           description: '',

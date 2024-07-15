@@ -32,7 +32,7 @@ function Home() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { user, logout, isAuthor } = useAuth(); // Use the useAuth function
+    const { user, logout, isAuthor } = useAuth(); 
 
     
     useEffect(() => {
