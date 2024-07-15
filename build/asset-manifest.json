@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.f0e946e2.css",
+    "main.css": "/static/css/main.707f196a.css",
     "main.js": "/static/js/main.155ea7cd.js",
     "static/js/2078.48d2b9ef.chunk.js": "/static/js/2078.48d2b9ef.chunk.js",
     "static/js/2758.047f519b.chunk.js": "/static/js/2758.047f519b.chunk.js",
@@ -127,12 +127,8 @@
     "static/js/4708.50f8b8ff.chunk.js": "/static/js/4708.50f8b8ff.chunk.js",
     "static/js/2707.b9672a1d.chunk.js": "/static/js/2707.b9672a1d.chunk.js",
     "static/js/1888.5fef1793.chunk.js": "/static/js/1888.5fef1793.chunk.js",
-    "static/media/MaterialIcons-Regular.eot": "/static/media/MaterialIcons-Regular.4674f8ded773cb03e824.eot",
-    "static/media/MaterialIcons-Regular.ttf": "/static/media/MaterialIcons-Regular.5e7382c63da0098d634a.ttf",
-    "static/media/MaterialIcons-Regular.woff": "/static/media/MaterialIcons-Regular.83bebaf37c09c7e1c3ee.woff",
-    "static/media/MaterialIcons-Regular.woff2": "/static/media/MaterialIcons-Regular.cff684e59ffb052d72cb.woff2",
     "index.html": "/index.html",
-    "main.f0e946e2.css.map": "/static/css/main.f0e946e2.css.map",
+    "main.707f196a.css.map": "/static/css/main.707f196a.css.map",
     "main.155ea7cd.js.map": "/static/js/main.155ea7cd.js.map",
     "2078.48d2b9ef.chunk.js.map": "/static/js/2078.48d2b9ef.chunk.js.map",
     "2758.047f519b.chunk.js.map": "/static/js/2758.047f519b.chunk.js.map",
@@ -260,7 +256,7 @@
     "1888.5fef1793.chunk.js.map": "/static/js/1888.5fef1793.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f0e946e2.css",
+    "static/css/main.707f196a.css",
     "static/js/main.155ea7cd.js"
   ]
 }

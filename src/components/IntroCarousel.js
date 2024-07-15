@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useCallback } from 'react';
+import React, { Suspense} from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useMediaQuery } from 'react-responsive';
