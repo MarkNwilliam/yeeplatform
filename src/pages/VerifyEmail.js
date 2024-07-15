@@ -27,7 +27,7 @@ function VerifyEmail() {
       }, 1000);
     } else if (timer === 0) {
       setIsButtonDisabled(false);
-      setTimer(60); // Reset the timer back to 60 seconds after it hits 0
+      setTimer(60);
     }
     return () => clearInterval(timerId);
   }, [isButtonDisabled, timer]);

@@ -280,11 +280,11 @@ const [selections, setSelections] = useState([])
           page_number: page,
           language: language
         }, {
-          timeout: 6000000 // Wait for 60 seconds
+          timeout: 6000000
         });
   
-        // Assuming the Flask API returns the audio file URL
-        const audioUrl = response.data.audio_url; // Adjust based on your API response structure
+      
+        const audioUrl = response.data.audio_url; 
   
         // Play the audio
         setAudioUrl("https://yeeplatform.com/server/"+audioUrl);

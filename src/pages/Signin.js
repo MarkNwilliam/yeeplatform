@@ -65,10 +65,7 @@ function SignIn() {
             Swal.showLoading();
         },
         willClose: (dismiss) => {
-            if (dismiss === Swal.DismissReason.cancel) {
-                // Handle cancel action
-                //console.log("Sign in canceled");
-            }
+        
         },
     });
 
@@ -108,10 +105,6 @@ function SignIn() {
           
         },
         willClose: (dismiss) => {
-            if (dismiss === Swal.DismissReason.cancel) {
-                // Handle cancel action
-                //console.log("Sign in canceled");
-            }
         },
     });
   
@@ -130,7 +123,7 @@ function SignIn() {
       Swal.close();
     
        await loginWithGoogle();
-       // Redirect back to the previous page or "/home" if no "from" parameter
+
       navigate(queryString.parse(location.search).from || "/home");
       
     } catch (error) {

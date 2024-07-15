@@ -45,8 +45,7 @@ function Signup() {
         if (!response.ok) {
             throw new Error(responseData.message);
         }
-              // Handle successful signup if needed
-        // e.g., navigate to home or show a success message
+
     } catch (error) {
       console.error('Error sending user data to backend:', error);
       Swal.fire({
@@ -126,20 +125,20 @@ function Signup() {
       });
 
       const userData = {
-        username: name, // Assuming name is the desired username
+        username: name, 
         email: email,
         password: password,
         dateJoined: Date.now(),
-        preferredReadingMode: 'LTR', // or ask the user during signup
+        preferredReadingMode: 'LTR',
         firebaseId: user.uid,
         authProvider: 'emailandpassword',
         emailVerified: user.emailVerified,
         settings: {
-          receiveEmailUpdates: true, // or based on user choice during signup
-          receiveNotifications: true, // or based on user choice during signup
-          darkMode: false // or based on user choice during signup
+          receiveEmailUpdates: true, 
+          receiveNotifications: true, 
+          darkMode: false
         },
-        isAuthor: false // or ask the user during signup if they are an author
+        isAuthor: false 
       };
       
 

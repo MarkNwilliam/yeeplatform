@@ -3,7 +3,6 @@ import ContentCard from "../subcomponents/ContentCard";
 import CustomPagination from "../subcomponents/CustomPagination";
 import { logEvent, analytics} from '../firebase.js'
 import { Helmet } from 'react-helmet';
-import CircularProgress from '@mui/material/CircularProgress';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';

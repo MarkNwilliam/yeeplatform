@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Viewer, Worker ,ProgressBar, defaultScale, ScrollMode} from '@react-pdf-viewer/core';
+import { Viewer, Worker ,ScrollMode} from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {auth} from '../firebase.js';
@@ -8,27 +8,22 @@ import { getDocument } from 'pdfjs-dist';
 import { scrollModePlugin } from '@react-pdf-viewer/scroll-mode';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { FaSun, FaMoon, FaPlay, FaArrowLeft } from 'react-icons/fa';
-import Tesseract from 'tesseract.js';
+import {  FaPlay, FaArrowLeft } from 'react-icons/fa';
+
 import Swal from 'sweetalert2';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 import { Helmet } from 'react-helmet';
 import ShareBox from '../components/Sharebox';
 import { analytics, logEvent } from '../firebase.js';
 import '../App.css';
-import { useSpeechSynthesis } from 'react-speech-kit';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
-import PropTypes from 'prop-types';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { PdfJs } from '@react-pdf-viewer/core';
 import Alert from '@mui/material/Alert';
 import ChatWidget from '../components/ChatWidget.js';
-import { Widget, addResponseMessage, toggleMsgLoader } from '@ryaneewx/react-chat-widget';
+import { addResponseMessage, toggleMsgLoader } from '@ryaneewx/react-chat-widget';
 import axios from 'axios';
 import ReactPlayer from 'react-player';
 
@@ -42,10 +37,6 @@ function EbookReaderPage() {
     const [ebookContent, setEbookContent] = useState(null);
     const [pageNumbers, setPageNumbers] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
-    const { speak, cancel } = useSpeechSynthesis();
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [speechText, setSpeechText] = useState('');
-    const [showShareBox, setShowShareBox] = useState(false);
     const [currentPages, setCurrentPages] = useState(1);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [audioUrl, setAudioUrl] = useState(null);
@@ -65,11 +56,11 @@ function EbookReaderPage() {
 
     const defaultScale = isScreenSmall ? 0.8 : 1; 
     const defaultWrap = isScreenSmaller ?  'wrap':'nowrap'; 
-    const defaultTool = isScreenSmaller ? '100%': 'auto';
+
     const email = auth.currentUser?.email;
     
     const handleNewUserMessage = (newMessage) => {
-      //console.log(`New message incoming! ${newMessage}`);
+     
       
       // Show the loading indicator
       toggleMsgLoader();
@@ -89,7 +80,7 @@ function EbookReaderPage() {
       })
       .then(response => response.json())
       .then(data => {
-        //console.log('Response from backend:', data);
+        
         addResponseMessage(data.response);
       })
       .catch(error => {
@@ -158,35 +149,10 @@ function EbookReaderPage() {
       const textContent = await page.getTextContent();
       const strings = textContent.items.map(item => item.str);
       const text = strings.join(' ');
-      //console.log('Text:', text);
+     
       return text;
     };
-/*
-    const handleSpeak = async () => {
-      if (!isLoading && ebookContent) {
-        try {
-          // If speech synthesis is currently playing, pause it
-          if (isPlaying) {
-            cancel(); // Stop the speech synthesis
-            setIsPlaying(false); // Update the state to indicate that speech synthesis is paused
-          } else {
-            showLoadingDialog(); // Show loading dialog before starting text extraction
-            const voices = window.speechSynthesis.getVoices();
-            const pageText = await handlePlayClick(); // Extract text from the current page
-            speak({ text: pageText, rate: 0.9 });
-            setSpeechText(pageText);
-            Swal.close(); // Close loading dialog after text extraction is done
-            showPlayingDialog(); // Show playing dialog
-            setIsPlaying(true); // Update the state to indicate that speech synthesis is playing
-          }
-        } catch (error) {
-          Swal.close(); // Close loading dialog in case of error
-          console.error('Error extracting page text:', error);
-          // Handle error
-        }
-      }
-    };
-*/
+
     const handleTTSClick = async () => {
       const pageText = await handlePlayClick();
       // Cancel the currently playing audio
@@ -229,30 +195,30 @@ function EbookReaderPage() {
           }
         });
     
-        const book_title = ebookContent.title; // Replace with actual book title
+        const book_title = ebookContent.title;
         let processedBookTitle = book_title.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
        
         try {
-          // Make a POST request to the Flask API
+      
           const response = await axios.post('https://yeeplatform.com/server/synthesize', {
             text: pageText,
             book_title: processedBookTitle,
             page_number: currentPages.toString(),
             language: language
           }, {
-            timeout: 6000000 // Wait for 60 seconds
+            timeout: 6000000 
           });
     
-          // Assuming the Flask API returns the audio file URL
-          const audioUrl = response.data.audio_url; // Adjust based on your API response structure
+      
+          const audioUrl = response.data.audio_url;
     
           // Play the audio
           setAudioUrl("https://yeeplatform.com/server/"+audioUrl);
     
-          // Close loading Swal
+         
           Swal.close();
         } catch (error) {
-          // Close loading Swal and show error Swal
+          
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -269,8 +235,6 @@ function EbookReaderPage() {
 
       setCurrentPages(currentPage);
       
-      //console.log('Current pages number:', currentPages);
-      //console.log('Current page number:', currentPage);
   
       // Add the current page number to the array
       setPageNumbers([...pageNumbers, currentPage]);
@@ -278,7 +242,6 @@ function EbookReaderPage() {
       // Calculate the percentage of pages visited
       const uniquePageCount = new Set(pageNumbers).size;
       const percentageVisited = (uniquePageCount / totalPages) * 100;
-      //console.log('Percentage of pages visited:', percentageVisited);
   
       // Check if the eBook has been read
   if (percentageVisited >= 30) {
@@ -315,17 +278,13 @@ function EbookReaderPage() {
   
     // Check if the eBook ID already exists in the local storage
     if (localStorage.getItem('ebookID') !== id) {
-      // Store the eBook ID and viewed status in local storage
+     
       localStorage.setItem('ebookID', id);
       localStorage.setItem('viewed', 'true');
   
       // Record the ebook view
       recordEbookView();
     }
-  
-    // Retrieve and print the eBook ID and viewed status from local storage
-    //console.log('eBook ID:', localStorage.getItem('ebookID'));
-    //console.log('Viewed:', localStorage.getItem('viewed'));
   }
 
     const scrollModePluginInstance = scrollModePlugin();
@@ -349,9 +308,7 @@ const { SwitchScrollModeButton } = scrollModePluginInstance;
                   GoToNextPage,
                   GoToPreviousPage,
                   NumberOfPages,
-                  SwitchScrollModeMenuItem,
                   ShowSearchPopover,
-                  SwitchScrollMode,
                   Zoom,
                   ZoomIn,
                   ZoomOut,
@@ -362,12 +319,12 @@ const { SwitchScrollModeButton } = scrollModePluginInstance;
                 style={{
                     alignItems: 'center',
       display: 'flex',
-      flexWrap: {defaultWrap}, // Allow the items to wrap as needed
-      justifyContent: 'space-between', // Distribute items evenly
+      flexWrap: {defaultWrap}, 
+      justifyContent: 'space-between', 
       width: '100%',
-      height: 'auto', // Adjust height automatically
+      height: 'auto',
       backgroundColor: '#ffde5a',
-      padding: '10px', // Add some padding
+      padding: '10px', 
                 }}
             >
 
@@ -458,53 +415,6 @@ const { SwitchScrollModeButton } = scrollModePluginInstance;
         ),
     });
 
-    const showLoadingDialog = () => {
-      Swal.fire({
-        title: 'Loading',
-        showClass: {
-          popup: `
-            animate__animated
-            animate__fadeInUp
-            animate__faster
-          `
-        },
-        hideClass: {
-          popup: `
-            animate__animated
-            animate__fadeOutDown
-            animate__faster
-          `
-        },
-        html: 'Processing your request...',
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        onBeforeOpen: () => {
-          Swal.showLoading();
-        },
-        
-      });
-    };
-
-    const showPlayingDialog = () => {
-      setIsPlaying(true);
-      Swal.fire({
-        title: 'Playing',
-        html: 'Text is being played...',
-        showCancelButton: true,
-        showConfirmButton: false,
-        cancelButtonText: 'Stop',
-        allowOutsideClick: false,
-        cancelButtonClass: '#ffff00',
-        didClose: () => {
-          setIsPlaying(false);
-        },
-      }).then((result) => {
-        // If the user clicks the "Stop" button
-        if (result.dismiss === Swal.DismissReason.cancel) {
-          cancel(); // Stop the speech synthesis
-        }
-      });
-    };
 
     // Function to send a POST request to update viewed books
 const updateViewedBooks = async () => {
@@ -547,8 +457,7 @@ const updateEbookScores = async () => {
           score: storedEbookData.percentageVisited,
         }),
       });
-      const data = await response.json();
-      //console.log(data); // Log the response from the backend
+     
     } catch (error) {
       console.error('Error updating ebook scores:', error);
     }
@@ -559,7 +468,7 @@ const recordEbookView = async () => {
   try {
     // Get the eBook ID and viewed status from local storage
     const ebookId = localStorage.getItem('ebookID');
-    const viewed = localStorage.getItem('viewed');
+    
 
     const response = await fetch('https://yeeplatformbackend.azurewebsites.net/recordEbookView', {
       method: 'POST',
@@ -569,55 +478,16 @@ const recordEbookView = async () => {
       body: JSON.stringify({
         userId: auth.currentUser.uid,
         ebookId: ebookId,
-        //viewed: viewed,
+       
       }),
     });
-    const data = await response.json();
-    //console.log(data); // Log the response from the backend
+   
+   
   } catch (error) {
     console.error('Error recording ebook view:', error);
   }
 };
-    /*
 
-    const handleSpeak = async () => {
-      if (!isLoading && ebookContent) {
-        try {
-          // If speech synthesis is currently playing, pause it
-          if (isPlaying) {
-            cancel(); // Stop the speech synthesis
-            setIsPlaying(false); // Update the state to indicate that speech synthesis is paused
-          } else {
-            showLoadingDialog(); // Show loading dialog before starting text extraction
-            const voices = window.speechSynthesis.getVoices();
-            const pageText = await extractPageText(currentPage); // Extract text from the current page
-            speak({ text: pageText, rate: 0.9 });
-            setSpeechText(pageText);
-            Swal.close(); // Close loading dialog after text extraction is done
-            showPlayingDialog(); // Show playing dialog
-            setIsPlaying(true); // Update the state to indicate that speech synthesis is playing
-          }
-        } catch (error) {
-          Swal.close(); // Close loading dialog in case of error
-          console.error('Error extracting page text:', error);
-          // Handle error
-        }
-      }
-    };
-*/
-
-function blobUrlToBase64(url) {
-  return fetch(url)
-    .then(response => response.blob())
-    .then(blob => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    });
-}
 
     return (
         <div style={{ height: '100vh' , width: '100%'}}>
@@ -711,7 +581,7 @@ function blobUrlToBase64(url) {
                           disableRange: false,
                           disableStream: false,
                           rangeChunkSize: 65536,
-                          disableAutoFetch: false, // Enable pre-fetching of PDF file data
+                          disableAutoFetch: false, 
                           disableFontFace: true,
         
                       

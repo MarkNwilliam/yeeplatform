@@ -17,7 +17,7 @@ export default function Scontent() {
 
   
   const fetchData = async () => {
-    setIsLoading(true); // Set loading state to true when fetching starts
+    setIsLoading(true);
     try {
       const url = searchTerm 
         ? `https://yeeplatformbackend.azurewebsites.net/search?term=${searchTerm}&page=${currentPage}&limit=15`
@@ -27,7 +27,7 @@ export default function Scontent() {
       if (!response.ok) throw new Error(`Data fetching failed with status: ${response.status}`);
   
       const data = await response.json();
-      //console.log("Response data:", data);
+
   
       setItems(data.data); // Set items to the 'data' array within the response
       setTotalPages(Math.ceil(data.totalItems / 15)); // Use 'totalItems' for pagination calculation

@@ -2,11 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import Lottie from 'lottie-react';
 import animationData from '../animations/congs.json';
 import notVerifiedAnimation from '../animations/problem.json';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getAuth, applyActionCode, checkActionCode, verifyPasswordResetCode,confirmPasswordReset } from 'firebase/auth';
-import { auth } from '../firebase';
-import { debounce } from 'lodash';
-import { updatePassword } from 'firebase/auth';
+
 import Swal from 'sweetalert2';
 import LinearProgress from '@mui/material/LinearProgress';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
@@ -24,21 +22,17 @@ const Welcome = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const debounceDelay = 1000;
 
   const urlParams = new URLSearchParams(window.location.search);
   const actionCode = urlParams.get('oobCode');
   const action_mode = urlParams.get('mode');
   const auth = getAuth();
-  //console.log('oobCode:', actionCode);
-  //console.log('mode:', action_mode);
+ 
 
   useEffect(() => {
     const user = auth.currentUser;
 
-    //console.log('action_mode:', action_mode);
-  //console.log('actionCode:', actionCode);
-
+    
     if (user && user.emailVerified && action_mode === 'verifyEmail') {
       //console.log('User is already verified');
       setIsVerified(true);
@@ -52,7 +46,7 @@ const Welcome = () => {
 
     try {
       if (isVerified && action_mode === 'verifyEmail') {
-        //console.log('Already verified');
+      
         setLoading(false);
         return;
       }
@@ -62,11 +56,11 @@ const Welcome = () => {
         const auth = getAuth();
         checkActionCode(auth, actionCode)
           .then(() => {
-            //console.log('Action code is valid, applying it now...');
+            
             return applyActionCode(auth, actionCode);
           })
           .then(() => {
-            //console.log('Email verification successful');
+            
             setIsVerified(true);
             localStorage.setItem('isVerified', true);
       
@@ -76,31 +70,28 @@ const Welcome = () => {
               body: JSON.stringify({ firebaseId: user.uid, emailVerified: true })
             })
               .then(response => response.json())
-              .then(data => {
-                //console.log("Email verification status updated in MongoDB:", data);
-              })
               .catch(err => {
                 console.error("Error updating email verification status in MongoDB:", err);
               });
           })
           .catch(async (error) => {
-            //console.log('Error occurred:', error);
+            
             setError(true);
             setErrorMessage('An error occurred while verifying the code. Please try again.');
             setIsVerified(false);
             localStorage.setItem('isVerified', false);
       
-            //console.log('Showing Swal error dialog');
+            
             await Swal.fire({
               icon: 'error',
               title: 'Error',
               text: 'An error occurred while verifying the code. Please try again.'
             });
       
-            //console.log('Navigating to home page after delay');
+            
             setTimeout(() => {
               navigate('/home');
-            }, 3000); // navigate to home page after 3 seconds
+            }, 3000); 
           })
           .finally(() => {
             setLoading(false);
@@ -109,37 +100,37 @@ const Welcome = () => {
       } else if (actionCode && action_mode === 'resetPassword') {
         hasCheckedActionCode.current = true;
        
-        //console.log('Action code is valid, applying it now for password ...');
+       
         verifyPasswordResetCode(auth, actionCode)
           .then((email) => {
-            //console.log('Action code is valid, user email:', email);
+            
           })
           .catch(async (error) => {
-            //console.log('Error occurred:', error);
+           
             setError(true);
             setErrorMessage('An error occurred while resetting the password. Please try again.');
           
-            //console.log('Showing Swal error dialog');
+            
             await Swal.fire({
               icon: 'error',
               title: 'Error',
               text: 'An error occurred while updating the password. Please try again.'
             });
           
-            //console.log('Navigating to home page after delay');
+           
             setTimeout(() => {
               navigate('/home');
-            }, 3000); // navigate to home page after 3 seconds
+            }, 3000); 
           })
           .finally(() => {
             setLoading(false);
           });
       } else {
-        //console.log('No oobCode found, setting loading to false');
+       
         setLoading(false);
       }
     } catch (error) {
-      //console.log('An error occurred in useEffect:', error);
+     
       setError(true);
       setErrorMessage('An unexpected error occurred. Please try again later.');
       setLoading(false);
@@ -149,23 +140,23 @@ const Welcome = () => {
   const handleUserPasswordChange = async (e) => {
     e.preventDefault();
   
-    //console.log('handlePasswordChange called');
+   
   
     if (!password || !confirmPassword) {
-      //console.log('Error: Missing password or confirmPassword');
+    
       setError(true);
       setErrorMessage('Please fill in all fields');
       return;
     }
     if (password !== confirmPassword) {
-      //console.log('Error: Passwords do not match');
+     
       setError(true);
       setErrorMessage('Passwords do not match');
       return;
     }
   
     try {
-      //console.log('Showing Swal loading dialog');
+     
       const swalLoading = Swal.fire({
         title: 'Updating Password',
         text: 'Please wait...',
@@ -175,39 +166,39 @@ const Welcome = () => {
         }
       });
   
-      //console.log('Calling confirmPasswordReset');
+    
       await confirmPasswordReset( auth, actionCode, password);
   
-      //console.log('Closing Swal loading dialog');
+     
       await swalLoading.close();
   
-      //console.log('Showing Swal success dialog');
+     
       await Swal.fire({
         icon: 'success',
         title: 'Password Updated',
         text: 'Your password has been updated successfully.'
       });
   
-      //console.log('Navigating to home page after delay');
+     
       setTimeout(() => {
         navigate('/home');
-      }, 3000); // navigate to home page after 3 seconds
+      }, 3000); 
     } catch (error) {
       console.error('Error updating password:', error);
       setError(true);
       setErrorMessage('An error occurred while resetting the password. Please try again.');
   
-      //console.log('Showing Swal error dialog');
+      
       await Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'An error occurred while updating the password. Please try again.'
       });
   
-      //console.log('Navigating to home page after delay');
+     
       setTimeout(() => {
         navigate('/home');
-      }, 3000); // navigate to home page after 3 seconds
+      }, 3000);
     }
   };
 
@@ -228,12 +219,9 @@ const Welcome = () => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-  //const debouncedHandleSignUp = debounce(handlePasswordChange, debounceDelay);
+ 
   const renderUI = () => {
-    //console.log('renderUI called');
-    //console.log('loading:', loading);
-    //console.log('error:', error);
-    //console.log('mode:', action_mode);
+
 
     if (loading) {
       return (

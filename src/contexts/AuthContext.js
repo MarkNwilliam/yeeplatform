@@ -46,11 +46,10 @@ export function AuthProvider({ children }) {
       const verified = result.user?.emailVerified || false;
       setIsVerified(verified);
       localStorage.setItem('isVerified', verified.toString());
-      await checkAuthorStatus(result.user);
     } catch (error) {
       console.error("Error logging in:", error);
     }
-  }, [checkAuthorStatus]);
+  }, []);
 
   const loginWithGoogle = useCallback(async () => {
     const provider = new GoogleAuthProvider();
@@ -61,11 +60,10 @@ export function AuthProvider({ children }) {
       const verified = result.user?.emailVerified || false;
       setIsVerified(verified);
       localStorage.setItem('isVerified', verified.toString());
-      await checkAuthorStatus(result.user);
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
-  }, [checkAuthorStatus]);
+  }, []);
 
   const logout = useCallback(async () => {
     try {
@@ -86,17 +84,18 @@ export function AuthProvider({ children }) {
       if (currentUser) {
         setIsVerified(currentUser.emailVerified);
         localStorage.setItem('isVerified', currentUser.emailVerified.toString());
-        await checkAuthorStatus(currentUser);
       }
     });
 
     return () => unsubscribe();
-  }, [checkAuthorStatus]);
+  }, []);
 
-  // Effect to log author status changes (optional)
-  // useEffect(() => {
-  //   console.log("AuthContext: isAuthor state changed to", isAuthor);
-  // }, [isAuthor]);
+  // Effect to check author status after initial render
+  useEffect(() => {
+    if (user) {
+      checkAuthorStatus(user);
+    }
+  }, [user, checkAuthorStatus]);
 
   // Value provided by context
   const contextValue = {

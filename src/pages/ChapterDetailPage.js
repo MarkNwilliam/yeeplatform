@@ -1,7 +1,7 @@
 
     import React, { useEffect, useState } from 'react';
     import { useParams, useNavigate } from 'react-router-dom';
-    import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
+    import Rating from '@mui/material/Rating'; 
     import ContentCard from '../subcomponents/ContentCard';
     import { analytics,logEvent } from '../firebase.js'
     import { Helmet } from 'react-helmet';
@@ -37,7 +37,7 @@
        if (ebook) {
         try {
           const category = encodeURIComponent(ebook.category);
-          const genre = encodeURIComponent(ebook.genres.join(',')); // Assuming 'genres' is an array
+          const genre = encodeURIComponent(ebook.genres.join(',')); 
           const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/relatedContent?currentItemId=${id}&category=${category}&genre=${genre}`);
           if (!relatedResponse.ok) {
             throw new Error('Failed to fetch related content');

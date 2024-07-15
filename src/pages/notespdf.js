@@ -522,7 +522,7 @@ const recordEbookView = async () => {
                           disableRange: false,
                           disableStream: false,
                           rangeChunkSize: 65536,
-                          disableAutoFetch: false, // Enable pre-fetching of PDF file data
+                          disableAutoFetch: false, 
                           disableFontFace: true,
         
                       
