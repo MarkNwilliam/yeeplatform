@@ -1,9 +1,7 @@
 import React, { lazy, Suspense, useCallback } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useQuery } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
-import Skeleton from '@mui/material/Skeleton';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 

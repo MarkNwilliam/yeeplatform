@@ -1,9 +1,7 @@
-import React, { Suspense, useCallback, useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import IntroCarousel from "./IntroCarousel";
 import { Helmet } from 'react-helmet';
-import { useQuery } from 'react-query';
-import Skeleton from '@mui/material/Skeleton';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 

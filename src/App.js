@@ -48,11 +48,6 @@ const AudioChapters = lazy(() => import('./pages/AudioChapters'));
 const EbookViewer = lazy(() => import('./pages/EpubViewer'));
 const Notespdf = lazy(() => import('./pages/notespdf'));
 
-import { elb } from '@elbwalker/walker.js';
-import destinationAPI from '@elbwalker/destination-web-api';
-
-
-
 import {
   BrowserRouter,
   Routes,
@@ -62,18 +57,8 @@ import {
 function App() {
 
 
-
-  const [loading, setLoading] = useState(false);
   const [onlineStatus, setOnlineStatus] = useState(navigator.onLine);
   const queryClient = new QueryClient();
-
-  const config = {
-    custom: {
-      url: 'https://httpbin.org/anything',
-    },
-  };
-
-  elb('walker destination', destinationAPI, config);
 
   useEffect(() => {
     function updateOnlineStatus() {
