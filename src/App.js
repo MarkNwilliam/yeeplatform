@@ -5,8 +5,8 @@ import { Helmet } from 'react-helmet';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const ProtectedRouteWrapper = lazy(() => import('./contexts/ProtectedRoute'));
-//const Home = lazy(() => import('./pages/home'));
-import Home from './pages/home';
+const Home = lazy(() => import('./pages/home'));
+//import Home from './pages/home';
 const Chapters = lazy(() => import('./pages/Chapters'));
 const Audiobooks = lazy(() => import('./pages/Audiobooks'));
 const Ebooks = lazy(() => import('./pages/Ebooks'));
@@ -104,7 +104,7 @@ function App() {
         <link rel="icon"  href="Y.webp" />
       </Helmet>
 
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense>
 
 
         <BrowserRouter>

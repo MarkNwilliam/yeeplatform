@@ -1,5 +1,5 @@
-import React, { useState, useRef , useEffect,Suspense, lazy } from 'react';
-import { Routes, Route, Link, useNavigate , useLocation } from 'react-router-dom';
+import React, { useState, useRef, useEffect, Suspense, lazy, useMemo } from 'react';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { Bars3Icon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import Sidebar from '../components/Sidebar';
 import Intro from "../components/intro";
@@ -9,6 +9,7 @@ import { logFirebaseEvent } from '../firebase.js';
 import PointsTourGuide from '../constants/PointsTourGuide.js';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import useNotificationPermission from '../hooks/useNotificationPermission';
 
 // Lazy load components
 const AudiobookDetail = lazy(() => import("../components/AudiobookDetail"));
@@ -21,62 +22,51 @@ const Dbarlist = lazy(() => import('../subcomponents/Dbarlist'));
 const MPopper = lazy(() => import('../components/MPopper'));
 const AudioChapters = lazy(() => import('./AudioChapters'));
 
+function useUserPoints(user) {
+    const [userPoints, setUserPoints] = useState(0);
+
+    const userPointsURL = useMemo(() => {
+        if (user) {
+            return `https://yeeplatformbackend.azurewebsites.net/getUserPoints/${user.firebaseId}`;
+        }
+        return null;
+    }, [user]);
+
+    useEffect(() => {
+        const fetchUserPoints = async () => {
+            if (!userPointsURL) return;
+
+            try {
+                const response = await axios.get(userPointsURL);
+                setUserPoints(response.data.points);
+            } catch (error) {
+                console.error('Error fetching user points:', error);
+            }
+        };
+
+        fetchUserPoints();
+    }, [userPointsURL]);
+
+    return userPoints;
+}
 
 function Home() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [selectedSection, setSelectedSection] = useState(''); 
     const [runTour, setRunTour] = useState(true);
-    const [userPoints, setUserPoints] = useState(0);
     const menuIconRef = useRef(null);
     const navigate = useNavigate();
-    const location = useLocation();
 
     const { user, logout, isAuthor } = useAuth(); 
 
-    
+    useNotificationPermission();
+
+    const userPoints = useUserPoints(user);
+
     useEffect(() => {
         logFirebaseEvent('page_view', { page_path: '/Home' });
-        // Fetch user points when component mounts
-        if (user) {
-            fetchUserPoints();
-        }
-    }, [user]); // Trigger useEffect when user changes
-
-      const fetchUserPoints = async () => {
-        try {
-            const response = await axios.get(`https://yeeplatformbackend.azurewebsites.net/getUserPoints/${user.firebaseId}`); // Fetch user points using the API endpoint
-            setUserPoints(response.data.points); // Set user points in state
-        } catch (error) {
-            console.error('Error fetching user points:', error);
-        }
-    };
-
-
-
-    useEffect(() => {
-        const permissionStatus = localStorage.getItem('notificationPermission');
-        const nextAskDate = localStorage.getItem('nextAskDate');
-    
-        // If we've never asked for permission before, or it's time to ask again
-        if (!permissionStatus || !nextAskDate || new Date() > new Date(nextAskDate)) {
-          Notification.requestPermission().then(function(permission) {
-            // Store the user's permission status
-            localStorage.setItem('notificationPermission', permission);
-    
-            if (permission === 'granted') {
-              console.log('Notification permission granted.');
-              // You can show a notification here if permission was granted
-            } else {
-              console.log('Notification permission denied.');
-              // Set the next date to ask for permission to 1 week from now
-              const nextAskDate = new Date();
-              nextAskDate.setDate(nextAskDate.getDate() + 7);
-              localStorage.setItem('nextAskDate', nextAskDate.toString());
-            }
-          });
-        }
-      }, []);
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -85,26 +75,18 @@ function Home() {
                 text: "You will be logged out of your account.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#FFD700", // Yellow color
-                cancelButtonColor: "#FF8C00", // DarkOrange color
+                confirmButtonColor: "#FFD700",
+                cancelButtonColor: "#FF8C00",
                 confirmButtonText: "Yes, log me out",
                 cancelButtonText: "No, cancel",
                 showClass: {
-                    popup: `
-                        animate__animated
-                        animate__fadeInUp
-                        animate__faster
-                    `
+                    popup: `animate__animated animate__fadeInUp animate__faster`
                 },
                 hideClass: {
-                    popup: `
-                        animate__animated
-                        animate__fadeOutDown
-                        animate__faster
-                    `
+                    popup: `animate__animated animate__fadeOutDown animate__faster`
                 },
             });
-    
+
             if (result.isConfirmed) {
                 await logout();
                 Swal.fire({
@@ -129,89 +111,87 @@ function Home() {
                 icon: "error",
                 showConfirmButton: false,
                 timer: 3000,
-                background: '#FF8C00' // DarkOrange color
+                background: '#FF8C00'
             });
         }
     };
 
     const handleMyAccountClick = () => {
-        // Navigate to the dashboard if the user is an author, otherwise go to the account page
-        if (isAuthor) {
-            navigate('/dashboard');
-        } else {
-            navigate('/myaccount');
-        }
+        navigate(isAuthor ? '/dashboard' : '/myaccount');
     };
 
     const handleSectionClick = (section) => {
         setSelectedSection(section);
-        setSidebarOpen(false); // Close the sidebar when a new section is selected
+        setSidebarOpen(false);
     };
-
 
     return (
         <div className="flex h-screen bg-gray-100">
-
-
-
-            <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} handleSectionClick={handleSectionClick} selectedSection={selectedSection} />
+            <Sidebar 
+                sidebarOpen={sidebarOpen} 
+                setSidebarOpen={setSidebarOpen} 
+                handleSectionClick={handleSectionClick} 
+                selectedSection={selectedSection} 
+            />
             <PointsTourGuide runTour={runTour} setRunTour={setRunTour} />
             <div className="flex-1 flex flex-col overflow-hidden">
-            <header className="flex justify-between items-center p-4 text-white z-10" style={{ backgroundColor: '#FFDE59' }}>
-      <button onClick={() => setSidebarOpen(!sidebarOpen)} className={`focus:outline-none lg:hidden ${sidebarOpen ? 'hidden' : ''}`}>
-        <Bars3Icon className="h-6 w-6 text-white" />
-      </button>
+                <header className="flex justify-between items-center p-4 text-white z-10" style={{ backgroundColor: '#FFDE59' }}>
+                    <button onClick={() => setSidebarOpen(!sidebarOpen)} className={`focus:outline-none lg:hidden ${sidebarOpen ? 'hidden' : ''}`}>
+                        <Bars3Icon className="h-6 w-6 text-white" />
+                    </button>
 
-      <div className="flex items-center justify-center ml-auto">
-        {/* Show user points if user is logged in */}
-        {user && (
-          <div className="mr-4 text-white user-points">{`Points: ${userPoints}`}</div>
-        )}
+                    <div className="flex items-center justify-center ml-auto">
+                        {user && (
+                            <div className="mr-4 text-white user-points">{`Points: ${userPoints}`}</div>
+                        )}
+                        {user ? (
+                            <>
+                                <button onClick={handleMyAccountClick} className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">My Account</button>
+                                <button onClick={handleLogout} className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black hover:scale-110">Logout</button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Login</Link>
+                                <Link to="/signup" className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Signup</Link>
+                            </>
+                        )}
+                    </div>
 
-        {/* Conditional rendering of authentication buttons */}
-        {user ? (
-          <>
-            <button onClick={handleMyAccountClick} className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">My Account</button>
-            <button onClick={handleLogout} className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black hover:scale-110">Logout</button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Login</Link>
-            <Link to="/signup" className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Signup</Link>
-          </>
-        )}
-      </div>
+                    <div className="hidden lg:flex items-center ml-auto">
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <Dbarlist />
+                        </Suspense>
+                    </div>
 
-      <div className="hidden lg:flex items-center ml-auto">
-        <Dbarlist />
-      </div>
+                    <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden focus:outline-none ml-4" ref={menuIconRef}>
+                        <EllipsisVerticalIcon className="h-6 w-6 text-white" />
+                    </button>
+                </header>
 
-      <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden focus:outline-none ml-4" ref={menuIconRef}>
-        <EllipsisVerticalIcon className="h-6 w-6 text-white" />
-      </button>
-    </header>
-
-                {/* Menu popup */}
-                {menuOpen && <MPopper open={menuOpen} anchorRef={menuIconRef.current} handleClose={() => setMenuOpen(false)} handleListKeyDown={() => { }} />}
+                {menuOpen && (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <MPopper open={menuOpen} anchorRef={menuIconRef.current} handleClose={() => setMenuOpen(false)} handleListKeyDown={() => { }} />
+                    </Suspense>
+                )}
 
                 <main className="flex-1 overflow-y-auto p-2">
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Routes>
-                        <Route path="/" index element={<Intro />} />
-                        <Route path="home" index element={<Intro />} />
-                        <Route path="search" element={<Scontent />} />
-                        <Route path="ebooks" element={<Ebooks />} />
-                     
-                        <Route path="audiobooks" element={<Audiobooks />} />
-                        <Route path="audiobooks/:id" element={<AudiobookDetail />} />
-                        <Route path="chapters/:id" element={<ChapterDetail />} />
-                        <Route path="chapters" element={<Chapters />} />
-                        <Route path="audiochapters" element={<AudioChapters />} />
-                    </Routes>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Routes>
+                            <Route path="/" index element={<Intro />} />
+                            <Route path="home" index element={<Intro />} />
+                            <Route path="search" element={<Scontent />} />
+                            <Route path="ebooks" element={<Ebooks />} />
+                            <Route path="audiobooks" element={<Audiobooks />} />
+                            <Route path="audiobooks/:id" element={<AudiobookDetail />} />
+                            <Route path="chapters/:id" element={<ChapterDetail />} />
+                            <Route path="chapters" element={<Chapters />} />
+                            <Route path="audiochapters" element={<AudioChapters />} />
+                        </Routes>
                     </Suspense>
-                    <Footer />
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Footer />
+                    </Suspense>
                 </main>
-
             </div>
         </div>
     );

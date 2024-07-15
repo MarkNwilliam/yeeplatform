@@ -30,14 +30,14 @@ let analytics;
 isSupported().then((isSupported) => {
   if (isSupported) {
     analytics = getAnalytics(app);
-    console.log("Firebase Analytics is supported and loaded successfully!");
+    //console.log("Firebase Analytics is supported and loaded successfully!");
   } else {
-    console.log("Firebase Analytics is not supported in this environment");
+    //console.log("Firebase Analytics is not supported in this environment");
   }
 });
 
 // Add console.log statement to check Firebase connection
-console.log("Firebase connected successfully");
+// console.log("Firebase connected successfully");
 
 export const auth = getAuth(app);
 

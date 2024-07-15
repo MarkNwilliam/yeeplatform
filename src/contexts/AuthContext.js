@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, createContext, useCallback } from "react";
 import {
   auth,
   onAuthStateChanged,
@@ -22,7 +22,8 @@ export function AuthProvider({ children }) {
     () => JSON.parse(localStorage.getItem('isVerified')) || false
   );
 
-  const checkAuthorStatus = async (currentUser) => {
+  // Memoized functions
+  const checkAuthorStatus = useCallback(async (currentUser) => {
     if (!currentUser || !currentUser.uid) return;
 
     try {
@@ -36,28 +37,9 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error("AuthContext: Error checking author status:", error);
     }
-  };
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-
-      if (currentUser) {
-        setIsVerified(currentUser.emailVerified);
-        localStorage.setItem('isVerified', currentUser.emailVerified.toString());
-        await checkAuthorStatus(currentUser);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    //console.log("AuthContext: isAuthor state changed to", isAuthor);
-  }, [isAuthor]);
-
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       setUser(result.user);
@@ -68,10 +50,9 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error("Error logging in:", error);
     }
-  };
+  }, [checkAuthorStatus]);
 
-
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = useCallback(async () => {
     const provider = new GoogleAuthProvider();
 
     try {
@@ -84,22 +65,53 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
-  };
+  }, [checkAuthorStatus]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await signOut(auth);
+      setUser(null);
       setIsAuthor(false);
     } catch (error) {
       console.error("Error logging out:", error);
     }
+  }, []);
+
+  // Effect to manage authentication state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+
+      if (currentUser) {
+        setIsVerified(currentUser.emailVerified);
+        localStorage.setItem('isVerified', currentUser.emailVerified.toString());
+        await checkAuthorStatus(currentUser);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [checkAuthorStatus]);
+
+  // Effect to log author status changes (optional)
+  // useEffect(() => {
+  //   console.log("AuthContext: isAuthor state changed to", isAuthor);
+  // }, [isAuthor]);
+
+  // Value provided by context
+  const contextValue = {
+    user,
+    isAuthor,
+    loading,
+    isVerified,
+    login,
+    logout,
+    loginWithGoogle
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, isAuthor, loading, isVerified, login, logout, loginWithGoogle }}
-    >
-      {!loading && children}
+    <AuthContext.Provider value={contextValue}>
+      {children}
     </AuthContext.Provider>
   );
 }
