@@ -7,10 +7,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
-const fetchCarouselItems = () =>
-  new Promise((resolve) =>
-    setTimeout(() => {
-      resolve([
+const carouselItems = [
         {
           id: 1,
           src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee3.jpeg',
@@ -35,12 +32,9 @@ const fetchCarouselItems = () =>
           description: '',
           link: '' 
         }
-      ]);
-    }, 5000)
-  );
+      ]
 
 export default function IntroCarousel() {
-  const { data: carouselItems, isLoading } = useQuery('carouselItems', fetchCarouselItems);
 
   const isDesktopOrLaptop = useMediaQuery({
     query: '(min-device-width: 1224px)'
@@ -63,12 +57,8 @@ export default function IntroCarousel() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
     <Carousel style={{ maxHeight, overflow: 'hidden' }}>
-      {isLoading ? (
-        <Carousel.Item interval={3000}>
-          <Skeleton variant="rectangular" width="100%" height={500} />
-        </Carousel.Item>
-      ) : (
-        carouselItems && carouselItems.map((item) => (
+
+        {carouselItems && carouselItems.map((item) => (
           <Carousel.Item key={item.id} interval={1500}>
             {item.link ? (
               <a href={item.link} target="_blank" rel="noopener noreferrer">
@@ -101,7 +91,7 @@ export default function IntroCarousel() {
             </Carousel.Caption>
           </Carousel.Item>
         ))
-      )}
+            }
     </Carousel>
     </Suspense>
   );

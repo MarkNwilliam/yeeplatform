@@ -8,10 +8,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
 export default function Intro() {
-    const fetchCategories = () =>
-        new Promise((resolve) =>
-            setTimeout(() => {
-                resolve([
+    const categories = [
                     {
                         name: "Ebooks and Magazines",
                         pic: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/stories.jpeg',
@@ -40,11 +37,7 @@ export default function Intro() {
                         id: 4,
                         link: "/chapters"
                     }
-                ]);
-            }, 5000)
-        );
-
-    const { data: categories, isLoading } = useQuery('categories', fetchCategories);
+                ]
 
     const memoizedCategories = useMemo(() => categories, [categories]);
 
@@ -65,24 +58,12 @@ export default function Intro() {
             <Suspense fallback={<div>Loading...</div>}>
                 <IntroCarousel />
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-    {isLoading ? (
-      Array.from({ length: 10 }).map((_, index) => (
-        <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
-          <Skeleton variant="rectangular" width="100%" height={144} />
-          <div className="p-4">
-            <Skeleton variant="text" />
-            <Skeleton variant="text" />
-          </div>
-        </div>
-      ))
-    ) : (
+   
               
-                    memoizedCategories && memoizedCategories.map((data) => (
+                  {memoizedCategories && memoizedCategories.map((data) => (
                         <Link to={data.link} key={data.id} className="no-underline">
                             <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
-                                {isLoading ? (
-                                    <Skeleton variant="rectangular" width="100%" height={144} />
-                                ) : (
+                             
                                     <LazyLoadImage
                 
                                         className="w-full h-36 object-cover"
@@ -93,7 +74,7 @@ export default function Intro() {
                                         effect="blur"
                                         
                                     />
-                                )}
+                           
                                 <div className="p-4">
                                     <h5 className="text-lg font-semibold mb-2">{data.name}</h5>
                                     <p className="text-sm text-gray-600">{data.description}</p>
@@ -101,7 +82,7 @@ export default function Intro() {
                             </div>
                         </Link>
                     ))
-                    )}
+                                }
                 </div>
             </Suspense>
         </div>

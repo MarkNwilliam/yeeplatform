@@ -83,7 +83,6 @@ function App() {
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 
-    setTimeout(() => setLoading(true), 2000);
 
     return () => {
       window.removeEventListener('online', updateOnlineStatus);
