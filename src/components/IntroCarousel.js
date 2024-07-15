@@ -54,11 +54,11 @@ export default function IntroCarousel() {
 
   const maxHeight = isDesktopOrLaptop ? '500px' : (isTablet ? '350px' : '200px');
 
-  const handleClick = useCallback((event) => {
+  const handleClick = (event) => {
     if (!event.currentTarget.getAttribute('href')) {
       event.preventDefault();
     }
-  }, []);
+  };
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
