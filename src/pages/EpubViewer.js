@@ -12,9 +12,8 @@ import { auth } from "../firebase";
 import axios from 'axios';
 import Draggable from 'react-draggable';
 import Swal from 'sweetalert2';
-//import { Widget, addResponseMessage, toggleMsgLoader } from 'react-chat-widget';
 import ReactPlayer from 'react-player';
-import { Widget, addResponseMessage, toggleMsgLoader } from '@ryaneewx/react-chat-widget';
+import { addResponseMessage, toggleMsgLoader } from '@ryaneewx/react-chat-widget';
 
 function updateTheme(rendition, theme, font) {
   const themes = rendition.themes
@@ -40,8 +39,7 @@ const EbookViewer = () => {
   const rendition = useRef(undefined);
   const { id } = useParams();
   const [ebookContent, setEbookContent] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+
   const [font, setFont] = useState(localStorage.getItem('font') || 'Georgia, serif');
   const [page, setPage] = useState('')
   const [firstChapterLocation, setFirstChapterLocation] = useState(null);
@@ -54,7 +52,7 @@ const [searchError, setSearchError] = useState(null);
 const [audioUrl, setAudioUrl] = useState(null);
 const renditionRef = useRef(null);
 const tocRef = useRef(null)
-const [visibleText, setVisibleText] = useState('');
+
 const [selections, setSelections] = useState([])
 
   const fonts = [
