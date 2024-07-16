@@ -581,10 +581,7 @@ const recordEbookView = async () => {
                           disableRange: false,
                           disableStream: false,
                           rangeChunkSize: 65536,
-                          disableAutoFetch: false, 
-                          disableFontFace: true,
-        
-                      
+                          disableAutoFetch: true, 
                       })
                     }
   scrollMode={ScrollMode.Page}

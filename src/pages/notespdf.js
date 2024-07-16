@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Viewer, Worker ,ProgressBar, defaultScale, ScrollMode} from '@react-pdf-viewer/core';
+import { Viewer, Worker , ScrollMode} from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {auth} from '../firebase.js';
@@ -8,24 +8,21 @@ import { getDocument } from 'pdfjs-dist';
 import { scrollModePlugin } from '@react-pdf-viewer/scroll-mode';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { FaSun, FaMoon, FaPlay, FaArrowLeft } from 'react-icons/fa';
-import Tesseract from 'tesseract.js';
+import { FaPlay, FaArrowLeft } from 'react-icons/fa';
+
 import Swal from 'sweetalert2';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 import { Helmet } from 'react-helmet';
-import ShareBox from '../components/Sharebox';
-import { analytics, logEvent } from '../firebase.js';
+
 import '../App.css';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
-import PropTypes from 'prop-types';
+
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { PdfJs } from '@react-pdf-viewer/core';
+
 import Alert from '@mui/material/Alert';
 
 function Notespdf() {
