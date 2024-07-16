@@ -9,7 +9,7 @@ import { scrollModePlugin } from '@react-pdf-viewer/scroll-mode';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import {  FaPlay, FaArrowLeft } from 'react-icons/fa';
-
+import { PdfJs } from '@react-pdf-viewer/core';
 import Swal from 'sweetalert2';
 
 import { Helmet } from 'react-helmet';
@@ -571,18 +571,24 @@ const recordEbookView = async () => {
 
 
             {isLoading ? (
-                <div>Loading...</div>
+               <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+               Loading...
+             </div>
             ) : pdfUrl ? (
                 <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
                     <Viewer 
-                    transformGetDocumentParams={(options) =>
-                      Object.assign({}, options, {
-                        url: pdfUrl,
-                          disableRange: false,
-                          disableStream: false,
-                          rangeChunkSize: 65536,
-                          disableAutoFetch: true, 
-                      })
+                    fileUrl={pdfUrl}
+                    transformGetDocumentParams={/**
+                    * @param {PdfJs.GetDocumentParams} options
+                    */
+                    (options) => {
+                      const newOptions = Object.assign({}, options, {
+                        disableRange: false,
+                        disableStream: false,
+                        disableAutoFetch: true, 
+                      });
+                      return newOptions;
+                    }
                     }
   scrollMode={ScrollMode.Page}
 defaultScale={defaultScale}

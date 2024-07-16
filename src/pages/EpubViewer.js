@@ -39,7 +39,8 @@ const EbookViewer = () => {
   const rendition = useRef(undefined);
   const { id } = useParams();
   const [ebookContent, setEbookContent] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [font, setFont] = useState(localStorage.getItem('font') || 'Georgia, serif');
   const [page, setPage] = useState('')
   const [firstChapterLocation, setFirstChapterLocation] = useState(null);
@@ -52,7 +53,7 @@ const [searchError, setSearchError] = useState(null);
 const [audioUrl, setAudioUrl] = useState(null);
 const renditionRef = useRef(null);
 const tocRef = useRef(null)
-
+const [visibleText, setVisibleText] = useState('');
 const [selections, setSelections] = useState([])
 
   const fonts = [
