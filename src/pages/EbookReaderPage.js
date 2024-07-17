@@ -571,7 +571,7 @@ const recordEbookView = async () => {
 
 
             {isLoading ? (
-               <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+               <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
                Loading...
              </div>
             ) : pdfUrl ? (
@@ -585,7 +585,7 @@ const recordEbookView = async () => {
                       const newOptions = Object.assign({}, options, {
                         disableRange: false,
                         disableStream: false,
-                        disableAutoFetch: true, 
+                        disableAutoFetch: false, 
                       });
                       return newOptions;
                     }
