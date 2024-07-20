@@ -132,6 +132,7 @@ function EbookReaderPage() {
 
                 // Set the PDF URL
                 setPdfUrl(data?.ebookUrl);
+                console.log(data?.ebookUrl);
             } catch (error) {
                 console.error('Error fetching eBook content:', error.message);
             } finally {
@@ -584,8 +585,8 @@ const recordEbookView = async () => {
                     (options) => {
                       const newOptions = Object.assign({}, options, {
                         disableRange: false,
-                        disableStream: false,
-                        disableAutoFetch: false, 
+                        disableStream: true,
+                        disableAutoFetch: true, 
                       });
                       return newOptions;
                     }
