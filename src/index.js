@@ -1,22 +1,25 @@
 // index.js
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+
 import reportWebVitals from './reportWebVitals';
-import { AuthProvider } from './contexts/AuthContext';
+
 import { pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-
+const App = lazy(() => import('./App'));
+const AuthProvider = lazy(() => import('./contexts/AuthContext').then(module => ({ default: module.AuthProvider })));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </Suspense>
   </React.StrictMode>
 );
 

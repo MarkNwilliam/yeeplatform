@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   signOut
 } from "../firebase";
+import { debounce } from 'lodash'; 
 
 export const AuthContext = createContext();
 
@@ -23,7 +24,7 @@ export function AuthProvider({ children }) {
   );
 
   // Memoized functions
-  const checkAuthorStatus = useCallback(async (currentUser) => {
+  const checkAuthorStatus = useCallback(debounce(async (currentUser) => {
     if (!currentUser || !currentUser.uid) return;
 
     try {
@@ -37,7 +38,7 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error("AuthContext: Error checking author status:", error);
     }
-  }, []);
+  }, 15000),[]);
 
   const login = useCallback(async (email, password) => {
     try {

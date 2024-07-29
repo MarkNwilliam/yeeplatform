@@ -3,6 +3,7 @@ import './App.css';
 import OfflineStatus from './components/OfflineStatus';
 import { Helmet } from 'react-helmet';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { AuthProvider } from './contexts/AuthContext';
 
 const ProtectedRouteWrapper = lazy(() => import('./contexts/ProtectedRoute'));
 const Home = lazy(() => import('./pages/home'));
