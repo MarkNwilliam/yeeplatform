@@ -33,10 +33,10 @@ export function AuthProvider({ children }) {
           const data = await response.json();
           setIsAuthor(data.isAuthor);
       } else {
-          console.error("AuthContext: Failed to check author status. Response status:", response.status);
+         //console.error("AuthContext: Failed to check author status. Response status:", response.status);
       }
     } catch (error) {
-      console.error("AuthContext: Error checking author status:", error);
+      //console.error("AuthContext: Error checking author status:", error);
     }
   }, 15000),[]);
 
@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
       setIsVerified(verified);
       localStorage.setItem('isVerified', verified.toString());
     } catch (error) {
-      console.error("Error logging in:", error);
+      //console.error("Error logging in:", error);
     }
   }, []);
 
@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
       setIsVerified(verified);
       localStorage.setItem('isVerified', verified.toString());
     } catch (error) {
-      console.error("Error signing in with Google:", error);
+      //console.error("Error signing in with Google:", error);
     }
   }, []);
 
@@ -72,7 +72,7 @@ export function AuthProvider({ children }) {
       setUser(null);
       setIsAuthor(false);
     } catch (error) {
-      console.error("Error logging out:", error);
+      //console.error("Error logging out:", error);
     }
   }, []);
 

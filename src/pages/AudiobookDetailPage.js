@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Rating from '@mui/material/Rating'; // Ensure you have @mui/material installed
 import ContentCard from '../subcomponents/ContentCard';
 import { analytics,logEvent } from '../firebase.js'
 import { Helmet } from 'react-helmet';
 import LinearProgress from '@mui/material/LinearProgress';
+import Paper from '@mui/material/Paper';
+import Pagination from '@mui/material/Pagination';
+import Addreview from '../components/Addreview';
+import { useAuth } from '../contexts/AuthContext';
+import UserSignup from '../components/Usersignup.js';
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Button from '@mui/material/Button';
     
     const AudiobookDetailPage = () => {
       const { id } = useParams();
@@ -13,19 +22,56 @@ import LinearProgress from '@mui/material/LinearProgress';
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
       const [relatedContent, setRelatedContent] = useState([]);
+      const [numReviewsToShow, setNumReviewsToShow] = useState(2);
+      const [reviewsPage, setReviewsPage] = useState(1);
+      const [relatedContentPage, setRelatedContentPage] = useState(1);
+      const [reviews, setReviews] = useState([]);
+      const [open, setOpen] = useState(false);
+      const [signupOpen, setSignupOpen] = useState(false);
+      const { user } = useAuth();
+      const [opensnack, setOpensnack] = React.useState(false);
+      const [snackbarMessage, setSnackbarMessage] = useState('');
+
 
       const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
-    
+
+      const fetchReviews = useCallback(async () => {
+        try {
+          //console.log(id)
+          const reviewsResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/reviews/audiobook/${id}/reviews?page=${reviewsPage}&limit=2`);
+          const reviewsData = await reviewsResponse.json();
+          setReviews(reviewsData);
+          //console.log(reviewsData);
+        } catch (err) {
+          setError(err.message);
+        }
+      }, [id, reviewsPage]);
+
+      const fetchRelatedContent = useCallback(async (categories) => {
+        try {
+          const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/getallaudiobooks?page=3&limit=10`);
+         
+          const relatedContentData = await relatedResponse.json();
+         //console.log(relatedContentData.data);
+          setRelatedContent(relatedContentData.data.filter(book => book._id !== id));
+        } catch (err) {
+          setError(err.message);
+        }
+      }, [id, relatedContentPage]);
+
+  
       useEffect(() => {
+
         const fetchData = async () => {
             try {
-                const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`);
-                if (!response.ok) {
-                    throw new Error('Ebook not found');
-                }
-                const data = await response.json();
-                console.log(data);
-                setEbook(data);
+                const ebookResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/getAudiobook/${id}`);
+                const [audiobookData] = await Promise.all([ebookResponse]).then(responses =>
+                  Promise.all(responses.map(res => res.json()))
+                );
+               // console.log(audiobookData);
+                setEbook(audiobookData);
+                fetchReviews();
+                fetchRelatedContent(audiobookData.categories);
                 logEvent('audiobook_detail_fetched', { audiobookId: id });
             } catch (err) {
                 setError(err.message);
@@ -33,45 +79,27 @@ import LinearProgress from '@mui/material/LinearProgress';
                 setLoading(false);
             }
         };
+
+        if (snackbarMessage) {
+          setOpensnack(true);
+        }
     
         fetchData();
-    }, [id]);
+    }, [id, fetchReviews, fetchRelatedContent,snackbarMessage]);
     
-    useEffect(() => {
-        const fetchRelatedContent = async () => {
-            if (ebook) {
-                try {
-                    const params = [];
-                    if (ebook.category) {
-                        params.push(`category=${encodeURIComponent(ebook.category)}`);
-                    }
-                    if (ebook.genres && ebook.genres.length > 0) {
-                        params.push(`genre=${encodeURIComponent(ebook.genres.join(','))}`);
-                    }
-    
-                    if (params.length > 0) {
-                        const queryParams = params.join('&');
-                        const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/relatedContent?currentItemId=${id}&${queryParams}`);
-                        if (!relatedResponse.ok) {
-                            throw new Error('Failed to fetch related content');
-                        }
-                        const relatedData = await relatedResponse.json();
-                        setRelatedContent(relatedData);
-                        logEvent(analytics, `${ebook.title}_detail_page_visited`);
-                    }
-                } catch (err) {
-                    console.error('Error fetching related content:', err);
-                }
-            }
-        };
-    
-        fetchRelatedContent();
-    }, [id, ebook]);
-    
+ 
     
       const handleBack = () => {
         navigate('/audiobooks');
         logEvent(analytics,'audiobook_detail_back_clicked', { audiobookId: id });
+      };
+
+      const handleReviewsPageChange = (event, value) => {
+        setReviewsPage(value);
+      };
+
+      const handleRelatedContentPageChange = (event, value) => {
+        setRelatedContentPage(value);
       };
     
       const handleReadBook = () => {
@@ -85,13 +113,58 @@ import LinearProgress from '@mui/material/LinearProgress';
       }
     
       if (error) {
-        console.log(error.message);
+       // console.log(error.message);
       }
+
+      const handleClickOpen = () => {
+        if (user) {
+          setOpen(true);
+        } else {
+          
+          setSignupOpen(true);
+          
+        }
+      };
     
+      const handleClose = (value) => {
+        setOpen(false);
+        setOpensnack(true);
+        fetchReviews();
+      };
+      
+      const handleCloseSignup = () => {
+        setSignupOpen(false); // Close the signup dialog
+      };
 
 
-      console.log('ebook:', ebook);
-console.log('ebook.categories:', ebook.categories);
+      //console.log('ebook:', ebook);
+      //console.log('ebook.categories:', ebook.categories);
+
+      const handleSnackClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpensnack(false);
+      };
+    
+      const action = (
+        <React.Fragment>
+          <Button color="secondary" size="small" onClick={handleClose}>
+            CLOSE
+          </Button>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleSnackClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+      );
+
+  
 
       return (
         <div className="container mx-auto p-4">
@@ -127,7 +200,7 @@ console.log('ebook.categories:', ebook.categories);
             <div className="w-full lg:w-3/4 lg:ml-6">
               <h1 className="text-3xl font-bold mb-2 text-center lg:text-left">{ebook.title || 'N/A'}</h1>
               <p className="text-sm text-gray-600 text-center lg:text-left mb-4">Published on: {new Date(ebook.publishedDate || 'N/A').toLocaleDateString()}</p>
-              <Rating name="read-only" value={ebook.averageRating || 0} readOnly /> {/* Replace with actual rating */}
+              <Rating name="read-only" value={ebook.ratings || 0} readOnly /> {/* Replace with actual rating */}
               <div className="mt-4">
                 <h2 className="text-xl font-semibold mb-2">Description</h2>
                 <p className="text-gray-700">{ebook.description || 'N/A'}</p>
@@ -159,19 +232,32 @@ console.log('ebook.categories:', ebook.categories);
     
               {/* Review section */}
           
-              <div className="mt-6">
-      <h3 className="text-lg font-semibold">Reviews</h3>
-      {ebook.reviews.length > 0 ? (
-        ebook.reviews.map((review, index) => (
-          <div key={index} className="mt-4 p-4 border border-gray-200 rounded-lg">
-            <p className="text-gray-800">{review.text}</p>
-            {/* Add more details about the review here */}
+              <div className="mt-6 relative p-4">
+            <h3 className="text-lg font-semibold">Reviews</h3>
+            <button className="text-blue-500 px-4 py-2 rounded absolute top-0 right-0" onClick={handleClickOpen} >Add Review</button>
+            {user && <Addreview open={open} onClose={handleClose} type='audiobook' userEmail = {user.email} _id={id} setSnackbarMessage={setSnackbarMessage} />}
+<UserSignup open={signupOpen} onClose={handleCloseSignup} />
+            {reviews.reviews && reviews.reviews.length > 0 ? (
+              reviews.reviews.slice(0, numReviewsToShow).map((review, index) => (
+                <Paper elevation={3} key={index} className="mt-4 p-4 border border-gray-200 rounded-lg relative">
+                  <Rating name="read-only" value={review.rating || 0} readOnly />
+                  <p className="text-gray-800">{review.comment}</p>
+                  <p className="text-blue-500 absolute top-2 right-2 text-sm">{new Date(review.createdAt).toLocaleDateString()}</p>
+                </Paper>
+              ))
+            ) : (
+              <p>No reviews yet.</p>
+            )}
+             <div className="flex justify-center p-4">
+            <Pagination
+              count={reviews.totalPages}
+              page={reviewsPage}
+              onChange={handleReviewsPageChange}
+              variant="outlined"
+              color="primary"
+            />
+            </div>
           </div>
-        ))
-      ) : (
-        <p>No reviews yet.</p>
-      )}
-    </div>
     
             </div>
           </div>
@@ -193,10 +279,26 @@ console.log('ebook.categories:', ebook.categories);
                 <p>No related content found.</p>
               )}
             </div>
+            <div className="flex justify-center p-4">
+            <Pagination
+      count={10}
+      page={relatedContentPage}
+      onChange={handleRelatedContentPageChange}
+      variant="outlined"
+      color="primary"
+    />
+  </div>
           </div>
+          <Snackbar
+        open={opensnack}
+        autoHideDuration={2000}
+        onClose={handleSnackClose}
+        message={snackbarMessage}
+        action={action}
+      />
         </div>
       );
     };
     
     export default AudiobookDetailPage;
-    
+                 

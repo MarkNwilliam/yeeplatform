@@ -145,7 +145,7 @@ Array.from({ length: 10 }).map((_, index) => (
               coverImage={item.coverImage || item.thumbnailUrl || item.coverImage || item.coverimage || item.cover_url}
               itemType="ebook"
               itemId={item._id}
-              rating={item.rating}
+              rating={item.ratings}
             />
           ))
         ) : (

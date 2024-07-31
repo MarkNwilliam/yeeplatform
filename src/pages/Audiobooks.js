@@ -130,10 +130,10 @@ export default function Audiobooks() {
             <ContentCard
               key={index}
               title={audiobook.title}
-              coverImage={audiobook.thumbnailUrl || audiobook.coverImage || audiobook.coverimage}
+              coverImage={ audiobook.thumbnailUrl || audiobook.coverImage || audiobook.coverimage}
               itemType="audiobook"
               itemId={audiobook._id}
-              rating={audiobook.rating}
+              rating={audiobook.ratings}
             />
           ))
         ): (

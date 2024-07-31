@@ -57,7 +57,7 @@ export default function IntroCarousel() {
     <Carousel style={{ maxHeight, overflow: 'hidden' }}>
 
         {carouselItems && carouselItems.map((item) => (
-          <Carousel.Item key={item.id} interval={1500}>
+          <Carousel.Item key={item.id} interval={5000}>
             {item.link ? (
               <a href={item.link} target="_blank" rel="noopener noreferrer">
                 <LazyLoadImage

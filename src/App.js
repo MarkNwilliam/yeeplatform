@@ -3,7 +3,6 @@ import './App.css';
 import OfflineStatus from './components/OfflineStatus';
 import { Helmet } from 'react-helmet';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { AuthProvider } from './contexts/AuthContext';
 
 const ProtectedRouteWrapper = lazy(() => import('./contexts/ProtectedRoute'));
 const Home = lazy(() => import('./pages/home'));
@@ -109,14 +108,14 @@ function App() {
         </Route>
 
         <Route path="ebooks/:id" element={<EbookDetailPage />} />
-        <Route path="ebooks/:id/read" element={<ProtectedRouteWrapper> <EbookReaderPage /> </ProtectedRouteWrapper>} />
-        <Route path="/ebooks/epub/:id" element={<ProtectedRouteWrapper> <EbookViewer /> </ProtectedRouteWrapper>} />
-        <Route path="audiochapterlisten/:id/listen" element={<ProtectedRouteWrapper> <AudioChapterListen /> </ProtectedRouteWrapper>} />
+        <Route path="ebooks/:id/read" element={ <EbookReaderPage /> } />
+        <Route path="/ebooks/epub/:id" element={<EbookViewer /> } />
+        <Route path="audiochapterlisten/:id/listen" element={ <AudioChapterListen />} />
 
        
-        <Route path="/audiobooklisten/:id/listen" element={<ProtectedRouteWrapper> <AudiobookListen /> </ProtectedRouteWrapper>} />
+        <Route path="/audiobooklisten/:id/listen" element={ <AudiobookListen /> } />
 
-        <Route path="chapters/:id/read" element={<ProtectedRouteWrapper> <Chapterreader /> </ProtectedRouteWrapper>} />
+        <Route path="chapters/:id/read" element={ <Chapterreader /> } />
 
 
         <Route path="/notespdf/:id" element={<Notespdf />} />

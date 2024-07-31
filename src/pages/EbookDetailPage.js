@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Rating from '@mui/material/Rating'; 
 import ContentCard from '../subcomponents/ContentCard';
-import {analytics, logEvent } from '../firebase.js'
+import { analytics, logEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
 import LinearProgress from '@mui/material/LinearProgress';
+import Paper from '@mui/material/Paper';
+import Pagination from '@mui/material/Pagination';
+import Addreview from '../components/Addreview';
+import { useAuth } from '../contexts/AuthContext';
+import UserSignup from '../components/Usersignup.js';
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Button from '@mui/material/Button';
+    
 
 const EbookDetailPage = () => {
   const { id } = useParams();
@@ -12,64 +22,77 @@ const EbookDetailPage = () => {
   const [ebook, setEbook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [relatedContent, setRelatedContent] = useState([]);
+  const [numReviewsToShow, setNumReviewsToShow] = useState(2);
+  const [reviewsPage, setReviewsPage] = useState(1);
+  const [relatedContentPage, setRelatedContentPage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [signupOpen, setSignupOpen] = useState(false);
+  const { user } = useAuth();
+  const [opensnack, setOpensnack] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const defaultCoverImage = "https://yeeplatformstorage.blob.core.windows.net/assets/images/yeeplatform_book_cover.png";
 
-  function getFileType(url) {
-    const extension = url.split('.').pop();
-    return extension;
-  }
+  const getFileType = useCallback((url) => {
+    return url.split('.').pop();
+  }, []);
+
+  const fetchReviews = useCallback(async () => {
+    try {
+      const reviewsResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/reviews/ebook/${id}/reviews?page=${reviewsPage}&limit=2`);
+      const reviewsData = await reviewsResponse.json();
+      setReviews(reviewsData);
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [id, reviewsPage]);
+
+  const fetchRelatedContent = useCallback(async (categories) => {
+    try {
+      const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/category/ebook/${categories[0]}?page=${relatedContentPage}&limit=10`);
+      const relatedContentData = await relatedResponse.json();
+      setRelatedContent(relatedContentData.filter(book => book._id !== id));
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [id, relatedContentPage]);
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getEbook/${id}`);
-        if (!response.ok) {
-            throw new Error('Ebook not found');
-        }
-        const data = await response.json();
-        setEbook(data);
-        //console.log(data)
+        const ebookResponse = fetch(`https://yeeplatformbackend.azurewebsites.net/getEbook/${id}`);
+        const [ebookData] = await Promise.all([ebookResponse]).then(responses =>
+          Promise.all(responses.map(res => res.json()))
+        );
+
+        setEbook(ebookData);
+        fetchReviews();
+        fetchRelatedContent(ebookData.categories);
+
+        logEvent(analytics, `${ebookData.title} visited`);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
-   // Fetch related content
-   if (ebook) {
-    try {
-      const category = encodeURIComponent(ebook.category);
-      const genre = encodeURIComponent(ebook.genres.join(','));
-      const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/relatedContent?currentItemId=${id}&category=${category}&genre=${genre}`);
-      if (!relatedResponse.ok) {
-        throw new Error('Failed to fetch related content');
-      }
-      const relatedData = await relatedResponse.json();
-      setRelatedContent(relatedData);
-      logEvent(analytics, ebook.title+' visited');
-    } catch (err) {
-      console.error('Error fetching related content:', err);
+    };
+
+    if (snackbarMessage) {
+      setOpensnack(true);
     }
-  }
-};
 
-fetchData();
-}, [id]);
+    fetchData();
+  }, [id, fetchReviews, analytics, fetchRelatedContent]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     navigate('/');
-  };
+  }, [navigate]);
 
-  const handleReadBook = () => {
-
-    const fileType = getFileType(ebook.ebookUrl || ebook.ebookurl || ebook.ebook_url ||'');
-//console.log(fileType); // Should return 'pdf' or 'epub' or 'mobi' or 'azw3' or 'docx' or 'txt' or 'rtf' or 'fb2' or 'djvu' or 'azw' or 'lit' or 'prc' or 'pdb' or 'oxps' or 'xps' or 'cbz' or 'cbr' or 'cb7' or 'cbt' or 'cba' or 'chm' or 'html' or 'htm' or 'xhtml' or 'mht' or 'mhtml' or 'webarchive' or 'webarchivexml' or 'webarchivezip' or 'webarchivexmlzip' or 'opf' or 'ibooks' or 'ibook' or 'azw1' or 'azw4' or 'azw8' or 'azw6' or 'azw7' or 'azw8' or 'azw9' or 'azw10' or 'azw11' or 'azw12' or 'azw13' or 'azw14' or 'azw15' or 'azw16' or 'azw17' or 'azw18' or 'azw19' or 'azw20' or 'azw21' or 'azw22' or 'azw23' or 'azw24' or 'azw25' or 'azw26' or 'azw27' or 'azw28' or 'azw29' or 'azw30' or 'azw31' or 'azw32' or 'azw33' or 'azw34' or 'azw35' or 'azw36' or 'azw37' or 'azw38' or 'azw39' or 'azw40' or 'azw41' or 'azw42' or 'azw43' or 'azw44' or 'azw45' or 'azw46' or 'azw47' or 'azw48' or 'azw49' or 'azw50' or 'azw51' or 'azw52' or 'azw53' or 'azw54' or 'azw55' or 'azw56' or 'azw57' or
-
-
-   
-
+  const handleReadBook = useCallback(() => {
+    if (!ebook) return;
+    const fileType = getFileType(ebook.ebookUrl || ebook.ebookurl || ebook.ebook_url || '');
     if (fileType === 'pdf') {
       logEvent(analytics, 'pdf opened');
       navigate(`/ebooks/${id}/read`);
@@ -77,119 +100,197 @@ fetchData();
       logEvent(analytics, 'epub opened');
       navigate(`/ebooks/epub/${id}`);
     }
+  }, [ebook, id, getFileType, logEvent, navigate]);
+
+  const handleReviewsPageChange = (event, value) => {
+    setReviewsPage(value);
+  };
+
+  const handleRelatedContentPageChange = (event, value) => {
+    setRelatedContentPage(value);
+  };
+
+  const handleClickOpen = () => {
+    if (user) {
+      setOpen(true);
+    } else {
+      
+      setSignupOpen(true);
+      
+    }
+  };
+
+  const handleClose = async (value) => {
+    setOpen(false);
+    setOpensnack(true);
+    
+    try {
+      await fetchReviews();
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+    }
+  };
+
+
+  const handleCloseSignup = () => {
+    setSignupOpen(false); // Close the signup dialog
   };
   
+  const handleSnackClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpensnack(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <Button color="secondary" size="small" onClick={handleClose}>
+        CLOSE
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleSnackClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
+  const helmetContent = useMemo(() => {
+    if (!ebook) return null;
+    return (
+      <Helmet>
+        <title>{ebook.title || "Ebook Details - Yee FM"}</title>
+        <meta name="description" content={ebook.description} />
+        <link rel="icon" href={ebook.coverImage_optimized_url || ebook.coverImage || ebook.coverimage || ebook.cover_url || defaultCoverImage} />
+        <meta property="og:image" content={ebook.coverImage_optimized_url || ebook.coverImage || ebook.coverimage || defaultCoverImage} />
+      </Helmet>
+    );
+  }, [ebook, defaultCoverImage]);
 
   if (loading) {
     return <LinearProgress className="text-yellow-500 animate-pulse flex justify-center items-center h-screen" color="secondary" />;
   }
 
   if (error) {
-    //return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
-    //console.log(error.message);
+    return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
   }
-
-
-  
 
   return (
     <div className="container mx-auto p-4">
-
-{ebook && (
-        <Helmet>
-          <title>{ebook.title || "Ebook Details - Yee FM"}</title>
-          <meta name="description" content={ebook.description} />
-          <link rel="icon" href={ebook.coverImage || ebook.coverimage  || ebook.cover_url|| "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
-          <meta property="og:image" content={ebook.coverImage || ebook.coverimage || "https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp"} />
-        </Helmet>
-      )}
-
+      {helmetContent}
       <button onClick={handleBack} className="mb-4 text-blue-600 hover:text-blue-800">
         &larr; Back
       </button>
       <div className="flex flex-col lg:flex-row items-center lg:items-start bg-white rounded-lg shadow">
         <div className="w-full lg:w-1/4 p-4">
           <img
-            src={ebook.coverImage || ebook.coverimage || ebook.cover_url|| defaultCoverImage }
+            src={ebook.coverImage_optimized_url || ebook.coverImage || ebook.coverimage || ebook.cover_url || defaultCoverImage}
             alt={ebook.title}
             onClick={handleReadBook} 
             className="rounded-lg shadow-xl mx-auto"
             style={{ maxWidth: '100%', height: 'auto' }}
           />
         </div>
-        <div className="w-full lg:w-3/4 lg:ml-6">
-          <h1 className="text-3xl font-bold mb-2 text-center lg:text-left">{ebook.title}</h1>
+        <div className="w-full lg:w-3/4 lg:ml-6 p-4">
+          <h1 className="text-3xl font-bold mb-2 text-center lg:text-left ">{ebook.title}</h1>
           <p className="text-sm text-gray-600 text-center lg:text-left mb-4">Published on: {new Date(ebook.publishedDate).toLocaleDateString()}</p>
-          <Rating name="read-only" value={ebook.averageRating || 0} readOnly /> {/* Replace with actual rating */}
+          <Rating name="read-only" value={ebook.ratings || 0} readOnly />
           <div className="mt-4">
             <h2 className="text-xl font-semibold mb-2">Description</h2>
             <p className="text-gray-700">{ebook.description}</p>
           </div>
           <div className="mt-6">
-  <h3 className="text-lg font-semibold">Details</h3>
-  <div className="space-y-2">
-  <div className="flex items-center text-center">
-  <span className="font-semibold mr-2">Author:</span>
-  <span> {Array.isArray(ebook.authors) ? ( ebook.authors.join(', ')): ebook.authors}</span>
-</div>
-    <div className="flex items-center text-center">
-      <span className="font-semibold mr-2">ISBN:</span>
-      <span>{ebook.ISBN || 'N/A'}</span>
-    </div>
-    <div className="flex items-center text-center">
-      <span className="font-semibold mr-2">Categories:</span>
-      <span>{ebook.categories.join(', ')}</span>
-    </div>
-  </div>
-</div>
-<button 
-        onClick={handleReadBook} 
-        className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Read Book
-      </button>  
-
-          {/* Review section */}
-      
-          <div className="mt-6">
-  <h3 className="text-lg font-semibold">Reviews</h3>
-  {ebook.reviews.length > 0 ? (
-    ebook.reviews.map((review, index) => (
-      <div key={index} className="mt-4 p-4 border border-gray-200 rounded-lg">
-        <p className="text-gray-800">{review.text}</p>
-        {/* Add more details about the review here */}
-      </div>
-    ))
-  ) : (
-    <p>No reviews yet.</p>
-  )}
-</div>
-
+            <h3 className="text-lg font-semibold">Details</h3>
+            <div className="space-y-2">
+              <div className="flex items-center text-center">
+                <span className="font-semibold mr-2">Author:</span>
+                <span>{Array.isArray(ebook.authors) ? ebook.authors.join(', ') : ebook.authors}</span>
+              </div>
+              <div className="flex items-center text-center">
+                <span className="font-semibold mr-2">ISBN:</span>
+                <span>{ebook.ISBN || 'N/A'}</span>
+              </div>
+              <div className="flex items-center text-center">
+                <span className="font-semibold mr-2">Categories:</span>
+                <span>{ebook.categories.join(', ')}</span>
+              </div>
+            </div>
+          </div>
+          <button 
+            onClick={handleReadBook} 
+            className="mb-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Read Book
+          </button>  
+          <div className="mt-6 relative p-4">
+            <h3 className="text-lg font-semibold">Reviews</h3>
+            <button className="text-blue-500 px-4 py-2 rounded absolute top-0 right-0" onClick={handleClickOpen}>Add Review</button>
+            {user && <Addreview open={open} onClose={handleClose} type='ebook' userEmail = {user.email} _id={id} setSnackbarMessage={setSnackbarMessage} />}
+<UserSignup open={signupOpen} onClose={handleCloseSignup} />
+            {reviews.reviews && reviews.reviews.length > 0 ? (
+              reviews.reviews.slice(0, numReviewsToShow).map((review, index) => (
+                <Paper elevation={3} key={index} className="mt-4 p-4 border border-gray-200 rounded-lg relative">
+                  <Rating name="read-only" value={review.rating || 0} readOnly />
+                  <p className="text-gray-800">{review.comment}</p>
+                  <p className="text-blue-500 absolute top-2 right-2 text-sm">{new Date(review.createdAt).toLocaleDateString()}</p>
+                </Paper>
+              ))
+            ) : (
+              <p>No reviews yet.</p>
+            )}
+             <div className="flex justify-center p-4">
+            <Pagination
+              count={reviews.totalPages}
+              page={reviewsPage}
+              onChange={handleReviewsPageChange}
+              variant="outlined"
+              color="primary"
+            />
+            </div>
+          </div>
         </div>
       </div>
-
-   {/* Related Books Section */}
-   <div className="mt-8">
+      <div className="mt-8">
         <h3 className="text-lg font-semibold">Related Books</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {relatedContent.length > 0 ? relatedContent.map((content, index) => (
             <ContentCard
               key={index}
               title={content.title}
-              coverImage={content.coverImage || content.coverimage || content.cover_url || defaultCoverImage }
-              itemType={content.type} // Make sure 'type' is a valid prop as per your data
-              itemId={content._id}
-              rating={content.rating}
+              coverImage={content.coverImage_optimized_url || content.coverImage || content.coverimage || defaultCoverImage}
+              author={Array.isArray(content.authors) ? content.authors.join(', ') : content.authors}
+              publishedDate={content.publishedDate}
+              description={content.description}
+              onClick={() => navigate(`/ebook/${content._id}`)}
             />
           )) : (
             <p>No related books found.</p>
           )}
         </div>
+        <div className="flex justify-center p-4">
+    <Pagination
+      count={10}
+      page={relatedContentPage}
+      onChange={handleRelatedContentPageChange}
+      variant="outlined"
+      color="primary"
+    />
+  </div>
       </div>
+      <Snackbar
+        open={opensnack}
+        autoHideDuration={2000}
+        onClose={handleSnackClose}
+        message={snackbarMessage}
+        action={action}
+      />
     </div>
   );
 };
 
 export default EbookDetailPage;
-
-

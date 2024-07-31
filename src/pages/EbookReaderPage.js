@@ -506,6 +506,7 @@ const recordEbookView = async () => {
           <link
             rel="icon"
             href={
+              ebookContent?.coverImage_optimized_url ||
               ebookContent?.coverImage ||
               ebookContent?.coverimage ||
               'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/Y.webp'
