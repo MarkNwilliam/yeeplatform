@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics,  isSupported, logEvent } from "firebase/analytics";
+import { getAnalytics, isSupported, logEvent } from "firebase/analytics";
 import {
   getAuth,
   onAuthStateChanged,
@@ -9,8 +9,6 @@ import {
   sendEmailVerification,
   signOut,
 } from "firebase/auth";
-
-
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXS56tIro9cd-Sd4ySn5AwLw3T6cnMHr0",
@@ -27,20 +25,20 @@ const app = initializeApp(firebaseConfig);
 
 let analytics;
 
-isSupported().then((isSupported) => {
-  if (isSupported) {
+// Lazy load Firebase Analytics
+const initializeAnalytics = async () => {
+  const supported = await isSupported();
+  if (supported) {
     analytics = getAnalytics(app);
-    //console.log("Firebase Analytics is supported and loaded successfully!");
+    console.log("Firebase Analytics initialized.");
   } else {
-    //console.log("Firebase Analytics is not supported in this environment");
+    console.warn("Firebase Analytics is not supported in this environment.");
   }
-});
+};
 
-// Add console.log statement to check Firebase connection
-// console.log("Firebase connected successfully");
+initializeAnalytics();
 
 export const auth = getAuth(app);
-
 
 // Export a function to log events after Firebase Analytics is initialized
 export const logFirebaseEvent = (eventName, eventParams) => {
@@ -50,6 +48,7 @@ export const logFirebaseEvent = (eventName, eventParams) => {
     console.warn("Firebase Analytics is not initialized yet.");
   }
 };
+
 export {
   onAuthStateChanged,
   signInWithEmailAndPassword,
