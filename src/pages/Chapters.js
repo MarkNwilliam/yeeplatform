@@ -34,11 +34,11 @@ export default function Chapters() {
       if (!response.ok) throw new Error(`Data fetching failed with status: ${response.status}`);
   
       const data = await response.json();
-      //console.log("Response data:", data); // Log the structure of the data
+      ////console.log("Response data:", data); // Log the structure of the data
   
       if (data && data.data) {
         if (Array.isArray(data.data)) {
-          //console.log(data)
+          ////console.log(data)
           setItems(data.data);
           
           setTotalPages(Math.ceil(data.totalItems / 15));
@@ -53,7 +53,7 @@ export default function Chapters() {
       
       
     } catch (error) {
-      console.error("Error fetching data:", error);
+      //console.error("Error fetching data:", error);
     }
   
     setIsLoading(false);
@@ -70,7 +70,7 @@ export default function Chapters() {
   };
 
   const handleSearchClick = () => {
-    //console.log('Search Term:', searchTerm); 
+    ////console.log('Search Term:', searchTerm); 
     fetchData();
   };
 

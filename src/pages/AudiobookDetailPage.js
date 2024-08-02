@@ -37,11 +37,11 @@ import Button from '@mui/material/Button';
 
       const fetchReviews = useCallback(async () => {
         try {
-          //console.log(id)
+          ////console.log(id)
           const reviewsResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/reviews/audiobook/${id}/reviews?page=${reviewsPage}&limit=2`);
           const reviewsData = await reviewsResponse.json();
           setReviews(reviewsData);
-          //console.log(reviewsData);
+          ////console.log(reviewsData);
         } catch (err) {
           setError(err.message);
         }
@@ -52,7 +52,7 @@ import Button from '@mui/material/Button';
           const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/getallaudiobooks?page=3&limit=10`);
          
           const relatedContentData = await relatedResponse.json();
-         //console.log(relatedContentData.data);
+         ////console.log(relatedContentData.data);
           setRelatedContent(relatedContentData.data.filter(book => book._id !== id));
         } catch (err) {
           setError(err.message);
@@ -68,7 +68,7 @@ import Button from '@mui/material/Button';
                 const [audiobookData] = await Promise.all([ebookResponse]).then(responses =>
                   Promise.all(responses.map(res => res.json()))
                 );
-               // console.log(audiobookData);
+               // //console.log(audiobookData);
                 setEbook(audiobookData);
                 fetchReviews();
                 fetchRelatedContent(audiobookData.categories);
@@ -113,7 +113,7 @@ import Button from '@mui/material/Button';
       }
     
       if (error) {
-       // console.log(error.message);
+       // //console.log(error.message);
       }
 
       const handleClickOpen = () => {
@@ -131,14 +131,14 @@ import Button from '@mui/material/Button';
         setOpensnack(true);
         fetchReviews();
       };
-      
+
       const handleCloseSignup = () => {
         setSignupOpen(false); // Close the signup dialog
       };
 
 
-      //console.log('ebook:', ebook);
-      //console.log('ebook.categories:', ebook.categories);
+      ////console.log('ebook:', ebook);
+      ////console.log('ebook.categories:', ebook.categories);
 
       const handleSnackClose = (event, reason) => {
         if (reason === 'clickaway') {

@@ -34,7 +34,7 @@ const Welcome = () => {
 
     
     if (user && user.emailVerified && action_mode === 'verifyEmail') {
-      //console.log('User is already verified');
+      ////console.log('User is already verified');
       setIsVerified(true);
       localStorage.setItem('isVerified', true);
       navigate('/');
@@ -71,7 +71,7 @@ const Welcome = () => {
             })
               .then(response => response.json())
               .catch(err => {
-                console.error("Error updating email verification status in MongoDB:", err);
+                //console.error("Error updating email verification status in MongoDB:", err);
               });
           })
           .catch(async (error) => {
@@ -184,7 +184,7 @@ const Welcome = () => {
         navigate('/home');
       }, 3000); 
     } catch (error) {
-      console.error('Error updating password:', error);
+      //console.error('Error updating password:', error);
       setError(true);
       setErrorMessage('An error occurred while resetting the password. Please try again.');
   
@@ -232,7 +232,7 @@ const Welcome = () => {
     }
 
     if (action_mode === 'resetPassword') {
-      //console.log('Rendering resetPassword UI');
+      ////console.log('Rendering resetPassword UI');
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
           <div className="w-full max-w-lg mx-auto mb-4">

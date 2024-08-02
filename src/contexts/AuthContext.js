@@ -1,12 +1,4 @@
 import React, { useState, useEffect, createContext, useCallback } from "react";
-import {
-  auth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut
-} from "../firebase";
 import { debounce } from 'lodash'; 
 
 export const AuthContext = createContext();
@@ -30,17 +22,18 @@ export function AuthProvider({ children }) {
     try {
       const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/isAuthor/${currentUser.uid}`);
       if (response.ok) {
-          const data = await response.json();
-          setIsAuthor(data.isAuthor);
+        const data = await response.json();
+        setIsAuthor(data.isAuthor);
       } else {
-         //console.error("AuthContext: Failed to check author status. Response status:", response.status);
+        //console.error("AuthContext: Failed to check author status. Response status:", response.status);
       }
     } catch (error) {
       //console.error("AuthContext: Error checking author status:", error);
     }
-  }, 15000),[]);
+  }, 15000), []);
 
   const login = useCallback(async (email, password) => {
+    const { auth, signInWithEmailAndPassword } = await import("../firebase");
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       setUser(result.user);
@@ -53,6 +46,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginWithGoogle = useCallback(async () => {
+    const { auth, signInWithPopup, GoogleAuthProvider } = await import("../firebase");
     const provider = new GoogleAuthProvider();
 
     try {
@@ -67,6 +61,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(async () => {
+    const { auth, signOut } = await import("../firebase");
     try {
       await signOut(auth);
       setUser(null);
@@ -78,17 +73,22 @@ export function AuthProvider({ children }) {
 
   // Effect to manage authentication state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
+    const initializeAuth = async () => {
+      const { auth, onAuthStateChanged } = await import("../firebase");
+      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        setUser(currentUser);
+        setLoading(false);
 
-      if (currentUser) {
-        setIsVerified(currentUser.emailVerified);
-        localStorage.setItem('isVerified', currentUser.emailVerified.toString());
-      }
-    });
+        if (currentUser) {
+          setIsVerified(currentUser.emailVerified);
+          localStorage.setItem('isVerified', currentUser.emailVerified.toString());
+        }
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
+
+    initializeAuth();
   }, []);
 
   // Effect to check author status after initial render

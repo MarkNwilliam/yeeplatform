@@ -45,7 +45,7 @@
           const relatedData = await relatedResponse.json();
           setRelatedContent(relatedData);
         } catch (err) {
-          console.error('Error fetching related content:', err);
+          //console.error('Error fetching related content:', err);
         }
       }
     };
@@ -68,7 +68,7 @@
     
       if (error) {
         //return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
-        console.log(error.message);
+        //console.log(error.message);
       }
     
       return (

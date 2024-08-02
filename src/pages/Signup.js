@@ -47,7 +47,7 @@ function Signup() {
         }
 
     } catch (error) {
-      console.error('Error sending user data to backend:', error);
+      //console.error('Error sending user data to backend:', error);
       Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -153,7 +153,7 @@ function Signup() {
       navigate('/verify-email');
 
     } catch (error) {
-      console.error('Error signing up:', error);
+      //console.error('Error signing up:', error);
       const message = getErrorMessage(error.code);
       Swal.fire({
         icon: 'error',
@@ -228,7 +228,7 @@ function Signup() {
         isAuthor: false // or ask the user during signup if they are an author
       };
       
-      //console.log("Sending this user data to the backend:", userData);
+      ////console.log("Sending this user data to the backend:", userData);
 
          // Save to localStorage (if needed)
     localStorage.setItem('tempUserData', JSON.stringify(userData));
@@ -248,7 +248,7 @@ function Signup() {
       navigate("/home");
 
     } catch (error) {
-      console.error('Error signing in with Google:', error);
+      //console.error('Error signing in with Google:', error);
       const message = getErrorMessage(error.code);
       Swal.fire({
         icon: 'error',

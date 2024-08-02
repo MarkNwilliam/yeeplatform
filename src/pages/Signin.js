@@ -75,7 +75,7 @@ function SignIn() {
       navigate(location.state?.from || "/home");
     } catch (error) {
       const message = getErrorMessage(error.code);
-      console.error("Error signing in:", error);
+      //console.error("Error signing in:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -127,7 +127,7 @@ function SignIn() {
       navigate(queryString.parse(location.search).from || "/home");
       
     } catch (error) {
-      console.error("Error signing in with Google:", error);
+      //console.error("Error signing in with Google:", error);
       const message = getErrorMessage(error.code);
       Swal.fire({
         icon: "error",

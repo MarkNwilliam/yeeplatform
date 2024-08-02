@@ -33,7 +33,7 @@ export default function Scontent() {
       if (!response.ok) throw new Error(`Data fetching failed with status: ${response.status}`);
   
       const data = await response.json();
-      //console.log("Response data:", data); // Log the structure of the data
+      ////console.log("Response data:", data); // Log the structure of the data
   
       if (data && data.data) {
         if (Array.isArray(data.data)) {
@@ -50,7 +50,7 @@ export default function Scontent() {
       
       
     } catch (error) {
-      console.error("Error fetching data:", error);
+      //console.error("Error fetching data:", error);
       setError(error);
     }
   
@@ -69,7 +69,7 @@ export default function Scontent() {
 
   const handleSearchClick = () => {
     setCurrentPage(1)
-    //console.log('Search Term:', searchTerm); 
+    ////console.log('Search Term:', searchTerm); 
     fetchData();
   };
 

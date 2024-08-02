@@ -1,16 +1,28 @@
-// PointsTourGuide.js
-
-import React, { useState, useEffect } from 'react';
-import Joyride, { STATUS } from 'react-joyride'; // Update the import statement
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+const Joyride = lazy(() => import('react-joyride')); // Lazy load Joyride
+const STATUS = {
+  FINISHED: 'finished',
+  SKIPPED: 'skipped'
+};
 
 function PointsTourGuide({ runTour, setRunTour }) {
   const [tourCompleted, setTourCompleted] = useState(false);
+  const [isUILoaded, setIsUILoaded] = useState(false);
 
   useEffect(() => {
     const tourCompleted = localStorage.getItem('tourCompleted');
     if (tourCompleted) {
       setTourCompleted(true);
     }
+  }, []);
+
+  useEffect(() => {
+    // Simulate a delay for UI loading
+    const timer = setTimeout(() => {
+      setIsUILoaded(true);
+    }, 1000); // Adjust the delay as needed
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleTourCallback = ({ status }) => {
@@ -20,8 +32,8 @@ function PointsTourGuide({ runTour, setRunTour }) {
     }
   };
 
-  if (tourCompleted) {
-    return null; // Don't render the tour guide if it's already completed
+  if (tourCompleted || !isUILoaded) {
+    return null; // Don't render the tour guide if it's already completed or the UI is not loaded
   }
 
   const steps = [
@@ -36,7 +48,11 @@ function PointsTourGuide({ runTour, setRunTour }) {
     // Add more steps as needed
   ];
 
-  return <Joyride steps={steps} run={runTour} callback={handleTourCallback} />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Joyride steps={steps} run={runTour} callback={handleTourCallback} />
+    </Suspense>
+  );
 }
 
 export default PointsTourGuide;

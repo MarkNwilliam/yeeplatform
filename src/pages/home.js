@@ -7,10 +7,8 @@ import Scontent from "../components/Scontent";
 import { useAuth } from '../contexts/AuthContext';
 import { logFirebaseEvent } from '../firebase.js';
 import PointsTourGuide from '../constants/PointsTourGuide.js';
-import Swal from 'sweetalert2';
-import axios from 'axios';
 import useNotificationPermission from '../hooks/useNotificationPermission';
-
+//import Swal from 'sweetalert2';
 // Lazy load components
 const AudiobookDetail = lazy(() => import("../components/AudiobookDetail"));
 const ChapterDetail = lazy(() => import("../components/ChapterDetail"));
@@ -31,22 +29,23 @@ function useUserPoints(user) {
         }
         return null;
     }, [user]);
-
+    
     useEffect(() => {
         const fetchUserPoints = async () => {
             if (!userPointsURL) return;
-
+    
             try {
+                const axios = await import('axios');
                 const response = await axios.get(userPointsURL);
                 setUserPoints(response.data.points);
             } catch (error) {
-                console.error('Error fetching user points:', error);
+                //console.error('Error fetching user points:', error);
             }
         };
-
+    
         fetchUserPoints();
     }, [userPointsURL]);
-
+    
     return userPoints;
 }
 
@@ -70,6 +69,9 @@ function Home() {
 
     const handleLogout = async () => {
         try {
+            const module = await import('sweetalert2');
+        const Swal = module.default;
+       
             const result = await Swal.fire({
                 title: "Are you sure you want to log out?",
                 text: "You will be logged out of your account.",
@@ -105,6 +107,8 @@ function Home() {
                 });
             }
         } catch (error) {
+            const module = await import('sweetalert2');
+        const Swal = module.default;
             Swal.fire({
                 title: "Error",
                 text: "An error occurred while logging out.",
@@ -135,24 +139,24 @@ function Home() {
             />
             <PointsTourGuide runTour={runTour} setRunTour={setRunTour} />
             <div className="flex-1 flex flex-col overflow-hidden">
-                <header className="flex justify-between items-center p-4 text-white z-10" style={{ backgroundColor: '#FFDE59' }}>
+                <header className="flex justify-between items-center p-4 text-black z-10" style={{ backgroundColor: '#FFD700'}}>
                     <button onClick={() => setSidebarOpen(!sidebarOpen)} className={`focus:outline-none lg:hidden ${sidebarOpen ? 'hidden' : ''}`}>
-                        <Bars3Icon className="h-6 w-6 text-white" />
+                        <Bars3Icon className="h-6 w-6 text-black" />
                     </button>
 
                     <div className="flex items-center justify-center ml-auto">
                         {user && (
-                            <div className="mr-4 text-white user-points">{`Points: ${userPoints}`}</div>
+                            <div className="mr-4 text-black user-points">{`Points: ${userPoints}`}</div>
                         )}
                         {user ? (
                             <>
-                                <button onClick={handleMyAccountClick} className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">My Account</button>
-                                <button onClick={handleLogout} className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black hover:scale-110">Logout</button>
+                                <button onClick={handleMyAccountClick} className="px-3 py-2 border border-black rounded text-black hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">My Account</button>
+                                <button onClick={handleLogout} className="px-3 py-2 ml-2 border border-black rounded text-black hover:bg-yellow-300 hover:text-black hover:scale-110">Logout</button>
                             </>
                         ) : (
                             <>
-                                <Link to="/login" className="px-3 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Login</Link>
-                                <Link to="/signup" className="px-3 py-2 ml-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Signup</Link>
+                                <Link to="/login" className="px-3 py-2 border border-black rounded text-black hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Login</Link>
+                                <Link to="/signup" className="px-3 py-2 ml-2 border border-black rounded text-black hover:bg-yellow-300 hover:text-black no-underline hover:scale-110">Signup</Link>
                             </>
                         )}
                     </div>
@@ -164,7 +168,7 @@ function Home() {
                     </div>
 
                     <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden focus:outline-none ml-4" ref={menuIconRef}>
-                        <EllipsisVerticalIcon className="h-6 w-6 text-white" />
+                        <EllipsisVerticalIcon className="h-6 w-6 text-black" />
                     </button>
                 </header>
 

@@ -32,7 +32,7 @@ export default function Scontent() {
       setItems(data.data); // Set items to the 'data' array within the response
       setTotalPages(Math.ceil(data.totalItems / 15)); // Use 'totalItems' for pagination calculation
     } catch (error) {
-      console.error("Error fetching data:", error);
+      //console.error("Error fetching data:", error);
     }
     setIsLoading(false); // Set loading state to false when fetching ends
   };

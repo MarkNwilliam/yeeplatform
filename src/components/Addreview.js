@@ -27,14 +27,14 @@ function Addreview(props) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      //console.log("User review data:", data);
+      ////console.log("User review data:", data);
   
       if (data && data.length > 0) {
         setUserReview(data[0]); // Set the user's review
-        //console.log("User review data:", data[0]);
+        ////console.log("User review data:", data[0]);
       }
     } catch (error) {
-      //console.error("An error occurred while fetching the user review:", error);
+      ////console.error("An error occurred while fetching the user review:", error);
       
     }
   };
@@ -86,17 +86,17 @@ function Addreview(props) {
       const data = await response.json();
 
       if (data.message === 'User has already reviewed this audiobook') {
-       // console.log(data.message);
+       // //console.log(data.message);
         setSnackbarMessage(data.message);
         setSnackbarOpen(true);
     setLoading(false);
       } else {
-       // console.log(data);
+       // //console.log(data);
         setSnackbarMessage('Review posted successfully');
       }
       setSnackbarOpen(true);
     } catch (err) {
-     // console.error(err);
+     // //console.error(err);
       setSnackbarMessage('Failed to post review');
       setSnackbarOpen(true);
     setLoading(false);
@@ -113,7 +113,7 @@ function Addreview(props) {
         method: 'DELETE',
       });
       const data = await response.json();
-      //console.log(data);
+      ////console.log(data);
       if (response.ok) {
         setSnackbarMessage('Review deleted successfully');
         setSnackbarOpen(true);
@@ -126,7 +126,7 @@ function Addreview(props) {
       }
       setSnackbarOpen(true);
     } catch (err) {
-      //console.error(err);
+      ////console.error(err);
       setSnackbarMessage('Failed to delete review');
       setSnackbarOpen(true);
     }

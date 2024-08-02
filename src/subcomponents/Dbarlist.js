@@ -13,16 +13,16 @@ function Dbarlist() {
         marginLeft: 'auto',
       }}
     >
-      <Link to="/" className="no-underline text-white hover:text-yellow-300">
+      <Link to="/" className="no-underline text-black hover:text-yellow-300">
         <Typography variant="body2">Home</Typography>
       </Link>
-      <Link to="/Permium" className="no-underline text-white hover:text-yellow-300">
+      <Link to="/Permium" className="no-underline text-black hover:text-yellow-300">
         <Typography variant="body2">Permium</Typography>
       </Link>
-      <Link to="/Support" className="no-underline text-white hover:text-yellow-300">
+      <Link to="/Support" className="no-underline text-black hover:text-yellow-300">
         <Typography variant="body2">Support</Typography>
       </Link>
-      <Link to="/Download" className="no-underline text-white hover:text-yellow-300">
+      <Link to="/Download" className="no-underline text-black hover:text-yellow-300">
         <Typography variant="body2">Download</Typography>
       </Link>
     </Stack>

@@ -84,7 +84,7 @@ function EbookReaderPage() {
         addResponseMessage(data.response);
       })
       .catch(error => {
-        console.error('Error:', error);
+        //console.error('Error:', error);
         addResponseMessage('Sorry, something went wrong.');
       })
       .finally(() => {
@@ -123,18 +123,18 @@ function EbookReaderPage() {
             try {
                 const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getEbook/${id}`, { cache: 'force-cache' });
                 if (!response.ok) {
-                    console.error('Response not OK:', response);
+                    //console.error('Response not OK:', response);
                     return;
                 }
                 const data = await response.json();
                 setEbookContent(data);
-                //console.log('Data:', data);
+                ////console.log('Data:', data);
 
                 // Set the PDF URL
                 setPdfUrl(data?.ebookUrl);
-                console.log(data?.ebookUrl);
+                //console.log(data?.ebookUrl);
             } catch (error) {
-                console.error('Error fetching eBook content:', error.message);
+                //console.error('Error fetching eBook content:', error.message);
             } finally {
                 setIsLoading(false);
             }
@@ -145,7 +145,7 @@ function EbookReaderPage() {
     
     const handlePlayClick = async () => {
       const pdf = await getDocument(pdfUrl).promise;
-      //console.log(currentPages)
+      ////console.log(currentPages)
       const page = await pdf.getPage(currentPages+1);
       const textContent = await page.getTextContent();
       const strings = textContent.items.map(item => item.str);
@@ -226,7 +226,7 @@ function EbookReaderPage() {
             text: 'Something went wrong!',
             footer: '<a href>Why do I have this issue?</a>'
           });
-          console.error('Error playing audio:', error);
+          //console.error('Error playing audio:', error);
         }
       }
     };
@@ -246,7 +246,7 @@ function EbookReaderPage() {
   
       // Check if the eBook has been read
   if (percentageVisited >= 30) {
-    //console.log('The eBook has been read.');
+    ////console.log('The eBook has been read.');
 
     // Call the functions to update viewed books and ebook scores
     await updateViewedBooks();
@@ -266,13 +266,13 @@ function EbookReaderPage() {
   
       // Retrieve and print the eBook data from local storage
       const storedEbookData = JSON.parse(localStorage.getItem('ebookData'));
-      //console.log('Stored eBook Data:', storedEbookData);
+      ////console.log('Stored eBook Data:', storedEbookData);
 
   
   };
 
   const ebookviewed = ({ doc }) => {
-    //console.log('Number of pages:', doc.numPages);
+    ////console.log('Number of pages:', doc.numPages);
   
     // Store the total number of pages
     setTotalPages(doc.numPages);
@@ -434,9 +434,9 @@ const updateViewedBooks = async () => {
         }),
       });
       const data = await response.json();
-      //console.log(data); // Log the response from the backend
+      ////console.log(data); // Log the response from the backend
     } catch (error) {
-      console.error('Error updating viewed books:', error);
+      //console.error('Error updating viewed books:', error);
     }
   }
 };
@@ -460,7 +460,7 @@ const updateEbookScores = async () => {
       });
      
     } catch (error) {
-      console.error('Error updating ebook scores:', error);
+      //console.error('Error updating ebook scores:', error);
     }
   }
 };
@@ -485,7 +485,7 @@ const recordEbookView = async () => {
    
    
   } catch (error) {
-    console.error('Error recording ebook view:', error);
+    //console.error('Error recording ebook view:', error);
   }
 };
 

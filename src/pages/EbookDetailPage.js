@@ -127,7 +127,7 @@ const EbookDetailPage = () => {
     try {
       await fetchReviews();
     } catch (error) {
-      console.error("Failed to fetch reviews:", error);
+      //console.error("Failed to fetch reviews:", error);
     }
   };
 

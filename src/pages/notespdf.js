@@ -89,17 +89,17 @@ function Notespdf() {
             try {
                 const response = await fetch(`https://yeeplatformbackend.azurewebsites.net/getChapter/${id}`, { cache: 'force-cache' });
                 if (!response.ok) {
-                    console.error('Response not OK:', response);
+                    //console.error('Response not OK:', response);
                     return;
                 }
                 const data = await response.json();
                 setEbookContent(data);
-                //console.log('Data:', data);
+                ////console.log('Data:', data);
 
                 // Set the PDF URL
                 setPdfUrl(data?.doc_location);
             } catch (error) {
-                console.error('Error fetching eBook content:', error.message);
+                //console.error('Error fetching eBook content:', error.message);
             } finally {
                 setIsLoading(false);
             }
@@ -110,12 +110,12 @@ function Notespdf() {
     
     const handlePlayClick = async () => {
       const pdf = await getDocument(pdfUrl).promise;
-      //console.log(currentPages)
+      ////console.log(currentPages)
       const page = await pdf.getPage(currentPages+1);
       const textContent = await page.getTextContent();
       const strings = textContent.items.map(item => item.str);
       const text = strings.join(' ');
-      //console.log('Text:', text);
+      ////console.log('Text:', text);
       return text;
     };
 
@@ -138,7 +138,7 @@ function Notespdf() {
           }
         } catch (error) {
           Swal.close(); // Close loading dialog in case of error
-          console.error('Error extracting page text:', error);
+          //console.error('Error extracting page text:', error);
           // Handle error
         }
       }
@@ -156,11 +156,11 @@ function Notespdf() {
       // Calculate the percentage of pages visited
       const uniquePageCount = new Set(pageNumbers).size;
       const percentageVisited = (uniquePageCount / totalPages) * 100;
-      //console.log('Percentage of pages visited:', percentageVisited);
+      ////console.log('Percentage of pages visited:', percentageVisited);
   
       // Check if the eBook has been read
   if (percentageVisited >= 30) {
-    //console.log('The eBook has been read.');
+    ////console.log('The eBook has been read.');
 
     // Call the functions to update viewed books and ebook scores
     await updateViewedBooks();
@@ -180,13 +180,13 @@ function Notespdf() {
   
       // Retrieve and print the eBook data from local storage
       const storedEbookData = JSON.parse(localStorage.getItem('ebookData'));
-      //console.log('Stored eBook Data:', storedEbookData);
+      ////console.log('Stored eBook Data:', storedEbookData);
 
   
   };
 
   const ebookviewed = ({ doc }) => {
-    //console.log('Number of pages:', doc.numPages);
+    ////console.log('Number of pages:', doc.numPages);
   
     // Store the total number of pages
     setTotalPages(doc.numPages);
@@ -399,9 +399,9 @@ const updateViewedBooks = async () => {
         }),
       });
       const data = await response.json();
-      //console.log(data); // Log the response from the backend
+      ////console.log(data); // Log the response from the backend
     } catch (error) {
-      console.error('Error updating viewed books:', error);
+      //console.error('Error updating viewed books:', error);
     }
   }
 };
@@ -424,9 +424,9 @@ const updateEbookScores = async () => {
         }),
       });
       const data = await response.json();
-      //console.log(data); // Log the response from the backend
+      ////console.log(data); // Log the response from the backend
     } catch (error) {
-      console.error('Error updating ebook scores:', error);
+      //console.error('Error updating ebook scores:', error);
     }
   }
 };
@@ -449,9 +449,9 @@ const recordEbookView = async () => {
       }),
     });
     const data = await response.json();
-    //console.log(data); // Log the response from the backend
+    ////console.log(data); // Log the response from the backend
   } catch (error) {
-    console.error('Error recording ebook view:', error);
+    //console.error('Error recording ebook view:', error);
   }
 };
  
