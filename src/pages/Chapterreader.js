@@ -44,7 +44,7 @@ const Chapterreader = () => {
 
     const markChapterAsViewed = async () => {
       try {
-        // Replace 'userId' with the actual user ID
+   
         await fetch(`https://yeeplatformbackend.azurewebsites.net/updateViewedChapters/userId/${id}`, {
           method: 'POST',
         });

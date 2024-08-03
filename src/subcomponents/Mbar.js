@@ -14,10 +14,6 @@ import Button from '@mui/material/Button';
 import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 import Barlist from "./Barlist"
 
-
-
-
-
 export default function Mbar(props) {
   return (
     <>

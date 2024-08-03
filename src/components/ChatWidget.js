@@ -1,13 +1,10 @@
-import React, { useEffect , useState} from 'react';
-import { Widget, addResponseMessage, toggleMsgLoader } from '@ryaneewx/react-chat-widget';
+import React, { useState} from 'react';
+import { Widget } from '@ryaneewx/react-chat-widget';
 import '@ryaneewx/react-chat-widget/lib/styles.css';
 import '../css/chat.css';
 
 const ChatWidget = ({ handleNewUserMessage }) => {
-
-
 const [chatWindowOpen, setChatWindowOpen] = useState(true);
-
 
   const handleToggle = (open) => {
     setChatWindowOpen((prev) => !prev);

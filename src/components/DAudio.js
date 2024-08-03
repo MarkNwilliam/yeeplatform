@@ -3,10 +3,8 @@ import Swal from "sweetalert2";
 import { auth } from "../firebase";
 import axios from 'axios';
 import {
-
   TextField,
   Typography,
- 
 } from "@mui/material";
 
 import Autocomplete from "@mui/material/Autocomplete";
@@ -65,15 +63,12 @@ function DAudio() {
   const [language, setLanguage] = useState('');
   const [isbn, setIsbn] = useState('');
   const [publicationDate, setPublicationDate] = useState('');
-  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [selectedCoverFileName, setSelectedCoverFileName] = useState("");
   const [selectedAudioFileName, setSelectedAudioFileName] = useState("");
   const [Duration, setDuration] = useState("");
   const [monetization, setMonetization] = useState('free');
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
-  const LottieAnimation = React.lazy(() => import('lottie-react'));
 
 
   const firebaseId = auth.currentUser.uid;

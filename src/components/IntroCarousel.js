@@ -1,38 +1,31 @@
-import React, { Suspense} from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
+import Divider from '@mui/material/Divider';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useMediaQuery } from 'react-responsive';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const carouselItems = [
-        {
-          id: 1,
-          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee3.jpeg',
-          alt: 'Slide 1',
-          caption: 'First Slide',
-          description: '',
-          link: '' 
-        },
-        {
-          id: 2,
-          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee2.jpeg',
-          alt: 'Slide 2',
-          caption: 'Second Slide',
-          description: '',
-          link: '' 
-        },
-        {
-          id: 3,
-          src: 'https://assets-hfbubwfaacbch3e0.z02.azurefd.net/assets/images/yee1.jpeg',
-          alt: 'Slide 3',
-          caption: 'Third Slide',
-          description: '',
-          link: '' 
-        }
-      ]
-
-export default function IntroCarousel() {
+      export default function IntroCarousel() {
+        const [carouselItems, setCarouselItems] = useState([]);
+      
+        useEffect(() => {
+          axios.get('https://yeeplatformbackend.azurewebsites.net/category/ebook/textbook?page=10&limit=5')
+            .then(response => {
+              const items = response.data.map(book => ({
+                id: book._id,
+                src: book.coverImageMediumUrl || book.coverImage,
+                alt: book.title,
+                caption: book.title,
+                description: book.authors.join(', '),
+                link: book.ebookUrl
+              }));
+              setCarouselItems(items);
+            })
+            .catch(error => console.error(error));
+        }, []);
 
   const isDesktopOrLaptop = useMediaQuery({
     query: '(min-device-width: 1224px)'
@@ -54,43 +47,41 @@ export default function IntroCarousel() {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-    <Carousel style={{ maxHeight, overflow: 'hidden' }}>
-
-        {carouselItems && carouselItems.map((item) => (
-          <Carousel.Item key={item.id} interval={5000}>
-            {item.link ? (
-              <a href={item.link} target="_blank" rel="noopener noreferrer">
-                <LazyLoadImage
-                  className="d-block w-100"
-                  src={item.src}
-                  alt={item.alt}
-                  onClick={handleClick}
-                  style={{ maxHeight: '500px', objectFit: 'contain' }}
-                  width="100%"
-                  height={500} 
-                  effect="blur"
-                />
-              </a>
-            ) : (
-              <LazyLoadImage
-                className="d-block w-100"
-                src={item.src}
-                alt={item.alt}
-                style={{ maxHeight: '500px', objectFit: 'contain' }}
-                onClick={handleClick}
-                width="100%"
-                height={500} // Add fixed height
-                effect="blur"
-              />
-            )}
-            <Carousel.Caption className="d-none d-md-block">
-              <h3 style={{ fontSize: '1.5em' }}>{item.caption}</h3>
-              <p>{item.description}</p>
+    <Carousel className='p-4' style={{ maxHeight, overflow: 'hidden', backgroundColor: '#f5f5f5' }}>
+      {carouselItems && carouselItems.map((item) => (
+        <Carousel.Item key={item.id} interval={5000}>
+          <Link to={`/ebooks/${item.id}`}>
+            <LazyLoadImage
+              className="d-block w-100"
+              src={item.src}
+              alt={item.alt}
+              style={{ maxHeight: '500px', objectFit: 'contain' }}
+              width="100%"
+              height={500} 
+              effect="blur"
+            />
+            <Carousel.Caption style={{ color: '#333333', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
+            <h3 style={{ 
+    fontSize: '1.5em', 
+    whiteSpace: 'nowrap', 
+    overflow: 'hidden', 
+    textOverflow: 'ellipsis' 
+  }}>
+    {item.caption}
+  </h3>
+              <p style={{ 
+    whiteSpace: 'nowrap', 
+    overflow: 'hidden', 
+    textOverflow: 'ellipsis' 
+  }}>
+    {item.description}
+  </p>
             </Carousel.Caption>
-          </Carousel.Item>
-        ))
-            }
+          </Link>
+        </Carousel.Item>
+      ))}
     </Carousel>
-    </Suspense>
+  </Suspense>
   );
+
 }

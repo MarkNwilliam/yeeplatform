@@ -11,7 +11,6 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import {  FaPlay, FaArrowLeft } from 'react-icons/fa';
 import { PdfJs } from '@react-pdf-viewer/core';
 import Swal from 'sweetalert2';
-
 import { Helmet } from 'react-helmet';
 import ShareBox from '../components/Sharebox';
 import { analytics, logEvent } from '../firebase.js';
@@ -60,9 +59,6 @@ function EbookReaderPage() {
     const email = auth.currentUser?.email;
     
     const handleNewUserMessage = (newMessage) => {
-     
-      
-      // Show the loading indicator
       toggleMsgLoader();
   
       fetch('https://yeeplatform.com/server/chat', {
@@ -145,7 +141,6 @@ function EbookReaderPage() {
     
     const handlePlayClick = async () => {
       const pdf = await getDocument(pdfUrl).promise;
-      ////console.log(currentPages)
       const page = await pdf.getPage(currentPages+1);
       const textContent = await page.getTextContent();
       const strings = textContent.items.map(item => item.str);
@@ -266,13 +261,9 @@ function EbookReaderPage() {
   
       // Retrieve and print the eBook data from local storage
       const storedEbookData = JSON.parse(localStorage.getItem('ebookData'));
-      ////console.log('Stored eBook Data:', storedEbookData);
-
-  
   };
 
   const ebookviewed = ({ doc }) => {
-    ////console.log('Number of pages:', doc.numPages);
   
     // Store the total number of pages
     setTotalPages(doc.numPages);
@@ -434,9 +425,9 @@ const updateViewedBooks = async () => {
         }),
       });
       const data = await response.json();
-      ////console.log(data); // Log the response from the backend
+   
     } catch (error) {
-      //console.error('Error updating viewed books:', error);
+    //console(error)
     }
   }
 };
@@ -482,18 +473,13 @@ const recordEbookView = async () => {
        
       }),
     });
-   
-   
   } catch (error) {
-    //console.error('Error recording ebook view:', error);
+    //console(error)
   }
 };
 
-
     return (
         <div style={{ height: '100vh' , width: '100%'}}>
-
-          
 
 {ebookContent && (
         <Helmet>
@@ -570,8 +556,6 @@ const recordEbookView = async () => {
     </div>
   </Draggable>
 )}
-
-
             {isLoading ? (
                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
                Loading...
@@ -601,8 +585,6 @@ renderLoader={(percentages) => (
   <div>
     <h2 className="text-yellow-500 font-bold">Please wait, it&apos;s coming...</h2>
   <div style={{ width: '100%' }}>
-    
-
       <CircularProgressWithLabel value={Math.round(percentages)} />
   </div>
   </div>

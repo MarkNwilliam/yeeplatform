@@ -15,8 +15,6 @@ import Box from '@mui/material/Box';
 
 import Dbarlist from './Dbarlist.js';
 
-const drawerWidth = 240;
-
 export default function Dbar(props) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);

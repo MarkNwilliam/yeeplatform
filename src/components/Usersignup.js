@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
+import { useNavigate } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,10 +8,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
 const UserSignup = ({ open, onClose }) => {
-  const navigate = useNavigate(); // Get the navigate function
-
+  const navigate = useNavigate(); 
   const handleLogin = () => {
-    navigate('/login'); // Navigate to the login page
+    navigate('/login'); 
   };
 
   return (

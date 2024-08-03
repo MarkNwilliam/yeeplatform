@@ -15,7 +15,6 @@ const Signin = lazy(() => import('./pages/Signin'));
 const Signup = lazy(() => import('./pages/Signup'));
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
 const Scontent = lazy(() => import('./components/Scontent'));
-const Intro = lazy(() => import('./components/intro'));
 const News = lazy(() => import('./components/DNews'));
 const DNft = lazy(() => import('./components/DNft'));
 const Upload = lazy(() => import('./components/DUpload'));
@@ -30,12 +29,9 @@ const AccountPage = lazy(() => import('./pages/AccountPage'));
 const Mybooks = lazy(() => import('./components/Mybooks'));
 const MyAudios = lazy(() => import('./components/MyAudios'));
 const MyChapters = lazy(() => import('./components/MyChapters'));
-const AudiobookDetail = lazy(() => import('./components/AudiobookDetail'));
 const DAudioChapter = lazy(() => import('./components/DAudioChapter'));
-const ChapterDetail = lazy(() => import('./components/ChapterDetail'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const Welcome = lazy(() => import('./pages/Welcome'));
-const ItemDetailPage = lazy(() => import('./pages/ItemDetailPage'));
 const AudiobookDetailPage = lazy(() => import('./pages/AudiobookDetailPage'));
 const AudioChapterdetail = lazy(() => import('./pages/AudioChapterdetail'));
 const ChapterDetailPage = lazy(() => import('./pages/ChapterDetailPage'));
@@ -100,7 +96,6 @@ function App() {
           <Route path="home" element={<Home />}/>
           <Route path="ebooks" element={<Ebooks />} />
           <Route path="audiobooks" element={<Audiobooks />}/>  
-          <Route path="items/:id" element={<ItemDetailPage />} />
           <Route path="chapters" element={<Chapters />} />
           <Route path="audiochapters" element={<AudioChapters />} />
          

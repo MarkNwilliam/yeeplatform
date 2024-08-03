@@ -210,7 +210,7 @@ const isImageDimensionsValid = async (file, width, height) => {
       icon: 'info',
       title: 'Uploading...',
       text: 'Please wait while your file is being uploaded.',
-      showConfirmButton: false, // Hides the OK button
+      showConfirmButton: false, 
       allowOutsideClick: false
   });
 
@@ -236,14 +236,7 @@ if (!checkFileExtension(ebookFile, ['pdf', 'epub', 'mobi'])) {
  
 
 const isCoverDimensionsValid = await isImageDimensionsValid(coverFile, 600, 800);
-/*if (!isCoverDimensionsValid) {
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Cover image dimensions should be 600x800 pixels. Please adjust the image size and try again.'
-    });
-    return;
-} */
+
 
 if (!isFileSizeWithinRange(ebookFile, 0.1, 200)) {
   Swal.fire({

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Importing sweetalert2
+import Swal from 'sweetalert2';
 import { auth } from "../firebase";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
   TextField,
   Typography,
   Box,
-
-  Chip,
 } from "@mui/material";
 import SuccessDialog from '../subcomponents/SuccessDialog';
 import uploadToAzure from '../functions/azureUpload';
@@ -16,8 +14,6 @@ import { resizeImage } from '../functions/imageUtils';
 import UploadButton from '../subcomponents/UploadButton';
 import SubmitButton from '../subcomponents/SubmitButton';
 function DAudioChapter() {
-  const LottieAnimation = React.lazy(() => import('lottie-react'));
-
   const [file, setFile] = useState(null);
   const [coverPreviewUrl, setCoverPreviewUrl] = useState("");
   const [monetization, setMonetization] = useState('free');
@@ -25,7 +21,6 @@ function DAudioChapter() {
   const [selectedCoverFileName, setSelectedCoverFileName] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successDialogPoints, setSuccessDialogPoints] = useState(0);
   const [successDialogMessage, setSuccessDialogMessage] = useState('');
@@ -39,12 +34,12 @@ const [thumbnail, setThumbnail] = useState(null);
     title: '',
     description: '',
     content: '',
-    coverimage: '', // Consider this as a URL after uploading
+    coverimage: '', 
     type: "Audio",
     author_platform_id:'',
     categories: [],
     genres: [],
-    // ... more fields as needed
+
   });
 
   const resetForm = () => {
@@ -61,7 +56,7 @@ const [thumbnail, setThumbnail] = useState(null);
       author_platform_id:'',
       categories: [],
       genres: [],
-      // Reset other fields if necessary
+     
     });
      setCoverPreviewUrl("");
   };
@@ -248,7 +243,7 @@ if (chapterDetails.categories.length < minCategoriesRequired) {
             content: blobURL,
             duration: audioDetails.duration,
             author_platform_id: firebaseId,
-            coverimage: coverImageURL,  // Assign the URL to coverImage field
+            coverimage: coverImageURL, 
             thumbnailUrl: thumbnailURL,
         });
 
@@ -277,34 +272,6 @@ if (chapterDetails.categories.length < minCategoriesRequired) {
             text: 'Error during chapter upload.',
         });
     }
-};
-
-const handleCategoryChange = (event) => {
-  const {
-    target: { value },
-  } = event;
-  setChapterDetails({
-    ...chapterDetails,
-    categories: typeof value === 'string' ? value.split(',') : value,
-  });
-};
-
-const handleCategoryDelete = (categoryToDelete) => () => {
-  setChapterDetails({
-    ...chapterDetails,
-    categories: chapterDetails.categories.filter((category) => category !== categoryToDelete),
-  });
-};
-
-const renderSelectedCategories = () => {
-  return chapterDetails.categories.map((category) => (
-    <Chip
-      key={category}
-      label={category}
-      onDelete={handleCategoryDelete(category)}
-      className="m-1"
-    />
-  ));
 };
 
 
@@ -406,8 +373,6 @@ const renderSelectedCategories = () => {
     required
   />
 </div>
-
-
         <div className="mb-4">
         <UploadButton
         label="Upload Audio File:"

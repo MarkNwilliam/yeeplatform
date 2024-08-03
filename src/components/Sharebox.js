@@ -16,8 +16,7 @@ import {
 
 const ShareBox = ({ shareUrl, selectedText }) => {
   const yeePlatformUrl = 'https://www.yeeplatform.com';
-  const hashtags = 'YeePlatform'; // Add more hashtags as needed
-
+  const hashtags = 'YeePlatform'; 
   const shareText = `Check out this quote: "${selectedText}" from @YeePlatform! ${yeePlatformUrl} #${hashtags}`;
 
   return (

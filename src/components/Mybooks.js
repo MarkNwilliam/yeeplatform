@@ -101,7 +101,7 @@ const handleDeleteConfirmation = (book) => {
       } else {
           throw new Error("Failed to delete the book.");  // Throw an error to be caught below
       }
-      Swal.close();  // Close the loading indicator once deletion is complete
+      Swal.close();
   
     } catch(err) {
       Swal.fire({
@@ -136,7 +136,7 @@ const handleDeleteConfirmation = (book) => {
       } else {
           throw new Error("Failed to update the description.");  // Throw an error to be caught below
       }
-      Swal.close();  // Close the loading indicator once update is complete
+      Swal.close();
   
     } catch(err) {
       Swal.fire({

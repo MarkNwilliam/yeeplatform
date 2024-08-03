@@ -24,7 +24,7 @@ const MyChapters = () => {
   const [chapters, setChapters] = useState([]);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
-  const [audioChapters, setAudioChapters] = useState([]); // New state for audio chapters
+  const [audioChapters, setAudioChapters] = useState([]); 
   const [editedChapter, setEditedChapter] = useState(null);
   const [editedAudioChapter, setEditedAudioChapter] = useState(null);
   const [selectedDocId, setSelectedDocId] = useState('');
@@ -43,11 +43,11 @@ const MyChapters = () => {
         }
         const data = await response.json();
         setChapters(data);
-        setError(""); // Reset the error message if successful
+        setError(""); 
       } catch (error) {
         console.error("Error fetching text chapters:", error);
         setError(error.toString());
-        setChapters([]); // Keep chapters empty if there's an error
+        setChapters([]);
       }
     } else {
       setError("No user found in auth.");
@@ -66,11 +66,11 @@ const MyChapters = () => {
         }
         const data = await response.json();
         setAudioChapters(data);
-        setError(""); // Reset the error message if successful
+        setError("");
       } catch (error) {
         console.error("Error fetching audio chapters:", error);
         setError(error.toString());
-        setAudioChapters([]); // Keep audio chapters empty if there's an error
+        setAudioChapters([]);
       }
     } else {
       setError("No user found in auth.");
@@ -96,9 +96,6 @@ const MyChapters = () => {
     setSelectedDocId(docId);
     setOpen(true);
   };
-  
-
-
   
   const handleClose = () => {
     setOpen(false);
@@ -153,9 +150,6 @@ const MyChapters = () => {
     setOpenAudioEdit(true);
   };
 
-const handleAudioChapterSave = async () => {
-  
-}
 
 const handleTextChapterSave = async () => {
   Swal.fire({
@@ -204,9 +198,7 @@ const handleDelete = async (docId, isAudio = false) => {
       Swal.showLoading();
       
       try {
-        // Here we'll call the backend API to delete the chapter or audio chapter
-        // Let's assume the endpoint to delete a chapter is /deleteChapter/:id for text chapters
-        // and /deleteAudioChapter/:id for audio chapters
+      
         const deleteEndpoint = isAudio ? `https://yeeplatformbackend.azurewebsites.net/deleteaudiochapter/${docId}` : `https://yeeplatformbackend.azurewebsites.net/deletechapter/${docId}`;
         const response = await fetch(deleteEndpoint, { method: 'DELETE' });
         

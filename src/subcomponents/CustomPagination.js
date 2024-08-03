@@ -12,26 +12,26 @@ const CustomPagination = ({ totalPages, currentPage, onChange }) => {
         onChange={onChange}
         sx={{ 
           "& .MuiPaginationItem-root": {
-            color: '#FFDE59', // Yellow text for all items
+            color: '#FFDE59', 
           },
           "& .Mui-selected": {
-            backgroundColor: '#FFDE59', // Yellow background for selected item
-            color: 'white', // White text for selected item
+            backgroundColor: '#FFDE59', 
+            color: 'white', 
           },
           "& .MuiPaginationItem-root:hover": {
-            backgroundColor: '#fdd835', // Slightly darker yellow on hover for all items
-            color: 'white', // White text on hover for all items
+            backgroundColor: '#fdd835', 
+            color: 'white',
           },
           "& .MuiPaginationItem-ellipsis": {
-            color: 'black', // Color for ellipsis (...)
+            color: 'black', 
           },
           "& .Mui-focusVisible": {
-            backgroundColor: '#FFDE59', // Yellow background for focus state
-            color: 'white', // White text for focus state
+            backgroundColor: '#FFDE59',
+            color: 'white', 
           },
           "& .MuiPaginationItem-root.Mui-selected:hover, & .MuiPaginationItem-root.Mui-selected.Mui-focusVisible": {
-            backgroundColor: '#FFDE59', // Maintain yellow background on hover and focus for selected item
-            color: 'white', // Maintain white text on hover and focus for selected item
+            backgroundColor: '#FFDE59', 
+            color: 'white', 
           }
         }}
       />

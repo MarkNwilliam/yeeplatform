@@ -49,7 +49,7 @@ function VerifyEmail() {
       });
     } catch (error) {
       setLoading(false);
-      //console.error('Error sending verification email:', error);
+     
       Swal.fire({
         icon: 'error',
         title: 'Error',

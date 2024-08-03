@@ -98,24 +98,22 @@ const [selections, setSelections] = useState([])
 
   const email = auth.currentUser?.email;
 
-  //////console.log('Current user email:', email);
+
   function setDisplayedText(location) {
-    //const cfiRange = `${location.start.cfi},${location.end.cfi}`;
+
     const splitCfi = location.start.cfi.split('/');
     const baseCfi = splitCfi[0] + '/' + splitCfi[1] + '/' + splitCfi[2] + '/' + splitCfi[3];
     const startCfi = location.start.cfi.replace(baseCfi, '');
     const endCfi = location.end.cfi.replace(baseCfi, '');
     const cfiRange = [baseCfi, startCfi, endCfi].join(',');
     const text = renditionRef.current.getRange(cfiRange).toString();
-    ////console.log('Visible Page CFI Range:', cfiRange);
-    ////console.log('Visible Page Text:', text);
+
     setLargeText(text);
   }
   function setRenderSelection(cfiRange, contents) {
-    //////console.log(cfiRange)
+
     const text = renditionRef.current.getRange(cfiRange).toString();
-    ////console.log('CFI Range:', cfiRange);
-    ////console.log('Selected Text:', text);
+
   
     setSelections(
       selections.concat({
@@ -192,46 +190,13 @@ const [selections, setSelections] = useState([])
 
   const [location, setLocation] = useState(null);
 
-  /*const handlePlayClick = () => {
-    const contents = rendition.current.getContents();
-    const text = contents.map(content => content.document.body.textContent).join('\n');
-    ////console.log(text);
-  };*/
-  const selectLanguage = async () => {
-    const { value: language } = await Swal.fire({
-      title: 'Select language',
-      html: `
-      <form id="languageForm" style="display: flex; flex-direction: column; align-items: start;">
-        <label><input type="radio" name="language" value="eng"> English</label><br>
-        <label><input type="radio" name="language" value="swh"> Swahili</label><br>
-        <label><input type="radio" name="language" value="spa"> Spanish</label><br>
-        <label><input type="radio" name="language" value="arz"> Arabic</label><br>
-        <label><input type="radio" name="language" value="fra"> French</label><br>
-      </form>
-      `,
-      focusConfirm: false,
-      preConfirm: () => {
-        const radios = document.getElementById('languageForm').elements['language'];
-        let selectedLanguage;
-        for (let i = 0; i < radios.length; i++) {
-          if (radios[i].checked) {
-            selectedLanguage = radios[i].value;
-            break;
-          }
-        }
-        return selectedLanguage;
-      }
-    });
-  
-    return language;
-  };
   
 
   const handlePlayClick = async () => {
-    // Cancel the currently playing audio
+ 
     setAudioUrl(null);
   
-    // Ask for language selection
+   
     const { value: language } = await Swal.fire({
       title: 'Select language',
       html: `
@@ -268,7 +233,7 @@ const [selections, setSelections] = useState([])
         }
       });
   
-      const book_title = ebookContent.title; // Replace with actual book title
+      const book_title = ebookContent.title; 
       let processedBookTitle = book_title.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
   
       try {

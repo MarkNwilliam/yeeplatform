@@ -69,7 +69,6 @@ export default function Scontent() {
 
   const handleSearchClick = () => {
     setCurrentPage(1)
-    ////console.log('Search Term:', searchTerm); 
     fetchData();
   };
 
@@ -108,7 +107,7 @@ export default function Scontent() {
           className="ml-0 sm:ml-2 p-3 border border-gray-300 rounded-full bg-yellow-500 text-white hover:bg-yellow-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 flex items-center justify-center"
           style={{ minWidth: "100px" }}
         >
-          <SearchIcon /> {/* Search icon */}
+          <SearchIcon />
         </button>
    
         {error && (
@@ -117,7 +116,7 @@ export default function Scontent() {
             className="ml-0 sm:ml-2 p-3 border border-gray-300 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center justify-center"
             style={{ minWidth: "100px" }}
           >
-            <RefreshIcon /> {/* Refresh icon */}
+            <RefreshIcon />
           </button>
         )}
       </div>
@@ -142,14 +141,14 @@ Array.from({ length: 10 }).map((_, index) => (
             <ContentCard
               key={index}
               title={item.title}
-              coverImage={item.coverImage || item.thumbnailUrl || item.coverImage || item.coverimage || item.cover_url}
+              coverImage={ item.coverImage_optimized_url||  item.coverImage_optimized_url || item.coverImage || item.thumbnailUrl || item.coverImage || item.coverimage || item.cover_url}
               itemType="ebook"
               itemId={item._id}
               rating={item.ratings}
             />
           ))
         ) : (
-         
+        
           <div className="flex justify-center items-center w-full">
           <Alert severity="warning" className="w-full">No results were found for your search. Please check your spelling or search for another term</Alert>
         </div>

@@ -218,23 +218,18 @@ function Signup() {
         googleId: user.uid,
         firebaseId: user.uid,
         authProvider: 'google',
-        preferredReadingMode: 'LTR', // or ask the user during signup
+        preferredReadingMode: 'LTR', 
         emailVerified: user.emailVerified,
         settings: {
-          receiveEmailUpdates: true, // or based on user choice during signup
-          receiveNotifications: true, // or based on user choice during signup
-          darkMode: false // or based on user choice during signup
+          receiveEmailUpdates: true, 
+          receiveNotifications: true, 
+          darkMode: false 
         },
-        isAuthor: false // or ask the user during signup if they are an author
+        isAuthor: false 
       };
       
-      ////console.log("Sending this user data to the backend:", userData);
-
          // Save to localStorage (if needed)
     localStorage.setItem('tempUserData', JSON.stringify(userData));
-
-   
-
       await sendUserDataToBackend(userData);
 
       Swal.fire({
@@ -248,7 +243,7 @@ function Signup() {
       navigate("/home");
 
     } catch (error) {
-      //console.error('Error signing in with Google:', error);
+  
       const message = getErrorMessage(error.code);
       Swal.fire({
         icon: 'error',
@@ -352,7 +347,7 @@ function Signup() {
 <select
   id="country"
   name="country"
-  value={country}  // Set the value to the state.
+  value={country} 
   required
   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
   onChange={(e) => setCountry(e.target.value)}

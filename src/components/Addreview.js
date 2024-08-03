@@ -9,8 +9,6 @@ import Rating from '@mui/material/Rating';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 
-
-
 function Addreview(props) {
   const { onClose, open, type, _id, userEmail,setSnackbarMessage } = props;
   const [review, setReview] = React.useState('');
@@ -27,15 +25,14 @@ function Addreview(props) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      ////console.log("User review data:", data);
+    
   
       if (data && data.length > 0) {
-        setUserReview(data[0]); // Set the user's review
-        ////console.log("User review data:", data[0]);
+        setUserReview(data[0]); 
+       
       }
     } catch (error) {
-      ////console.error("An error occurred while fetching the user review:", error);
-      
+    setLoading(false);
     }
   };
 
@@ -126,7 +123,6 @@ function Addreview(props) {
       }
       setSnackbarOpen(true);
     } catch (err) {
-      ////console.error(err);
       setSnackbarMessage('Failed to delete review');
       setSnackbarOpen(true);
     }

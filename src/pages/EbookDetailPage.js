@@ -49,14 +49,32 @@ const EbookDetailPage = () => {
     }
   }, [id, reviewsPage]);
 
-  const fetchRelatedContent = useCallback(async (categories) => {
-    try {
-      const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/category/ebook/${categories[0]}?page=${relatedContentPage}&limit=10`);
-      const relatedContentData = await relatedResponse.json();
-      setRelatedContent(relatedContentData.filter(book => book._id !== id));
-    } catch (err) {
-      setError(err.message);
+  const fetchRelatedContent = useCallback(async (categories, title) => {
+    let relatedContentData = [];
+    for (let category of categories) {
+      try {
+        const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/category/ebook/${category}?page=${relatedContentPage}&limit=10`);
+        relatedContentData = await relatedResponse.json();
+        if (relatedContentData.length > 0) {
+          break;
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
+  
+    // If no related content found in categories, search by first word in title
+    if (relatedContentData.length === 0) {
+      const firstWordInTitle = title.split(' ')[0];
+      try {
+        const relatedResponse = await fetch(`https://yeeplatformbackend.azurewebsites.net/search?term=${firstWordInTitle}&page=${relatedContentPage}&limit=10`);
+        relatedContentData = await relatedResponse.json();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  
+    setRelatedContent(relatedContentData.filter(book => book._id !== id));
   }, [id, relatedContentPage]);
 
   useEffect(() => {
@@ -66,7 +84,7 @@ const EbookDetailPage = () => {
         const [ebookData] = await Promise.all([ebookResponse]).then(responses =>
           Promise.all(responses.map(res => res.json()))
         );
-
+console.log(ebookData)
         setEbook(ebookData);
         fetchReviews();
         fetchRelatedContent(ebookData.categories);
@@ -177,7 +195,7 @@ const EbookDetailPage = () => {
   }
 
   if (error) {
-    return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
+  //  return <div className="flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
   }
 
   return (

@@ -10,8 +10,7 @@ import PointsTourGuide from '../constants/PointsTourGuide.js';
 import useNotificationPermission from '../hooks/useNotificationPermission';
 //import Swal from 'sweetalert2';
 // Lazy load components
-const AudiobookDetail = lazy(() => import("../components/AudiobookDetail"));
-const ChapterDetail = lazy(() => import("../components/ChapterDetail"));
+
 const Ebooks = lazy(() => import("./Ebooks"));
 const Audiobooks = lazy(() => import("./Audiobooks"));
 const Chapters = lazy(() => import("./Chapters"));
@@ -186,8 +185,6 @@ function Home() {
                             <Route path="search" element={<Scontent />} />
                             <Route path="ebooks" element={<Ebooks />} />
                             <Route path="audiobooks" element={<Audiobooks />} />
-                            <Route path="audiobooks/:id" element={<AudiobookDetail />} />
-                            <Route path="chapters/:id" element={<ChapterDetail />} />
                             <Route path="chapters" element={<Chapters />} />
                             <Route path="audiochapters" element={<AudioChapters />} />
                         </Routes>

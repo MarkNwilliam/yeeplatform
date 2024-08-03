@@ -4,7 +4,6 @@ import CustomPagination from "../subcomponents/CustomPagination";
 import { analytics, logEvent } from '../firebase.js';
 import { Helmet } from 'react-helmet';
 import SearchIcon from '@mui/icons-material/Search';
-import { useQuery } from 'react-query';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';

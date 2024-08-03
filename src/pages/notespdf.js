@@ -9,20 +9,15 @@ import { scrollModePlugin } from '@react-pdf-viewer/scroll-mode';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { FaPlay, FaArrowLeft } from 'react-icons/fa';
-
 import Swal from 'sweetalert2';
-
 import { Helmet } from 'react-helmet';
-
 import '../App.css';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
-
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-
 import Alert from '@mui/material/Alert';
 
 function Notespdf() {
@@ -94,13 +89,11 @@ function Notespdf() {
                 }
                 const data = await response.json();
                 setEbookContent(data);
-                ////console.log('Data:', data);
+              
 
                 // Set the PDF URL
                 setPdfUrl(data?.doc_location);
-            } catch (error) {
-                //console.error('Error fetching eBook content:', error.message);
-            } finally {
+            }finally {
                 setIsLoading(false);
             }
         };
@@ -110,12 +103,12 @@ function Notespdf() {
     
     const handlePlayClick = async () => {
       const pdf = await getDocument(pdfUrl).promise;
-      ////console.log(currentPages)
+     
       const page = await pdf.getPage(currentPages+1);
       const textContent = await page.getTextContent();
       const strings = textContent.items.map(item => item.str);
       const text = strings.join(' ');
-      ////console.log('Text:', text);
+   
       return text;
     };
 
@@ -137,9 +130,8 @@ function Notespdf() {
             setIsPlaying(true);
           }
         } catch (error) {
-          Swal.close(); // Close loading dialog in case of error
-          //console.error('Error extracting page text:', error);
-          // Handle error
+          Swal.close(); 
+       
         }
       }
     };
@@ -156,11 +148,11 @@ function Notespdf() {
       // Calculate the percentage of pages visited
       const uniquePageCount = new Set(pageNumbers).size;
       const percentageVisited = (uniquePageCount / totalPages) * 100;
-      ////console.log('Percentage of pages visited:', percentageVisited);
+  
   
       // Check if the eBook has been read
   if (percentageVisited >= 30) {
-    ////console.log('The eBook has been read.');
+   
 
     // Call the functions to update viewed books and ebook scores
     await updateViewedBooks();

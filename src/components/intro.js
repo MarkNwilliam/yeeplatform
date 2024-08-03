@@ -4,6 +4,8 @@ import IntroCarousel from "./IntroCarousel";
 import { Helmet } from 'react-helmet';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 
 export default function Intro() {
     const categories = [
@@ -53,8 +55,19 @@ export default function Intro() {
                 <meta property="og:description" content="Explore a wide range of content on Yee FM, including music, audiobooks, ebooks, magazines, comics, and more. Enjoy personalized recommendations and curated playlists." />
                 <meta property="og:url" content="https://www.yeefm.com/home" />
             </Helmet>
+         
             <Suspense fallback={<div>Loading...</div>}>
+            <Divider>
+  <Typography variant="h5" gutterBottom className='p-4'>
+    Top reads
+  </Typography>
+</Divider>
                 <IntroCarousel />
+                <Divider>
+  <Typography variant="h5" gutterBottom className='p-4'>
+    Explore Our Categories
+  </Typography>
+</Divider>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
    
               

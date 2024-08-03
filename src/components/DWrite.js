@@ -11,7 +11,6 @@ import { resizeImage, isFileSizeWithinRange } from '../functions/imageUtils';
 import uploadToAzure from '../functions/azureUpload';
 
 const DWrite = () => {
-  const LottieAnimation = React.lazy(() => import('lottie-react'));
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
 
 

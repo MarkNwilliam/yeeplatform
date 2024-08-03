@@ -1,4 +1,7 @@
 const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CompressionPlugin = require('compression-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = function override(config) {
     const fallback = config.resolve.fallback || {};
@@ -16,7 +19,16 @@ module.exports = function override(config) {
         new webpack.ProvidePlugin({
             process: 'process/browser',
             Buffer: ['buffer', 'Buffer']
-        })
-    ])
+        }),
+        new BundleAnalyzerPlugin(),
+        new CompressionPlugin()
+    ]);
+
+    if (config.mode === 'production') {
+        config.optimization = config.optimization || {};
+        config.optimization.minimizer = config.optimization.minimizer || [];
+        config.optimization.minimizer.push(new TerserPlugin());
+    }
+
     return config;
 }
